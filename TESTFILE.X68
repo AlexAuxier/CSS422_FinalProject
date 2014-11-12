@@ -4,7 +4,7 @@
 * Date       : 11/10/2014
 * Description: Test code for final project
 *-----------------------------------------------------------
-    ORG    $1000
+    ORG    $2000
 START:                  ; first instruction of program
 
     MOVE.W  #$654A, D1
@@ -14,6 +14,7 @@ START:                  ; first instruction of program
 * Put variables and constants here
 
     END    START        ; last line of source
+
 
 *~Font name~Courier New~
 *~Font size~10~

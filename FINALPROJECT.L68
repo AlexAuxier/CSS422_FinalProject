@@ -1,0 +1,72 @@
+00001000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.15.02
+Created On: 11/12/2014 1:43:55 PM
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      :
+00000000                             3  * Written by :
+00000000                             4  * Date       :
+00000000                             5  * Description:
+00000000                             6  *-----------------------------------------------------------
+00000000  =0000000D                  7  CR  EQU $0D
+00000000  =0000000A                  8  LF  EQU $0A
+00000000                             9  
+00000000  =00002000                 10  test_start  EQU $00002000
+00000000  =00002003                 11  test_end    EQU $00002003
+00000000                            12      
+00001000                            13      ORG    $1000
+00001000                            14  START:                  ; first instruction of program
+00001000                            15      
+00001000  43F9 00001048             16          LEA     startMessage, A1
+00001006  103C 000E                 17          MOVE.B  #14, D0
+0000100A  4E4F                      18          TRAP    #15
+0000100C                            19      
+0000100C  103C 0002                 20          MOVE.B  #2, D0
+00001010  4E4F                      21          TRAP    #15
+00001012  2401                      22          MOVE.L  D1, D2
+00001014                            23      
+00001014  43F9 00001069             24          LEA     endMessage, A1
+0000101A  103C 000E                 25          MOVE.B  #14, D0
+0000101E  4E4F                      26          TRAP    #15
+00001020                            27      
+00001020  103C 0002                 28          MOVE.B  #2, D0
+00001024  4E4F                      29          TRAP    #15
+00001026                            30      
+00001026  2478 2000                 31          MOVEA.L test_start, A2
+0000102A  B5FC 323C654A             32          CMP.L   #$323C654A, A2
+00001030  6700 0006                 33          BEQ     INVALID
+00001034  6000 000E                 34          BRA     ENDPROG
+00001038                            35      
+00001038  43F9 00001087             36  INVALID LEA     testMatch, A1
+0000103E  103C 000E                 37          MOVE.B  #14, D0
+00001042  4E4F                      38          TRAP    #15 
+00001044                            39          
+00001044                            40  
+00001044                            41  ENDPROG    
+00001044                            42  
+00001044  FFFF FFFF                 43      SIMHALT             ; halt simulator
+00001048                            44  
+00001048= 47 69 76 65 20 53 ...     45  startMessage    DC.B 'Give Starting Address (in hex): ', 0
+00001069= 47 69 76 65 20 45 ...     46  endMessage      DC.B 'Give Ending Address(in hex): ', 0
+00001087= 4D 4F 56 45 2E 42 ...     47  testMatch       DC.B 'MOVE.B    $654A, D1', 0   
+0000109B                            48  
+0000109B                            49  
+0000109B                            50      END    START        ; last line of source
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+CR                  D
+ENDMESSAGE          1069
+ENDPROG             1044
+INVALID             1038
+LF                  A
+START               1000
+STARTMESSAGE        1048
+TESTMATCH           1087
+TEST_END            2003
+TEST_START          2000
