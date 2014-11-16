@@ -1,6 +1,6 @@
 00001000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 11/15/2014 7:14:25 PM
+Created On: 2014-11-15 19:52:40
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -8,39 +8,43 @@ Created On: 11/15/2014 7:14:25 PM
 00000000                             4  * Date       :
 00000000                             5  * Description:
 00000000                             6  *-----------------------------------------------------------
-00000000  =0000000D                  7  CR  EQU $0D
-00000000  =0000000A                  8  LF  EQU $0A
+00000000  =0000000D                  7  CR          EQU     $0D
+00000000  =0000000A                  8  LF          EQU     $0A
 00000000                             9  
-00000000  =00002000                 10  test_start  EQU $00002000
-00000000  =00002005                 11  test_end    EQU $00002005
+00000000  =00002000                 10  test_start  EQU     $00002000
+00000000  =00002005                 11  test_end    EQU     $00002005
 00000000                            12     
-00000000  =00004E71                 13  noOp        EQU %0100111001110001    
-00001000                            14      ORG    $1000
-00001000                            15  START:                  ; first instruction of program
-00001000                            16        
-00001000  207C 00002000             17          MOVEA.L #test_start, A0
-00001006  247C 00002005             18          MOVEA.L #test_end, A2
-0000100C                            19          
-0000100C  0C58 4E71                 20  LOOP    CMP.W   #noOp, (A0)+
-00001010  6700 000A                 21          BEQ     NOPCODE
-00001014  B0CA                      22          CMPA.W  A2, A0
-00001016  6E00 0012                 23          BGT     ENDPROG 
-0000101A  60F0                      24          BRA     LOOP
-0000101C                            25      
-0000101C  43F9 0000102E             26  NOPCODE LEA     testMatch, A1
-00001022  103C 000E                 27          MOVE.B  #14, D0
-00001026  4E4F                      28          TRAP    #15
-00001028  60E2                      29          BRA     LOOP 
-0000102A                            30          
-0000102A                            31  
-0000102A                            32  ENDPROG    
+00000000  =00004E71                 13  noOp        EQU     %0100111001110001    
+00000000                            14              
+00001000                            15              ORG    $1000
+00001000                            16  START:                                  ; first instruction of program
+00001000                            17        
+00001000  207C 00002000             18          MOVEA.L     #test_start, A0
+00001006  247C 00002005             19          MOVEA.L     #test_end, A2
+0000100C                            20          
+0000100C  0C58 4E71                 21  LOOP    CMP.W       #noOp, (A0)+
+00001010  6700 000A                 22          BEQ         NOPCODE
+00001014  B0CA                      23          CMPA.W      A2, A0
+00001016  6E00 0012                 24          BGT         ENDPROG 
+0000101A  60F0                      25          BRA         LOOP
+0000101C                            26      
+0000101C  43F9 0000102E             27  NOPCODE LEA         testMatch, A1
+00001022  103C 000E                 28          MOVE.B      #14, D0
+00001026  4E4F                      29          TRAP        #15
+00001028  60E2                      30          BRA         LOOP 
+0000102A                            31          
+0000102A                            32          
 0000102A                            33  
-0000102A  FFFF FFFF                 34      SIMHALT             ; halt simulator
-0000102E                            35  
-0000102E= 4E 4F 50 0D 0A 00         36  testMatch       DC.B 'NOP',CR,LF, 0   
-00001034                            37  
-00001034                            38  
-00001034                            39      END    START        ; last line of source
+0000102A                            34          
+0000102A                            35  
+0000102A                            36  ENDPROG    
+0000102A                            37  
+0000102A  FFFF FFFF                 38      SIMHALT                             ; halt simulator
+0000102E                            39  
+0000102E= 4E 4F 50 43 4F 44 ...     40  testMatch   DC.B    'NOPCODE',CR,LF,0   
+00001038                            41  
+00001038                            42  
+00001038                            43              END    START                ; last line of source
 
 No errors detected
 No warnings generated
