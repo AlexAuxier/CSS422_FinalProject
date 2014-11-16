@@ -8,46 +8,38 @@ CR  EQU $0D
 LF  EQU $0A
 
 test_start  EQU $00002000
-test_end    EQU $00002003
-    
+test_end    EQU $00002005
+   
+noOp        EQU %0100111001110001    
     ORG    $1000
 START:                  ; first instruction of program
+      
+        MOVEA.L #test_start, A0
+        MOVEA.L #test_end, A2
+        
+LOOP    CMP.W   #noOp, (A0)+
+        BEQ     NOPCODE
+        CMPA.W  A2, A0
+        BGT     ENDPROG 
+        BRA     LOOP
     
-        LEA     startMessage, A1
+NOPCODE LEA     testMatch, A1
         MOVE.B  #14, D0
         TRAP    #15
-    
-        MOVE.B  #4, D0
-        TRAP    #15
-        MOVE.L  D1, D2
-    
-        LEA     endMessage, A1
-        MOVE.B  #14, D0
-        TRAP    #15
-    
-        MOVE.B  #4, D0
-        TRAP    #15
-    
-        MOVEA.L test_start, A2
-        CMP.L   #$323C654A, A2
-        BEQ     INVALID
-        BRA     ENDPROG
-    
-INVALID LEA     testMatch, A1
-        MOVE.B  #14, D0
-        TRAP    #15 
+        BRA     LOOP 
         
 
 ENDPROG    
 
     SIMHALT             ; halt simulator
 
-startMessage    DC.B 'Give Starting Address (in hex): ', 0
-endMessage      DC.B 'Give Ending Address(in hex): ', 0
-testMatch       DC.B 'MOVE.B    $654A, D1', 0   
+testMatch       DC.B 'NOPCODE',CR,LF, 0   
 
 
     END    START        ; last line of source
+
+
+
 
 
 *~Font name~Courier New~

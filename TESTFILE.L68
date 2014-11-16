@@ -1,6 +1,6 @@
 00002000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 11/12/2014 1:38:28 PM
+Created On: 11/15/2014 7:10:20 PM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      : Final Project Test File
@@ -11,13 +11,15 @@ Created On: 11/12/2014 1:38:28 PM
 00002000                             7      ORG    $2000
 00002000                             8  START:                  ; first instruction of program
 00002000                             9  
-00002000  323C 654A                 10      MOVE.W  #$654A, D1
-00002004                            11  
-00002004  FFFF FFFF                 12      SIMHALT             ; halt simulator
-00002008                            13  
-00002008                            14  * Put variables and constants here
-00002008                            15  
-00002008                            16      END    START        ; last line of source
+00002000  4E71                      10      NOP
+00002002  4E71                      11      NOP
+00002004  4E71                      12      NOP
+00002006                            13  
+00002006  FFFF FFFF                 14      SIMHALT             ; halt simulator
+0000200A                            15  
+0000200A                            16  * Put variables and constants here
+0000200A                            17  
+0000200A                            18      END    START        ; last line of source
 
 No errors detected
 No warnings generated
