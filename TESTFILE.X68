@@ -24,6 +24,10 @@ START:                  ; first instruction of program
     MOVEA   A2,A3
     MOVEQ   #testData,D4
   
+    *Add Test Instructions
+    ADD.L   D4,D0
+    ADDA    A0,A1
+    ADD.B   D0,D4
 
     SIMHALT             ; halt simulator
 
