@@ -1,6 +1,6 @@
 00002000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 11/15/2014 7:10:20 PM
+Created On: 2014-11-20 13:38:06
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      : Final Project Test File
@@ -8,18 +8,25 @@ Created On: 11/15/2014 7:10:20 PM
 00000000                             4  * Date       : 11/10/2014
 00000000                             5  * Description: Test code for final project
 00000000                             6  *-----------------------------------------------------------
-00002000                             7      ORG    $2000
-00002000                             8  START:                  ; first instruction of program
-00002000                             9  
-00002000  4E71                      10      NOP
-00002002  4E71                      11      NOP
-00002004  4E71                      12      NOP
-00002006                            13  
-00002006  FFFF FFFF                 14      SIMHALT             ; halt simulator
-0000200A                            15  
-0000200A                            16  * Put variables and constants here
-0000200A                            17  
-0000200A                            18      END    START        ; last line of source
+00000000                             7  
+00000000  =0000000B                  8  testData    EQU     $B
+00000000                             9  
+00002000                            10      ORG    $2000
+00002000                            11  START:                  ; first instruction of program
+00002000                            12  
+00002000  4E71                      13      NOP
+00002002  4E71                      14      NOP
+00002004  4E71                      15      NOP
+00002006                            16      
+00002006  0041 000B                 17      ORI     #testData,D1
+0000200A  0882 000C                 18      BCLR    #12,D2
+0000200E                            19      
+0000200E                            20  
+0000200E  FFFF FFFF                 21      SIMHALT             ; halt simulator
+00002012                            22  
+00002012                            23  * Put variables and constants here
+00002012                            24  
+00002012                            25      END    START        ; last line of source
 
 No errors detected
 No warnings generated
@@ -29,3 +36,4 @@ SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
 START               2000
+TESTDATA            B
