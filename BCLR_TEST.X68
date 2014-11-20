@@ -4,10 +4,13 @@
 * Date       :
 * Description:
 *-----------------------------------------------------------
+testData        EQU     $B
+
                 ORG     $2000
 START:
 
-                BCLR    #4, D2
+                ORI     #testData,D1
+                BCLR    #4, D
 
                 SIMHALT
 

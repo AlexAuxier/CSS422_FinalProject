@@ -14,13 +14,12 @@ START:                  ; first instruction of program
     NOP
     NOP
     
+    *BRA1 Instructions
     ORI     #testData,D1
     BCLR    #4,D2
-    
+    CMP     #testData,D0
 
     SIMHALT             ; halt simulator
-
-* Put variables and constants here
 
     END    START        ; last line of source
 
