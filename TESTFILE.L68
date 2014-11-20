@@ -1,6 +1,6 @@
 00002000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 2014-11-20 13:41:34
+Created On: 2014-11-20 13:51:28
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      : Final Project Test File
@@ -18,14 +18,20 @@ Created On: 2014-11-20 13:41:34
 00002002  4E71                      14      NOP
 00002004  4E71                      15      NOP
 00002006                            16      
-00002006                            17      *BRA1 Instructions
+00002006                            17      *First Nibble == 0000
 00002006  0041 000B                 18      ORI     #testData,D1
 0000200A  0882 0004                 19      BCLR    #4,D2
 0000200E  B07C 000B                 20      CMP     #testData,D0
-00002012                            21  
-00002012  FFFF FFFF                 22      SIMHALT             ; halt simulator
-00002016                            23  
-00002016                            24      END    START        ; last line of source
+00002012                            21      
+00002012                            22      *Move Test Instructions
+00002012  1401                      23      MOVE.B  D1,D2
+00002014  364A                      24      MOVEA   A2,A3
+00002016  780B                      25      MOVEQ   #testData,D4
+00002018                            26    
+00002018                            27  
+00002018  FFFF FFFF                 28      SIMHALT             ; halt simulator
+0000201C                            29  
+0000201C                            30      END    START        ; last line of source
 
 No errors detected
 No warnings generated

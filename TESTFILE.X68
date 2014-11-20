@@ -14,10 +14,16 @@ START:                  ; first instruction of program
     NOP
     NOP
     
-    *BRA1 Instructions
+    *First Nibble == 0000
     ORI     #testData,D1
     BCLR    #4,D2
     CMP     #testData,D0
+    
+    *Move Test Instructions
+    MOVE.B  D1,D2
+    MOVEA   A2,A3
+    MOVEQ   #testData,D4
+  
 
     SIMHALT             ; halt simulator
 
