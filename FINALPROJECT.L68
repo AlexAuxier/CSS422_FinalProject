@@ -1,50 +1,127 @@
 00001000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 2014-11-15 19:52:40
+Created On: 11/20/2014 2:21:01 PM
 
-00000000                             1  *-----------------------------------------------------------
-00000000                             2  * Title      :
-00000000                             3  * Written by :
-00000000                             4  * Date       :
-00000000                             5  * Description:
-00000000                             6  *-----------------------------------------------------------
-00000000  =0000000D                  7  CR          EQU     $0D
-00000000  =0000000A                  8  LF          EQU     $0A
-00000000                             9  
-00000000  =00002000                 10  test_start  EQU     $00002000
-00000000  =00002005                 11  test_end    EQU     $00002005
-00000000                            12     
-00000000  =00004E71                 13  noOp        EQU     %0100111001110001    
-00000000                            14              
-00001000                            15              ORG    $1000
-00001000                            16  START:                                  ; first instruction of program
-00001000                            17        
-00001000  207C 00002000             18          MOVEA.L     #test_start, A0
-00001006  247C 00002005             19          MOVEA.L     #test_end, A2
-0000100C                            20          
-0000100C  0C58 4E71                 21  LOOP    CMP.W       #noOp, (A0)+
-00001010  6700 000A                 22          BEQ         NOPCODE
-00001014  B0CA                      23          CMPA.W      A2, A0
-00001016  6E00 0012                 24          BGT         ENDPROG 
-0000101A  60F0                      25          BRA         LOOP
-0000101C                            26      
-0000101C  43F9 0000102E             27  NOPCODE LEA         testMatch, A1
-00001022  103C 000E                 28          MOVE.B      #14, D0
-00001026  4E4F                      29          TRAP        #15
-00001028  60E2                      30          BRA         LOOP 
-0000102A                            31          
-0000102A                            32          
-0000102A                            33  
-0000102A                            34          
-0000102A                            35  
-0000102A                            36  ENDPROG    
-0000102A                            37  
-0000102A  FFFF FFFF                 38      SIMHALT                             ; halt simulator
-0000102E                            39  
-0000102E= 4E 4F 50 43 4F 44 ...     40  testMatch   DC.B    'NOPCODE',CR,LF,0   
-00001038                            41  
-00001038                            42  
-00001038                            43              END    START                ; last line of source
+00000000                             1  
+00000000                             2  *-----------------------------------------------------------
+00000000                             3  * Title      :
+00000000                             4  * Written by :  Abdul Hakim, David Trinh, Alexander Auxier
+00000000                             5  * Date       :
+00000000                             6  * Description:
+00000000                             7  *-----------------------------------------------------------
+00000000  =0000000D                  8  CR          EQU     $0D
+00000000  =0000000A                  9  LF          EQU     $0A
+00000000                            10  
+00000000  =00002000                 11  test_start  EQU     $00002000
+00000000  =00002005                 12  test_end    EQU     $00002005
+00000000                            13     
+00000000  =00000000                 14  zero        EQU     $0
+00000000  =00000001                 15  one         EQU     $1
+00000000  =00000002                 16  two         EQU     $2
+00000000  =00000003                 17  three       EQU     $3
+00000000  =00000004                 18  four        EQU     $4
+00000000  =00000005                 19  five        EQU     $5
+00000000  =00000006                 20  six         EQU     $6
+00000000  =00000008                 21  eight       EQU     $8
+00000000  =00000009                 22  nine        EQU     $9
+00000000  =0000000B                 23  eleven      EQU     $B
+00000000  =0000000C                 24  twelve      EQU     $C
+00000000  =0000000D                 25  thirteen    EQU     $D
+00000000  =0000000E                 26  fourteen    EQU     $E
+00000000                            27             
+00001000                            28              ORG    $1000
+00001000                            29  START:                                  ; first instruction of program
+00001000                            30        
+00001000  207C 00002000             31          MOVEA.L     #test_start, A0
+00001006  247C 00002005             32          MOVEA.L     #test_end, A2
+0000100C                            33          
+0000100C  4241                      34  LOOP    CLR         D1
+0000100E  4242                      35          CLR         D2
+00001010  1218                      36          MOVE.B      (A0)+, D1
+00001012  1401                      37          MOVE.B      D1, D2
+00001014  E882                      38          ASR.L       #four, D2
+00001016                            39          
+00001016  B43C 0000                 40          CMP.B       #zero, D2
+0000101A  6700 0062                 41          BEQ         braZero
+0000101E  B43C 0001                 42          CMP.B       #one, D2
+00001022  6700 0076                 43          BEQ         braOne
+00001026  B43C 0002                 44          CMP.B       #two, D2
+0000102A  6700 006E                 45          BEQ         braTwo
+0000102E  B43C 0003                 46          CMP.B       #three, D2
+00001032  6700 0066                 47          BEQ         braThree
+00001036  B43C 0004                 48          CMP.B       #four, D2
+0000103A  6700 005E                 49          BEQ         braFour
+0000103E  B43C 0005                 50          CMP.B       #five, D2
+00001042  6700 0056                 51          BEQ         braFive
+00001046  B43C 0006                 52          CMP.B       #six, D2
+0000104A  6700 004E                 53          BEQ         braSix
+0000104E  B43C 0008                 54          CMP.B       #eight, D2
+00001052  6700 0046                 55          BEQ         braEight
+00001056  B43C 0009                 56          CMP.B       #nine, D2
+0000105A  6700 003E                 57          BEQ         braNine
+0000105E  B43C 000B                 58          CMP.B       #eleven, D2
+00001062  6700 0036                 59          BEQ         braEleven
+00001066  B43C 000C                 60          CMP.B       #twelve, D2
+0000106A  6700 002E                 61          BEQ         braTwelve
+0000106E  B43C 000D                 62          CMP.B       #thirteen, D2
+00001072  6700 0026                 63          BEQ         braThirteen
+00001076  B43C 000E                 64          CMP.B       #fourteen, D2
+0000107A  6700 001E                 65          BEQ         braFourteen  
+0000107E                            66  
+0000107E  4242                      67  braZero CLR         D2 
+00001080  1401                      68          MOVE.B      D1, D2
+00001082  C438 000F                 69          AND.B       $0F, D2
+00001086                            70  
+00001086  B43C 0000                 71          CMP.B       #zero, D2
+0000108A  6700 000E                 72          BEQ         braORI
+0000108E  B43C 000C                 73          CMP.B       #twelve, D2
+00001092  6700 001A                 74          BEQ         braCMPI
+00001096  6000 0016                 75          BRA         braBCLR
+0000109A                            76          
+0000109A                            77  braOne
+0000109A                            78  braTwo
+0000109A                            79  braThree
+0000109A                            80  braFour
+0000109A                            81  braFive
+0000109A                            82  braSix
+0000109A                            83  braEight
+0000109A                            84  braNine
+0000109A                            85  braEleven
+0000109A                            86  braTwelve
+0000109A                            87  braThirteen
+0000109A                            88  braFourteen
+0000109A                            89  
+0000109A  43F9 000010B2             90  braORI  LEA         ORImatch, A1
+000010A0  103C 000E                 91          MOVE.B      #14, D0
+000010A4  4E4F                      92          TRAP        #15
+000010A6                            93          
+000010A6  1218                      94          MOVE.B      (A0)+, D1
+000010A8  3218                      95          MOVE.W      (A0)+, D1
+000010AA  6000 FF60                 96          BRA         LOOP 
+000010AE                            97          
+000010AE                            98  braCMPI
+000010AE                            99  braBCLR
+000010AE                           100          
+000010AE                           101  OPMOVE  *Lea
+000010AE                           102          *Move.B using a0+ and D0
+000010AE                           103          *Use and to check if LEA or MOVE
+000010AE                           104          *Jump to subroutine based on MOVE or LEA
+000010AE                           105          
+000010AE                           106  
+000010AE                           107  ENDPROG    
+000010AE                           108  
+000010AE  FFFF FFFF                109      SIMHALT                             ; halt simulator
+000010B2                           110  
+000010B2= 4F 52 49 00              111  ORImatch    DC.B    'ORI', 0
+000010B6= 43 4D 50 49 00           112  CMPImatch   DC.B    'CMPI', 0
+000010BB= 42 43 4C 52 00           113  BCLRmatch   DC.B    'BCLR', 0
+000010C0                           114  
+000010C0= 2E 42 20 20 00           115  dispByte    DC.B    '.B  ', 0
+000010C5= 2E 57 20 20 00           116  dispWord    DC.B    '.W  ', 0
+000010CA= 2E 4C 20 20 00           117  dispLong    DC.B    '.L  ', 0
+000010CF                           118  
+000010CF                           119  
+000010CF                           120              END    START                ; last line of source
 
 No errors detected
 No warnings generated
@@ -53,13 +130,46 @@ No warnings generated
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
+BCLRMATCH           10BB
+BRABCLR             10AE
+BRACMPI             10AE
+BRAEIGHT            109A
+BRAELEVEN           109A
+BRAFIVE             109A
+BRAFOUR             109A
+BRAFOURTEEN         109A
+BRANINE             109A
+BRAONE              109A
+BRAORI              109A
+BRASIX              109A
+BRATHIRTEEN         109A
+BRATHREE            109A
+BRATWELVE           109A
+BRATWO              109A
+BRAZERO             107E
+CMPIMATCH           10B6
 CR                  D
-ENDPROG             102A
+DISPBYTE            10C0
+DISPLONG            10CA
+DISPWORD            10C5
+EIGHT               8
+ELEVEN              B
+ENDPROG             10AE
+FIVE                5
+FOUR                4
+FOURTEEN            E
 LF                  A
 LOOP                100C
-NOOP                4E71
-NOPCODE             101C
+NINE                9
+ONE                 1
+OPMOVE              10AE
+ORIMATCH            10B2
+SIX                 6
 START               1000
-TESTMATCH           102E
 TEST_END            2005
 TEST_START          2000
+THIRTEEN            D
+THREE               3
+TWELVE              C
+TWO                 2
+ZERO                0
