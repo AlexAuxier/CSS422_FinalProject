@@ -59,7 +59,7 @@ START:                                  ; first instruction of program
           
 LOOP    CLR         D1                  ; clear out D1
         CLR         D2                  ; clear out D2
-        CMPA.L      A0, A2              ; compare starting and ending addresses
+        CMPA.L      A2, A0              ; compare starting and ending addresses
         BGT         endProg             ; if A0 > A1, we've finished, end program
         MOVE.B      (A0)+, D1           ; load byte to D1 and increment A0 to next byte
         MOVE.B      D1, D2              ; copy byte to D2 for manipulation
@@ -91,6 +91,7 @@ LOOP    CLR         D1                  ; clear out D1
         BEQ         braThirteen         ; branch out to thirteen method
         CMP.B       #fourteen, D2       ; compare with 14
         BEQ         braFourteen         ; branch out to fourteen method
+        BRA         loop
 
 braZero CLR         D2                  ; first nibble is 0, 3 opcodes are possible 
         MOVE.B      D1, D2              ; clear out D2 and copy D1 back in
@@ -100,7 +101,7 @@ braZero CLR         D2                  ; first nibble is 0, 3 opcodes are possi
         BEQ         opORI               ; branch to ORI method
         CMP.B       #twelve, D2         ; compare second nibble to 12
         BEQ         opCMPI              ; branch to CMPI method
-        BRA         opBCLR              ; otherwise, branch to BCLR method
+        BRA         opBCLR              ; otherwise, branch to BCLR method; I think we should fix this, there are other posibilities
         
 braOne
 braTwo
@@ -120,13 +121,31 @@ opORI   LEA         ORImatch, A1        ; we know that the opcode will be ORI, s
         TRAP        #15                 ; trap call
       
         MOVE.B      (A0)+, D1
-        BRA         LOOP                ; go back to the loop
+        MOVE.B      D1,D2               ; copy data over
+        ASR         #6,D2               ; shifts 6 bits over to read just the size
+        CMP         D2,zero             ; size is zero
+        BEQ         opORI0              ; branch??
         
+        MOVE        D2,D3
+        CLR         D2
+        MOVE.B      D1,D2
+        ASR         #2,D2               ;Moving two bits over to isolate the size
+        AND.B       $0F,D2              ; Trying to clear the first nibble, doesn't work though
+        ASR         #1,D2               ; shift to the right in order to get just the mode
+        
+        
+        BRA         LOOP                ; go back to the loop
+
+opORI0
+
+         
 opCMPI  LEA         CMPImatch, A1       ; we know that the opcode will be CMPI, so load A1 to print message
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
-        
+                
         BRA         LOOP                ; go back to the loop
+
+
 
 opBCLR  LEA         BCLRmatch, A1       ; we know that the opcode will be CMPI, so load A1 to print message
         MOVE.B      #14, D0             ; command for trap call to display message
@@ -159,6 +178,7 @@ dispA7      DC.B    'A7', 0
 
 
            END    START                ; last line of source
+
 *~Font name~Courier New~
 *~Font size~10~
 *~Tab type~1~

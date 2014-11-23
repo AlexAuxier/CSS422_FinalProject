@@ -7,15 +7,14 @@
     ORG    $2000
 START:                  ; first instruction of program
 
-    NOP
-    NOP
-    NOP
+    ORI     #5, D1
 
     SIMHALT             ; halt simulator
 
 * Put variables and constants here
 
     END    START        ; last line of source
+
 
 
 
