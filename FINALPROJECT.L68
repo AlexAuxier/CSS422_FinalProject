@@ -1,127 +1,168 @@
 00001000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 11/20/2014 2:21:01 PM
+Created On: 11/23/2014 1:39:10 AM
 
-00000000                             1  
-00000000                             2  *-----------------------------------------------------------
-00000000                             3  * Title      :
-00000000                             4  * Written by :  Abdul Hakim, David Trinh, Alexander Auxier
-00000000                             5  * Date       :
-00000000                             6  * Description:
-00000000                             7  *-----------------------------------------------------------
-00000000  =0000000D                  8  CR          EQU     $0D
-00000000  =0000000A                  9  LF          EQU     $0A
-00000000                            10  
-00000000  =00002000                 11  test_start  EQU     $00002000
-00000000  =00002005                 12  test_end    EQU     $00002005
-00000000                            13     
-00000000  =00000000                 14  zero        EQU     $0
-00000000  =00000001                 15  one         EQU     $1
-00000000  =00000002                 16  two         EQU     $2
-00000000  =00000003                 17  three       EQU     $3
-00000000  =00000004                 18  four        EQU     $4
-00000000  =00000005                 19  five        EQU     $5
-00000000  =00000006                 20  six         EQU     $6
-00000000  =00000008                 21  eight       EQU     $8
-00000000  =00000009                 22  nine        EQU     $9
-00000000  =0000000B                 23  eleven      EQU     $B
-00000000  =0000000C                 24  twelve      EQU     $C
-00000000  =0000000D                 25  thirteen    EQU     $D
-00000000  =0000000E                 26  fourteen    EQU     $E
-00000000                            27             
-00001000                            28              ORG    $1000
-00001000                            29  START:                                  ; first instruction of program
-00001000                            30        
-00001000  207C 00002000             31          MOVEA.L     #test_start, A0
-00001006  247C 00002005             32          MOVEA.L     #test_end, A2
-0000100C                            33          
-0000100C  4241                      34  LOOP    CLR         D1
-0000100E  4242                      35          CLR         D2
-00001010  1218                      36          MOVE.B      (A0)+, D1
-00001012  1401                      37          MOVE.B      D1, D2
-00001014  E882                      38          ASR.L       #four, D2
-00001016                            39          
-00001016  B43C 0000                 40          CMP.B       #zero, D2
-0000101A  6700 0062                 41          BEQ         braZero
-0000101E  B43C 0001                 42          CMP.B       #one, D2
-00001022  6700 0076                 43          BEQ         braOne
-00001026  B43C 0002                 44          CMP.B       #two, D2
-0000102A  6700 006E                 45          BEQ         braTwo
-0000102E  B43C 0003                 46          CMP.B       #three, D2
-00001032  6700 0066                 47          BEQ         braThree
-00001036  B43C 0004                 48          CMP.B       #four, D2
-0000103A  6700 005E                 49          BEQ         braFour
-0000103E  B43C 0005                 50          CMP.B       #five, D2
-00001042  6700 0056                 51          BEQ         braFive
-00001046  B43C 0006                 52          CMP.B       #six, D2
-0000104A  6700 004E                 53          BEQ         braSix
-0000104E  B43C 0008                 54          CMP.B       #eight, D2
-00001052  6700 0046                 55          BEQ         braEight
-00001056  B43C 0009                 56          CMP.B       #nine, D2
-0000105A  6700 003E                 57          BEQ         braNine
-0000105E  B43C 000B                 58          CMP.B       #eleven, D2
-00001062  6700 0036                 59          BEQ         braEleven
-00001066  B43C 000C                 60          CMP.B       #twelve, D2
-0000106A  6700 002E                 61          BEQ         braTwelve
-0000106E  B43C 000D                 62          CMP.B       #thirteen, D2
-00001072  6700 0026                 63          BEQ         braThirteen
-00001076  B43C 000E                 64          CMP.B       #fourteen, D2
-0000107A  6700 001E                 65          BEQ         braFourteen  
-0000107E                            66  
-0000107E  4242                      67  braZero CLR         D2 
-00001080  1401                      68          MOVE.B      D1, D2
-00001082  C438 000F                 69          AND.B       $0F, D2
-00001086                            70  
-00001086  B43C 0000                 71          CMP.B       #zero, D2
-0000108A  6700 000E                 72          BEQ         braORI
-0000108E  B43C 000C                 73          CMP.B       #twelve, D2
-00001092  6700 001A                 74          BEQ         braCMPI
-00001096  6000 0016                 75          BRA         braBCLR
-0000109A                            76          
-0000109A                            77  braOne
-0000109A                            78  braTwo
-0000109A                            79  braThree
-0000109A                            80  braFour
-0000109A                            81  braFive
-0000109A                            82  braSix
-0000109A                            83  braEight
-0000109A                            84  braNine
-0000109A                            85  braEleven
-0000109A                            86  braTwelve
-0000109A                            87  braThirteen
-0000109A                            88  braFourteen
-0000109A                            89  
-0000109A  43F9 000010B2             90  braORI  LEA         ORImatch, A1
-000010A0  103C 000E                 91          MOVE.B      #14, D0
-000010A4  4E4F                      92          TRAP        #15
-000010A6                            93          
-000010A6  1218                      94          MOVE.B      (A0)+, D1
-000010A8  3218                      95          MOVE.W      (A0)+, D1
-000010AA  6000 FF60                 96          BRA         LOOP 
-000010AE                            97          
-000010AE                            98  braCMPI
-000010AE                            99  braBCLR
-000010AE                           100          
-000010AE                           101  OPMOVE  *Lea
-000010AE                           102          *Move.B using a0+ and D0
-000010AE                           103          *Use and to check if LEA or MOVE
-000010AE                           104          *Jump to subroutine based on MOVE or LEA
-000010AE                           105          
-000010AE                           106  
-000010AE                           107  ENDPROG    
-000010AE                           108  
-000010AE  FFFF FFFF                109      SIMHALT                             ; halt simulator
-000010B2                           110  
-000010B2= 4F 52 49 00              111  ORImatch    DC.B    'ORI', 0
-000010B6= 43 4D 50 49 00           112  CMPImatch   DC.B    'CMPI', 0
-000010BB= 42 43 4C 52 00           113  BCLRmatch   DC.B    'BCLR', 0
-000010C0                           114  
-000010C0= 2E 42 20 20 00           115  dispByte    DC.B    '.B  ', 0
-000010C5= 2E 57 20 20 00           116  dispWord    DC.B    '.W  ', 0
-000010CA= 2E 4C 20 20 00           117  dispLong    DC.B    '.L  ', 0
-000010CF                           118  
-000010CF                           119  
-000010CF                           120              END    START                ; last line of source
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      :
+00000000                             3  * Written by :  Abdul Hakim, David Trinh, Alexander Auxier
+00000000                             4  * Date       :
+00000000                             5  * Description:
+00000000                             6  *-----------------------------------------------------------
+00000000  =0000000D                  7  CR          EQU     $0D     
+00000000  =0000000A                  8  LF          EQU     $0A
+00000000                             9    
+00000000  =00002000                 10  test_start  EQU     $00002000   ; defined starting address
+00000000  =00002005                 11  test_end    EQU     $00002005   ; defined ending address
+00000000                            12       
+00000000  =00000000                 13  zero        EQU     $00         ; defined hex value 0
+00000000  =00000001                 14  one         EQU     $01         ; defined hex value 1 
+00000000  =00000002                 15  two         EQU     $02         ; defined hex value 2
+00000000  =00000003                 16  three       EQU     $03         ; defined hex value 3
+00000000  =00000004                 17  four        EQU     $04         ; defined hex value 4
+00000000  =00000005                 18  five        EQU     $05         ; defined hex value 5
+00000000  =00000006                 19  six         EQU     $06         ; defined hex value 6
+00000000  =00000008                 20  eight       EQU     $08         ; defined hex value 8
+00000000  =00000009                 21  nine        EQU     $09         ; defined hex value 9
+00000000  =0000000B                 22  eleven      EQU     $0B         ; defined hex value 11
+00000000  =0000000C                 23  twelve      EQU     $0C         ; defined hex value 12
+00000000  =0000000D                 24  thirteen    EQU     $0D         ; defined hex value 13
+00000000  =0000000E                 25  fourteen    EQU     $0E         ; defined hex value 14
+00000000                            26  
+00000000  =00000000                 27  s1B         EQU     %0000       ; byte size 1 
+00000000  =00000001                 28  s1W         EQU     %0001       ; word size 1
+00000000  =00000002                 29  s1L         EQU     %0010       ; long size 1
+00000000                            30  
+00000000  =00000000                 31  s2W         EQU     %0000       ; word size 2
+00000000  =00000001                 32  s2L         EQU     %0001       ; long size 2
+00000000                            33  
+00000000  =00000001                 34  s3B         EQU     %0001       ; byte size 3
+00000000  =00000003                 35  s3W         EQU     %0011       ; word size 3
+00000000  =00000002                 36  s3L         EQU     %0010       ; long size 3
+00000000                            37  
+00000000  =00000000                 38  addMatchDn  EQU     %0000       ; Address Mode Data Register
+00000000  =00000001                 39  addMatchAn  EQU     %0001       ; Address Mode Address Register
+00000000  =00000002                 40  addMatchAd  EQU     %0010       ; Address Mode Address
+00000000  =00000003                 41  addMatchPi  EQU     %0011       ; Address Mode with PostIncrement
+00000000  =00000004                 42  addMatchPd  EQU     %0100       ; Address Mode with PreDecrement
+00000000  =00000007                 43  addMatchDi  EQU     %0111       ; Address Mode for Word, Long, or Immediate 
+00000000                            44  
+00000000  =00000000                 45  reg0        EQU     %0000       ; register 0
+00000000  =00000001                 46  reg1        EQU     %0001       ; register 1
+00000000  =00000002                 47  reg2        EQU     %0010       ; register 2
+00000000  =00000003                 48  reg3        EQU     %0011       ; register 3
+00000000  =00000004                 49  reg4        EQU     %0100       ; register 4
+00000000  =00000005                 50  reg5        EQU     %0101       ; register 5
+00000000  =00000006                 51  reg6        EQU     %0110       ; register 6
+00000000  =00000007                 52  reg7        EQU     %0111       ; register 7
+00000000                            53               
+00001000                            54              ORG    $1000
+00001000                            55  START:                                  ; first instruction of program
+00001000                            56        
+00001000  207C 00002000             57          MOVEA.L     #test_start, A0     ; load starting address
+00001006  247C 00002005             58          MOVEA.L     #test_end, A2       ; load ending address
+0000100C                            59            
+0000100C  4241                      60  LOOP    CLR         D1                  ; clear out D1
+0000100E  4242                      61          CLR         D2                  ; clear out D2
+00001010  B5C8                      62          CMPA.L      A0, A2              ; compare starting and ending addresses
+00001012  6E00 00BE                 63          BGT         endProg             ; if A0 > A1, we've finished, end program
+00001016  1218                      64          MOVE.B      (A0)+, D1           ; load byte to D1 and increment A0 to next byte
+00001018  1401                      65          MOVE.B      D1, D2              ; copy byte to D2 for manipulation
+0000101A  E882                      66          ASR.L       #four, D2           ; get first nibble in D2
+0000101C                            67          
+0000101C  B43C 0000                 68          CMP.B       #zero, D2           ; compare with 0
+00001020  6700 0062                 69          BEQ         braZero             ; branch out to zero method
+00001024  B43C 0001                 70          CMP.B       #one, D2            ; compare with 1
+00001028  6700 0076                 71          BEQ         braOne              ; branch out to one method
+0000102C  B43C 0002                 72          CMP.B       #two, D2            ; compare with 2    
+00001030  6700 006E                 73          BEQ         braTwo              ; branch out to two method
+00001034  B43C 0003                 74          CMP.B       #three, D2          ; compare with 3
+00001038  6700 0066                 75          BEQ         braThree            ; branch out to three method
+0000103C  B43C 0004                 76          CMP.B       #four, D2           ; compare with 4
+00001040  6700 005E                 77          BEQ         braFour             ; branch out to four method
+00001044  B43C 0005                 78          CMP.B       #five, D2           ; compare with 5
+00001048  6700 0056                 79          BEQ         braFive             ; branch out to five method
+0000104C  B43C 0006                 80          CMP.B       #six, D2            ; compare with 6
+00001050  6700 004E                 81          BEQ         braSix              ; branch out to six method
+00001054  B43C 0008                 82          CMP.B       #eight, D2          ; compare with 8
+00001058  6700 0046                 83          BEQ         braEight            ; branch out to eight method
+0000105C  B43C 0009                 84          CMP.B       #nine, D2           ; compare with 9
+00001060  6700 003E                 85          BEQ         braNine             ; branch out to nine method
+00001064  B43C 000B                 86          CMP.B       #eleven, D2         ; compare with 11
+00001068  6700 0036                 87          BEQ         braEleven           ; branch out to eleven method
+0000106C  B43C 000C                 88          CMP.B       #twelve, D2         ; compare with 12
+00001070  6700 002E                 89          BEQ         braTwelve           ; branch out to twelve method
+00001074  B43C 000D                 90          CMP.B       #thirteen, D2       ; compare with 13
+00001078  6700 0026                 91          BEQ         braThirteen         ; branch out to thirteen method
+0000107C  B43C 000E                 92          CMP.B       #fourteen, D2       ; compare with 14
+00001080  6700 001E                 93          BEQ         braFourteen         ; branch out to fourteen method
+00001084                            94  
+00001084  4242                      95  braZero CLR         D2                  ; first nibble is 0, 3 opcodes are possible 
+00001086  1401                      96          MOVE.B      D1, D2              ; clear out D2 and copy D1 back in
+00001088  C438 000F                 97          AND.B       $0F, D2             ; set first nibble to 0
+0000108C                            98   
+0000108C  B43C 0000                 99          CMP.B       #zero, D2           ; compare second nibble to 0
+00001090  6700 000E                100          BEQ         opORI               ; branch to ORI method
+00001094  B43C 000C                101          CMP.B       #twelve, D2         ; compare second nibble to 12
+00001098  6700 0018                102          BEQ         opCMPI              ; branch to CMPI method
+0000109C  6000 0024                103          BRA         opBCLR              ; otherwise, branch to BCLR method
+000010A0                           104          
+000010A0                           105  braOne
+000010A0                           106  braTwo
+000010A0                           107  braThree
+000010A0                           108  braFour
+000010A0                           109  braFive
+000010A0                           110  braSix
+000010A0                           111  braEight
+000010A0                           112  braNine
+000010A0                           113  braEleven
+000010A0                           114  braTwelve
+000010A0                           115  braThirteen
+000010A0                           116  braFourteen
+000010A0                           117  
+000010A0  43F9 000010DA            118  opORI   LEA         ORImatch, A1        ; we know that the opcode will be ORI, so load A1 to print message
+000010A6  103C 000E                119          MOVE.B      #14, D0             ; command for trap call to display message
+000010AA  4E4F                     120          TRAP        #15                 ; trap call
+000010AC                           121        
+000010AC  1218                     122          MOVE.B      (A0)+, D1
+000010AE  6000 FF5C                123          BRA         LOOP                ; go back to the loop
+000010B2                           124          
+000010B2  43F9 000010DE            125  opCMPI  LEA         CMPImatch, A1       ; we know that the opcode will be CMPI, so load A1 to print message
+000010B8  103C 000E                126          MOVE.B      #14, D0             ; command for trap call to display message
+000010BC  4E4F                     127          TRAP        #15                 ; trap call
+000010BE                           128          
+000010BE  6000 FF4C                129          BRA         LOOP                ; go back to the loop
+000010C2                           130  
+000010C2  43F9 000010E3            131  opBCLR  LEA         BCLRmatch, A1       ; we know that the opcode will be CMPI, so load A1 to print message
+000010C8  103C 000E                132          MOVE.B      #14, D0             ; command for trap call to display message
+000010CC  4E4F                     133          TRAP        #15                 ; trap call
+000010CE                           134          
+000010CE  6000 FF3C                135          BRA         LOOP                ; go back to the loop
+000010D2                           136   
+000010D2                           137  endPROG    
+000010D2                           138  
+000010D2  FFFF FFFF                139      SIMHALT                             ; halt simulator
+000010D6                           140  
+000010D6= 20 0D 0A 00              141  newLine     DC.B    ' ', CR, LF, 0
+000010DA                           142  
+000010DA= 4F 52 49 00              143  ORImatch    DC.B    'ORI', 0
+000010DE= 43 4D 50 49 00           144  CMPImatch   DC.B    'CMPI', 0
+000010E3= 42 43 4C 52 00           145  BCLRmatch   DC.B    'BCLR', 0
+000010E8                           146   
+000010E8= 2E 42 20 20 00           147  dispByte    DC.B    '.B  ', 0
+000010ED= 2E 57 20 20 00           148  dispWord    DC.B    '.W  ', 0
+000010F2= 2E 4C 20 20 00           149  dispLong    DC.B    '.L  ', 0
+000010F7                           150  
+000010F7= 41 30 00                 151  dispA0      DC.B    'A0', 0
+000010FA= 41 31 00                 152  dispA1      DC.B    'A1', 0
+000010FD= 41 32 00                 153  dispA2      DC.B    'A2', 0
+00001100= 41 33 00                 154  dispA3      DC.B    'A3', 0
+00001103= 41 34 00                 155  dispA4      DC.B    'A4', 0
+00001106= 41 35 00                 156  dispA5      DC.B    'A5', 0
+00001109= 41 36 00                 157  dispA6      DC.B    'A6', 0
+0000110C= 41 37 00                 158  dispA7      DC.B    'A7', 0
+0000110F                           159  
+0000110F                           160  
+0000110F                           161             END    START                ; last line of source
 
 No errors detected
 No warnings generated
@@ -130,40 +171,70 @@ No warnings generated
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
-BCLRMATCH           10BB
-BRABCLR             10AE
-BRACMPI             10AE
-BRAEIGHT            109A
-BRAELEVEN           109A
-BRAFIVE             109A
-BRAFOUR             109A
-BRAFOURTEEN         109A
-BRANINE             109A
-BRAONE              109A
-BRAORI              109A
-BRASIX              109A
-BRATHIRTEEN         109A
-BRATHREE            109A
-BRATWELVE           109A
-BRATWO              109A
-BRAZERO             107E
-CMPIMATCH           10B6
+ADDMATCHAD          2
+ADDMATCHAN          1
+ADDMATCHDI          7
+ADDMATCHDN          0
+ADDMATCHPD          4
+ADDMATCHPI          3
+BCLRMATCH           10E3
+BRAEIGHT            10A0
+BRAELEVEN           10A0
+BRAFIVE             10A0
+BRAFOUR             10A0
+BRAFOURTEEN         10A0
+BRANINE             10A0
+BRAONE              10A0
+BRASIX              10A0
+BRATHIRTEEN         10A0
+BRATHREE            10A0
+BRATWELVE           10A0
+BRATWO              10A0
+BRAZERO             1084
+CMPIMATCH           10DE
 CR                  D
-DISPBYTE            10C0
-DISPLONG            10CA
-DISPWORD            10C5
+DISPA0              10F7
+DISPA1              10FA
+DISPA2              10FD
+DISPA3              1100
+DISPA4              1103
+DISPA5              1106
+DISPA6              1109
+DISPA7              110C
+DISPBYTE            10E8
+DISPLONG            10F2
+DISPWORD            10ED
 EIGHT               8
 ELEVEN              B
-ENDPROG             10AE
+ENDPROG             10D2
 FIVE                5
 FOUR                4
 FOURTEEN            E
 LF                  A
 LOOP                100C
+NEWLINE             10D6
 NINE                9
 ONE                 1
-OPMOVE              10AE
-ORIMATCH            10B2
+OPBCLR              10C2
+OPCMPI              10B2
+OPORI               10A0
+ORIMATCH            10DA
+REG0                0
+REG1                1
+REG2                2
+REG3                3
+REG4                4
+REG5                5
+REG6                6
+REG7                7
+S1B                 0
+S1L                 2
+S1W                 1
+S2L                 1
+S2W                 0
+S3B                 1
+S3L                 2
+S3W                 3
 SIX                 6
 START               1000
 TEST_END            2005
