@@ -122,17 +122,26 @@ opORI   LEA         ORImatch, A1        ; we know that the opcode will be ORI, s
       
         MOVE.B      (A0)+, D1
         MOVE.B      D1,D2               ; copy data over
-        ASR         #6,D2               ; shifts 6 bits over to read just the size
-        CMP         D2,zero             ; size is zero
-        BEQ         opORI0              ; branch??
-        
-        MOVE        D2,D3
+        ASR         #6,D2               ; shifts 6 bits over to read just the size        
+        MOVE        D2,D3               ; store size into D3
         CLR         D2
-        MOVE.B      D1,D2
-        ASR         #2,D2               ;Moving two bits over to isolate the size
-        AND.B       $0F,D2              ; Trying to clear the first nibble, doesn't work though
-        ASR         #1,D2               ; shift to the right in order to get just the mode
         
+        MOVE.B      D1,D2               ; Reload D2 with the same byte to get mode
+        ASL         #two,D2             ; Moving two bits over to isolate and remove the size
+        MOVE.B      D2,D4               ; Move the mode and register to D4 and leave the size
+        CLR         D2                  ; Clear out data register
+        MOVE.B      D4,D2               ; Put data back into D2 with just the mode and register
+        ASR         #five,D2            ; Shift the register out to get just the mode
+        MOVE.B      D2,D4               ; Store mode into D4
+        CLR         D2
+        
+        MOVE.B      D1,D2               ; Getting the EA register
+        ASL         #five,D2
+        MOVE.B      D2,D5               ; Move just the register into D5
+        CLR         D2                  ; Clearing D2 to put data back
+        MOVE.B      D5,D2               ; Putting back the register
+        ASR         #five,D2            ; Shifting bits in order to read the register
+        MOVE.B      D2,D5               ; Store register into D5
         
         BRA         LOOP                ; go back to the loop
 
@@ -178,6 +187,7 @@ dispA7      DC.B    'A7', 0
 
 
            END    START                ; last line of source
+
 
 *~Font name~Courier New~
 *~Font size~10~
