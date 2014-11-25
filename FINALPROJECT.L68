@@ -1,6 +1,6 @@
 00001000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 11/23/2014 2:13:49 PM
+Created On: 11/24/2014 12:19:10 AM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -64,7 +64,7 @@ Created On: 11/23/2014 2:13:49 PM
 0000100C  4241                      60  LOOP    CLR         D1                  ; clear out D1
 0000100E  4242                      61          CLR         D2                  ; clear out D2
 00001010  B1CA                      62          CMPA.L      A2, A0              ; compare starting and ending addresses
-00001012  6E00 00D2                 63          BGT         endProg             ; if A0 > A1, we've finished, end program
+00001012  6E00 00DA                 63          BGT         endProg             ; if A0 > A1, we've finished, end program
 00001016  1218                      64          MOVE.B      (A0)+, D1           ; load byte to D1 and increment A0 to next byte
 00001018  1401                      65          MOVE.B      D1, D2              ; copy byte to D2 for manipulation
 0000101A  E882                      66          ASR.L       #four, D2           ; get first nibble in D2
@@ -104,8 +104,8 @@ Created On: 11/23/2014 2:13:49 PM
 0000108E  B43C 0000                100          CMP.B       #zero, D2           ; compare second nibble to 0
 00001092  6700 000E                101          BEQ         opORI               ; branch to ORI method
 00001096  B43C 000C                102          CMP.B       #twelve, D2         ; compare second nibble to 12
-0000109A  6700 002A                103          BEQ         opCMPI              ; branch to CMPI method
-0000109E  6000 0036                104          BRA         opBCLR              ; otherwise, branch to BCLR method; I think we should fix this, there are other posibilities
+0000109A  6700 0032                103          BEQ         opCMPI              ; branch to CMPI method
+0000109E  6000 003E                104          BRA         opBCLR              ; otherwise, branch to BCLR method; I think we should fix this, there are other posibilities
 000010A2                           105          
 000010A2                           106  braOne
 000010A2                           107  braTwo
@@ -120,65 +120,68 @@ Created On: 11/23/2014 2:13:49 PM
 000010A2                           116  braThirteen
 000010A2                           117  braFourteen
 000010A2                           118  
-000010A2  43F9 000010EE            119  opORI   LEA         ORImatch, A1        ; we know that the opcode will be ORI, so load A1 to print message
+000010A2  43F9 000010F6            119  opORI   LEA         ORImatch, A1        ; we know that the opcode will be ORI, so load A1 to print message
 000010A8  103C 000E                120          MOVE.B      #14, D0             ; command for trap call to display message
 000010AC  4E4F                     121          TRAP        #15                 ; trap call
 000010AE                           122        
 000010AE  1218                     123          MOVE.B      (A0)+, D1
 000010B0  1401                     124          MOVE.B      D1,D2               ; copy data over
 000010B2  EC42                     125          ASR         #6,D2               ; shifts 6 bits over to read just the size
-000010B4  3602                     126          MOVE        D2,D3
-000010B6  4242                     127          CLR         D2
-000010B8  1401                     128          MOVE.B      D1,D2
-000010BA  E442                     129          ASR         #2,D2
-000010BC  C438 000F                130          AND.B       $0F,D2
-000010C0  E242                     131          ASR         #1,D2
-000010C2                           132          
-000010C2                           133          
-000010C2  6000 FF48                134          BRA         LOOP                ; go back to the loop
-000010C6                           135  
-000010C6                           136  opORI0
-000010C6                           137  
-000010C6                           138           
-000010C6  43F9 000010F2            139  opCMPI  LEA         CMPImatch, A1       ; we know that the opcode will be CMPI, so load A1 to print message
-000010CC  103C 000E                140          MOVE.B      #14, D0             ; command for trap call to display message
-000010D0  4E4F                     141          TRAP        #15                 ; trap call
-000010D2                           142                  
-000010D2  6000 FF38                143          BRA         LOOP                ; go back to the loop
-000010D6                           144  
-000010D6                           145  
-000010D6                           146  
-000010D6  43F9 000010F7            147  opBCLR  LEA         BCLRmatch, A1       ; we know that the opcode will be CMPI, so load A1 to print message
-000010DC  103C 000E                148          MOVE.B      #14, D0             ; command for trap call to display message
-000010E0  4E4F                     149          TRAP        #15                 ; trap call
-000010E2                           150          
-000010E2  6000 FF28                151          BRA         LOOP                ; go back to the loop
-000010E6                           152   
-000010E6                           153  endPROG    
-000010E6                           154  
-000010E6  FFFF FFFF                155      SIMHALT                             ; halt simulator
-000010EA                           156  
-000010EA= 20 0D 0A 00              157  newLine     DC.B    ' ', CR, LF, 0
-000010EE                           158  
-000010EE= 4F 52 49 00              159  ORImatch    DC.B    'ORI', 0
-000010F2= 43 4D 50 49 00           160  CMPImatch   DC.B    'CMPI', 0
-000010F7= 42 43 4C 52 00           161  BCLRmatch   DC.B    'BCLR', 0
-000010FC                           162   
-000010FC= 2E 42 20 20 00           163  dispByte    DC.B    '.B  ', 0
-00001101= 2E 57 20 20 00           164  dispWord    DC.B    '.W  ', 0
-00001106= 2E 4C 20 20 00           165  dispLong    DC.B    '.L  ', 0
-0000110B                           166  
-0000110B= 41 30 00                 167  dispA0      DC.B    'A0', 0
-0000110E= 41 31 00                 168  dispA1      DC.B    'A1', 0
-00001111= 41 32 00                 169  dispA2      DC.B    'A2', 0
-00001114= 41 33 00                 170  dispA3      DC.B    'A3', 0
-00001117= 41 34 00                 171  dispA4      DC.B    'A4', 0
-0000111A= 41 35 00                 172  dispA5      DC.B    'A5', 0
-0000111D= 41 36 00                 173  dispA6      DC.B    'A6', 0
-00001120= 41 37 00                 174  dispA7      DC.B    'A7', 0
-00001123                           175  
-00001123                           176  
-00001123                           177             END    START                ; last line of source
+000010B4  B478 0000                126          CMP         zero,D2             ; size is zero
+000010B8  6700 0014                127          BEQ         opORI0              ; branch??
+000010BC                           128          
+000010BC  3602                     129          MOVE        D2,D3
+000010BE  4242                     130          CLR         D2
+000010C0  1401                     131          MOVE.B      D1,D2
+000010C2  E442                     132          ASR         #2,D2               ;Moving two bits over to isolate the size
+000010C4  0242 0000                133          ANDI       #0,D2              ; Trying to clear the first nibble, doesn't work though
+000010C8  E242                     134          ASR         #1,D2               ; shift to the right in order to get just the mode
+000010CA                           135          
+000010CA                           136          
+000010CA  6000 FF40                137          BRA         LOOP                ; go back to the loop
+000010CE                           138  
+000010CE                           139  opORI0
+000010CE                           140  
+000010CE                           141           
+000010CE  43F9 000010FA            142  opCMPI  LEA         CMPImatch, A1       ; we know that the opcode will be CMPI, so load A1 to print message
+000010D4  103C 000E                143          MOVE.B      #14, D0             ; command for trap call to display message
+000010D8  4E4F                     144          TRAP        #15                 ; trap call
+000010DA                           145                  
+000010DA  6000 FF30                146          BRA         LOOP                ; go back to the loop
+000010DE                           147  
+000010DE                           148  
+000010DE                           149  
+000010DE  43F9 000010FF            150  opBCLR  LEA         BCLRmatch, A1       ; we know that the opcode will be CMPI, so load A1 to print message
+000010E4  103C 000E                151          MOVE.B      #14, D0             ; command for trap call to display message
+000010E8  4E4F                     152          TRAP        #15                 ; trap call
+000010EA                           153          
+000010EA  6000 FF20                154          BRA         LOOP                ; go back to the loop
+000010EE                           155   
+000010EE                           156  endPROG    
+000010EE                           157  
+000010EE  FFFF FFFF                158      SIMHALT                             ; halt simulator
+000010F2                           159  
+000010F2= 20 0D 0A 00              160  newLine     DC.B    ' ', CR, LF, 0
+000010F6                           161  
+000010F6= 4F 52 49 00              162  ORImatch    DC.B    'ORI', 0
+000010FA= 43 4D 50 49 00           163  CMPImatch   DC.B    'CMPI', 0
+000010FF= 42 43 4C 52 00           164  BCLRmatch   DC.B    'BCLR', 0
+00001104                           165   
+00001104= 2E 42 20 20 00           166  dispByte    DC.B    '.B  ', 0
+00001109= 2E 57 20 20 00           167  dispWord    DC.B    '.W  ', 0
+0000110E= 2E 4C 20 20 00           168  dispLong    DC.B    '.L  ', 0
+00001113                           169  
+00001113= 41 30 00                 170  dispA0      DC.B    'A0', 0
+00001116= 41 31 00                 171  dispA1      DC.B    'A1', 0
+00001119= 41 32 00                 172  dispA2      DC.B    'A2', 0
+0000111C= 41 33 00                 173  dispA3      DC.B    'A3', 0
+0000111F= 41 34 00                 174  dispA4      DC.B    'A4', 0
+00001122= 41 35 00                 175  dispA5      DC.B    'A5', 0
+00001125= 41 36 00                 176  dispA6      DC.B    'A6', 0
+00001128= 41 37 00                 177  dispA7      DC.B    'A7', 0
+0000112B                           178  
+0000112B                           179  
+0000112B                           180             END    START                ; last line of source
 
 No errors detected
 No warnings generated
@@ -193,7 +196,7 @@ ADDMATCHDI          7
 ADDMATCHDN          0
 ADDMATCHPD          4
 ADDMATCHPI          3
-BCLRMATCH           10F7
+BCLRMATCH           10FF
 BRAEIGHT            10A2
 BRAELEVEN           10A2
 BRAFIVE             10A2
@@ -207,35 +210,35 @@ BRATHREE            10A2
 BRATWELVE           10A2
 BRATWO              10A2
 BRAZERO             1086
-CMPIMATCH           10F2
+CMPIMATCH           10FA
 CR                  D
-DISPA0              110B
-DISPA1              110E
-DISPA2              1111
-DISPA3              1114
-DISPA4              1117
-DISPA5              111A
-DISPA6              111D
-DISPA7              1120
-DISPBYTE            10FC
-DISPLONG            1106
-DISPWORD            1101
+DISPA0              1113
+DISPA1              1116
+DISPA2              1119
+DISPA3              111C
+DISPA4              111F
+DISPA5              1122
+DISPA6              1125
+DISPA7              1128
+DISPBYTE            1104
+DISPLONG            110E
+DISPWORD            1109
 EIGHT               8
 ELEVEN              B
-ENDPROG             10E6
+ENDPROG             10EE
 FIVE                5
 FOUR                4
 FOURTEEN            E
 LF                  A
 LOOP                100C
-NEWLINE             10EA
+NEWLINE             10F2
 NINE                9
 ONE                 1
-OPBCLR              10D6
-OPCMPI              10C6
+OPBCLR              10DE
+OPCMPI              10CE
 OPORI               10A2
-OPORI0              10C6
-ORIMATCH            10EE
+OPORI0              10CE
+ORIMATCH            10F6
 REG0                0
 REG1                1
 REG2                2
