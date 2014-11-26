@@ -1,12 +1,12 @@
 00001000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 11/23/2014 1:39:10 AM
+Created On: 11/26/2014 1:30:32 AM
 
 00000000                             1  *-----------------------------------------------------------
-00000000                             2  * Title      :
+00000000                             2  * Title      :  68K DECOMPILER
 00000000                             3  * Written by :  Abdul Hakim, David Trinh, Alexander Auxier
-00000000                             4  * Date       :
-00000000                             5  * Description:
+00000000                             4  * Date       :  11/26/2014
+00000000                             5  * Description:  Decompiles certain opCodes loaded into defined locations
 00000000                             6  *-----------------------------------------------------------
 00000000  =0000000D                  7  CR          EQU     $0D     
 00000000  =0000000A                  8  LF          EQU     $0A
@@ -64,7 +64,7 @@ Created On: 11/23/2014 1:39:10 AM
 0000100C  4241                      60  LOOP    CLR         D1                  ; clear out D1
 0000100E  4242                      61          CLR         D2                  ; clear out D2
 00001010  B5C8                      62          CMPA.L      A0, A2              ; compare starting and ending addresses
-00001012  6E00 00BE                 63          BGT         endProg             ; if A0 > A1, we've finished, end program
+00001012  6E00 022E                 63          BGT         endProg             ; if A0 > A1, we've finished, end program
 00001016  1218                      64          MOVE.B      (A0)+, D1           ; load byte to D1 and increment A0 to next byte
 00001018  1401                      65          MOVE.B      D1, D2              ; copy byte to D2 for manipulation
 0000101A  E882                      66          ASR.L       #four, D2           ; get first nibble in D2
@@ -74,95 +74,257 @@ Created On: 11/23/2014 1:39:10 AM
 00001024  B43C 0001                 70          CMP.B       #one, D2            ; compare with 1
 00001028  6700 0076                 71          BEQ         braOne              ; branch out to one method
 0000102C  B43C 0002                 72          CMP.B       #two, D2            ; compare with 2    
-00001030  6700 006E                 73          BEQ         braTwo              ; branch out to two method
+00001030  6700 0072                 73          BEQ         braTwo              ; branch out to two method
 00001034  B43C 0003                 74          CMP.B       #three, D2          ; compare with 3
-00001038  6700 0066                 75          BEQ         braThree            ; branch out to three method
+00001038  6700 006A                 75          BEQ         braThree            ; branch out to three method
 0000103C  B43C 0004                 76          CMP.B       #four, D2           ; compare with 4
-00001040  6700 005E                 77          BEQ         braFour             ; branch out to four method
+00001040  6700 0062                 77          BEQ         braFour             ; branch out to four method
 00001044  B43C 0005                 78          CMP.B       #five, D2           ; compare with 5
-00001048  6700 0056                 79          BEQ         braFive             ; branch out to five method
+00001048  6700 0076                 79          BEQ         braFive             ; branch out to five method
 0000104C  B43C 0006                 80          CMP.B       #six, D2            ; compare with 6
-00001050  6700 004E                 81          BEQ         braSix              ; branch out to six method
+00001050  6700 0072                 81          BEQ         braSix              ; branch out to six method
 00001054  B43C 0008                 82          CMP.B       #eight, D2          ; compare with 8
-00001058  6700 0046                 83          BEQ         braEight            ; branch out to eight method
+00001058  6700 0096                 83          BEQ         braEight            ; branch out to eight method
 0000105C  B43C 0009                 84          CMP.B       #nine, D2           ; compare with 9
-00001060  6700 003E                 85          BEQ         braNine             ; branch out to nine method
+00001060  6700 008E                 85          BEQ         braNine             ; branch out to nine method
 00001064  B43C 000B                 86          CMP.B       #eleven, D2         ; compare with 11
-00001068  6700 0036                 87          BEQ         braEleven           ; branch out to eleven method
+00001068  6700 008A                 87          BEQ         braEleven           ; branch out to eleven method
 0000106C  B43C 000C                 88          CMP.B       #twelve, D2         ; compare with 12
-00001070  6700 002E                 89          BEQ         braTwelve           ; branch out to twelve method
+00001070  6700 0082                 89          BEQ         braTwelve           ; branch out to twelve method
 00001074  B43C 000D                 90          CMP.B       #thirteen, D2       ; compare with 13
-00001078  6700 0026                 91          BEQ         braThirteen         ; branch out to thirteen method
+00001078  6700 007E                 91          BEQ         braThirteen         ; branch out to thirteen method
 0000107C  B43C 000E                 92          CMP.B       #fourteen, D2       ; compare with 14
-00001080  6700 001E                 93          BEQ         braFourteen         ; branch out to fourteen method
+00001080  6700 0076                 93          BEQ         braFourteen         ; branch out to fourteen method
 00001084                            94  
 00001084  4242                      95  braZero CLR         D2                  ; first nibble is 0, 3 opcodes are possible 
 00001086  1401                      96          MOVE.B      D1, D2              ; clear out D2 and copy D1 back in
 00001088  C438 000F                 97          AND.B       $0F, D2             ; set first nibble to 0
 0000108C                            98   
 0000108C  B43C 0000                 99          CMP.B       #zero, D2           ; compare second nibble to 0
-00001090  6700 000E                100          BEQ         opORI               ; branch to ORI method
+00001090  6700 009A                100          BEQ         opORI               ; branch to ORI method
 00001094  B43C 000C                101          CMP.B       #twelve, D2         ; compare second nibble to 12
-00001098  6700 0018                102          BEQ         opCMPI              ; branch to CMPI method
-0000109C  6000 0024                103          BRA         opBCLR              ; otherwise, branch to BCLR method
+00001098  6700 00A4                102          BEQ         opCMPI              ; branch to CMPI method
+0000109C  6000 00B0                103          BRA         opBCLR              ; otherwise, branch to BCLR method
 000010A0                           104          
-000010A0                           105  braOne
-000010A0                           106  braTwo
-000010A0                           107  braThree
-000010A0                           108  braFour
-000010A0                           109  braFive
-000010A0                           110  braSix
-000010A0                           111  braEight
-000010A0                           112  braNine
-000010A0                           113  braEleven
-000010A0                           114  braTwelve
-000010A0                           115  braThirteen
-000010A0                           116  braFourteen
-000010A0                           117  
-000010A0  43F9 000010DA            118  opORI   LEA         ORImatch, A1        ; we know that the opcode will be ORI, so load A1 to print message
-000010A6  103C 000E                119          MOVE.B      #14, D0             ; command for trap call to display message
-000010AA  4E4F                     120          TRAP        #15                 ; trap call
-000010AC                           121        
-000010AC  1218                     122          MOVE.B      (A0)+, D1
-000010AE  6000 FF5C                123          BRA         LOOP                ; go back to the loop
-000010B2                           124          
-000010B2  43F9 000010DE            125  opCMPI  LEA         CMPImatch, A1       ; we know that the opcode will be CMPI, so load A1 to print message
-000010B8  103C 000E                126          MOVE.B      #14, D0             ; command for trap call to display message
-000010BC  4E4F                     127          TRAP        #15                 ; trap call
-000010BE                           128          
-000010BE  6000 FF4C                129          BRA         LOOP                ; go back to the loop
-000010C2                           130  
-000010C2  43F9 000010E3            131  opBCLR  LEA         BCLRmatch, A1       ; we know that the opcode will be CMPI, so load A1 to print message
-000010C8  103C 000E                132          MOVE.B      #14, D0             ; command for trap call to display message
-000010CC  4E4F                     133          TRAP        #15                 ; trap call
-000010CE                           134          
-000010CE  6000 FF3C                135          BRA         LOOP                ; go back to the loop
-000010D2                           136   
-000010D2                           137  endPROG    
-000010D2                           138  
-000010D2  FFFF FFFF                139      SIMHALT                             ; halt simulator
-000010D6                           140  
-000010D6= 20 0D 0A 00              141  newLine     DC.B    ' ', CR, LF, 0
-000010DA                           142  
-000010DA= 4F 52 49 00              143  ORImatch    DC.B    'ORI', 0
-000010DE= 43 4D 50 49 00           144  CMPImatch   DC.B    'CMPI', 0
-000010E3= 42 43 4C 52 00           145  BCLRmatch   DC.B    'BCLR', 0
-000010E8                           146   
-000010E8= 2E 42 20 20 00           147  dispByte    DC.B    '.B  ', 0
-000010ED= 2E 57 20 20 00           148  dispWord    DC.B    '.W  ', 0
-000010F2= 2E 4C 20 20 00           149  dispLong    DC.B    '.L  ', 0
-000010F7                           150  
-000010F7= 41 30 00                 151  dispA0      DC.B    'A0', 0
-000010FA= 41 31 00                 152  dispA1      DC.B    'A1', 0
-000010FD= 41 32 00                 153  dispA2      DC.B    'A2', 0
-00001100= 41 33 00                 154  dispA3      DC.B    'A3', 0
-00001103= 41 34 00                 155  dispA4      DC.B    'A4', 0
-00001106= 41 35 00                 156  dispA5      DC.B    'A5', 0
-00001109= 41 36 00                 157  dispA6      DC.B    'A6', 0
-0000110C= 41 37 00                 158  dispA7      DC.B    'A7', 0
-0000110F                           159  
-0000110F                           160  
-0000110F                           161             END    START                ; last line of source
+000010A0  6000 00BC                105  braOne  BRA         opMOVEB             ; we know that there is only one opcode that is MOVE.B
+000010A4                           106  
+000010A4                           107  braTwo  ; there are two opCodes available, MOVE.L, or MOVEA.L
+000010A4                           108  
+000010A4                           109  braThree ; there are two opCodes available, MOVE.W, or MOVEA.W
+000010A4                           110  
+000010A4  4242                     111  braFour CLR         D2                  ; first nibble is 4, 5 opcodes are possible 
+000010A6  1401                     112          MOVE.B      D1, D2              ; clear out D2 and copy D1 back in
+000010A8  C438 000F                113          AND.B       $0F, D2             ; set first nibble to 0
+000010AC                           114   
+000010AC  B43C 0004                115          CMP.B       #four, D2           ; compare second nibble to 4
+000010B0  6700 00D0                116          BEQ         opNEG               ; branch to NEG method
+000010B4  B43C 000E                117          CMP.B       #fourteen, D2       ; compare second nibble to E
+000010B8  6700 00D4                118          BEQ         opRTSJSR            ; branch to JSR or RTS method
+000010BC  6000 00D0                119          BRA         opMOVEMLEA          ; otherwise, branch to MOVEM or LEA method
+000010C0                           120  
+000010C0  6000 00CC                121  braFive BRA         opSUBQ              ; we know that there is only one opcode that is SUBQ
+000010C4                           122  
+000010C4  4242                     123  braSix  CLR         D2                  ; first nibble is 6, 5 opcodes are possible 
+000010C6  1401                     124          MOVE.B      D1, D2              ; clear out D2 and copy D1 back in
+000010C8  C438 000F                125          AND.B       $0F, D2             ; set first nibble to 0
+000010CC                           126   
+000010CC  B43C 0000                127          CMP.B       #zero, D2           ; compare second nibble to 0
+000010D0  6700 00C8                128          BEQ         opBRA               ; branch to BRA method
+000010D4  B43C 0005                129          CMP.B       #five, D2           ; compare second nibble to 5
+000010D8  6700 00D8                130          BEQ         opBCS               ; branch to BCS method
+000010DC  B43C 0008                131          CMP.B       #eight, D2          ; compare second nibble to 8
+000010E0  6700 00DC                132          BEQ         opBVC               ; branch to BCS method
+000010E4  B43C 000C                133          CMP.B       #twelve, D2         ; compare second nibble to 12
+000010E8  6700 00E0                134          BEQ         opBGE               ; branch to BGE method
+000010EC  6000 00E8                135          BRA         opBLT               ; otherwise, branch to BLT method
+000010F0                           136  
+000010F0                           137  braEight    ; there are two opCodes available DIVS, or OR
+000010F0                           138  
+000010F0  6000 00F0                139  braNine BRA         opSUB               ; we know that there is only one opcode that is SUB
+000010F4                           140  
+000010F4                           141  braEleven   ; there are two opCodes available EOR, or CMP
+000010F4                           142  
+000010F4  6000 00F8                143  braTwelve   BRA     opMULS              ; we know that there is only one opcode that is MULS    
+000010F8                           144    
+000010F8                           145  braThirteen ; there are two opCodes available ADD, or ADDA
+000010F8                           146  
+000010F8  4242                     147  braFourteen CLR         D2                  ; first nibble is E, 5 opcodes are possible 
+000010FA  1401                     148              MOVE.B      D1, D2              ; clear out D2 and copy D1 back in
+000010FC  C438 000F                149              AND.B       $0F, D2             ; set first nibble to 0
+00001100                           150   
+00001100  B43C 0000                151              CMP.B       #zero, D2           ; compare second nibble to 0
+00001104  6700 0100                152              BEQ         opASR               ; branch to ASR method
+00001108  B43C 0001                153              CMP.B       #one, D2            ; compare second nibble to 1
+0000110C  6700 00EC                154              BEQ         opASL               ; branch to ASL method
+00001110  B43C 0002                155              CMP.B       #two, D2            ; compare second nibble to 2
+00001114  6700 0108                156              BEQ         opLSR               ; branch to LSR method
+00001118  B43C 0003                157              CMP.B       #three, D2          ; compare second nibble to 3
+0000111C  6700 00F4                158              BEQ         opLSL               ; branch to LSL method
+00001120  B43C 0006                159              CMP.B       #six, D2            ; compare second nibble to 6
+00001124  6700 0110                160              BEQ         opROR               ; branch to ROR method
+00001128  6000 0100                161              BRA         opROL               ; otherwise, branch to ROL method
+0000112C                           162  
+0000112C                           163  
+0000112C  43F9 00001251            164  opORI   LEA         ORImatch, A1        ; we know that the opcode will be ORI, so load A1 to print message
+00001132  103C 000E                165          MOVE.B      #14, D0             ; command for trap call to display message
+00001136  4E4F                     166          TRAP        #15                 ; trap call
+00001138                           167        
+00001138  1218                     168          MOVE.B      (A0)+, D1
+0000113A  6000 FED0                169          BRA         LOOP                ; go back to the loop
+0000113E                           170          
+0000113E  43F9 00001255            171  opCMPI  LEA         CMPImatch, A1       ; we know that the opcode will be CMPI, so load A1 to print message
+00001144  103C 000E                172          MOVE.B      #14, D0             ; command for trap call to display message
+00001148  4E4F                     173          TRAP        #15                 ; trap call
+0000114A                           174          
+0000114A  6000 FEC0                175          BRA         LOOP                ; go back to the loop
+0000114E                           176  
+0000114E  43F9 0000125A            177  opBCLR  LEA         BCLRmatch, A1       ; we know that the opcode will be CMPI, so load A1 to print message
+00001154  103C 000E                178          MOVE.B      #14, D0             ; command for trap call to display message
+00001158  4E4F                     179          TRAP        #15                 ; trap call
+0000115A                           180          
+0000115A  6000 FEB0                181          BRA         LOOP                ; go back to the loop
+0000115E                           182          
+0000115E  43F9 0000125F            183  opMOVEB LEA         MOVEmatch, A1       ; we know that the opcode will be MOVE.B, so load A1 to print message
+00001164  103C 000E                184          MOVE.B      #14, D0             ; command for trap call to display message
+00001168  4E4F                     185          TRAP        #15                 ; trap call
+0000116A  43F9 000012D3            186          LEA         dispByte, A1        ; display byte
+00001170  103C 000E                187          MOVE.B      #14, D0             ; command for trap call to display message
+00001174  4E4F                     188          TRAP        #15                 ; trap call
+00001176  43F9 0000124A            189          LEA         space, A1           ; create spaces
+0000117C  103C 000E                190          MOVE.B      #14, D0             ; command for trap call to display message
+00001180  4E4F                     191          TRAP        #15                 ; trap call
+00001182                           192  
+00001182  43F9 0000126A            193  opNEG   LEA         NEGmatch, A1        ; we know that the opcode will be NEG, so load A1 to print message
+00001188  103C 000E                194          MOVE.B      #14, D0             ; command for trap call to display message
+0000118C  4E4F                     195          TRAP        #15                 ; trap call
+0000118E                           196  
+0000118E                           197  opRTSJSR
+0000118E                           198  
+0000118E                           199  opMOVEMLEA
+0000118E                           200  
+0000118E  43F9 00001280            201  opSUBQ  LEA         SUBQmatch, A1       ; we know that the opcode will be SUBQ, so load A1 to print message
+00001194  103C 000E                202          MOVE.B      #14, D0             ; command for trap call to display message
+00001198  4E4F                     203          TRAP        #15                 ; trap call
+0000119A                           204  
+0000119A  43F9 00001285            205  opBRA   LEA         BRAmatch, A1        ; we know that the opcode will be BRA, so load A1 to print message
+000011A0  103C 000E                206          MOVE.B      #14, D0             ; command for trap call to display message
+000011A4  4E4F                     207          TRAP        #15                 ; trap call
+000011A6  43F9 0000124A            208          LEA         space, A1           ; create spaces
+000011AC  103C 000E                209          MOVE.B      #14, D0             ; command for trap call to display message
+000011B0  4E4F                     210          TRAP        #15                 ; trap call
+000011B2                           211  
+000011B2  43F9 00001289            212  opBCS   LEA         BCSmatch, A1        ; we know that the opcode will be BCS, so load A1 to print message
+000011B8  103C 000E                213          MOVE.B      #14, D0             ; command for trap call to display message
+000011BC  4E4F                     214          TRAP        #15                 ; trap call
+000011BE                           215  
+000011BE  43F9 0000128D            216  opBVC   LEA         BVCmatch, A1        ; we know that the opcode will be BVC, so load A1 to print message
+000011C4  103C 000E                217          MOVE.B      #14, D0             ; command for trap call to display message
+000011C8  4E4F                     218          TRAP        #15                 ; trap call
+000011CA                           219  
+000011CA  43F9 00001291            220  opBGE   LEA         BGEmatch, A1        ; we know that the opcode will be BGE, so load A1 to print message
+000011D0  103C 000E                221          MOVE.B      #14, D0             ; command for trap call to display message
+000011D4  4E4F                     222          TRAP        #15                 ; trap call
+000011D6                           223  
+000011D6  43F9 00001295            224  opBLT   LEA         BLTmatch, A1        ; we know that the opcode will be BLT, so load A1 to print message
+000011DC  103C 000E                225          MOVE.B      #14, D0             ; command for trap call to display message
+000011E0  4E4F                     226          TRAP        #15                 ; trap call
+000011E2                           227  
+000011E2  43F9 000012A1            228  opSUB   LEA         SUBmatch, A1        ; we know that the opcode will be SUB, so load A1 to print message
+000011E8  103C 000E                229          MOVE.B      #14, D0             ; command for trap call to display message
+000011EC  4E4F                     230          TRAP        #15                 ; trap call
+000011EE                           231  
+000011EE  43F9 000012AD            232  opMULS  LEA         MULSmatch, A1       ; we know that the opcode will be MULS, so load A1 to print message
+000011F4  103C 000E                233          MOVE.B      #14, D0             ; command for trap call to display message
+000011F8  4E4F                     234          TRAP        #15                 ; trap call
+000011FA                           235  
+000011FA  43F9 000012C7            236  opASL   LEA         ASLmatch, A1        ; we know that the opcode will be ASL, so load A1 to print message
+00001200  103C 000E                237          MOVE.B      #14, D0             ; command for trap call to display message
+00001204  4E4F                     238          TRAP        #15                 ; trap call
+00001206                           239  
+00001206  43F9 000012C3            240  opASR   LEA         ASRmatch, A1        ; we know that the opcode will be ASR, so load A1 to print message
+0000120C  103C 000E                241          MOVE.B      #14, D0             ; command for trap call to display message
+00001210  4E4F                     242          TRAP        #15                 ; trap call
+00001212                           243  
+00001212  43F9 000012BF            244  opLSL   LEA         LSLmatch, A1        ; we know that the opcode will be LSL, so load A1 to print message
+00001218  103C 000E                245          MOVE.B      #14, D0             ; command for trap call to display message
+0000121C  4E4F                     246          TRAP        #15                 ; trap call
+0000121E                           247  
+0000121E  43F9 000012BB            248  opLSR   LEA         LSRmatch, A1        ; we know that the opcode will be LSR, so load A1 to print message
+00001224  103C 000E                249          MOVE.B      #14, D0             ; command for trap call to display message
+00001228  4E4F                     250          TRAP        #15                 ; trap call
+0000122A                           251  
+0000122A  43F9 000012CF            252  opROL   LEA         ROLmatch, A1        ; we know that the opcode will be ROL, so load A1 to print message
+00001230  103C 000E                253          MOVE.B      #14, D0             ; command for trap call to display message
+00001234  4E4F                     254          TRAP        #15                 ; trap call
+00001236                           255  
+00001236  43F9 000012CB            256  opROR   LEA         RORmatch, A1        ; we know that the opcode will be ROR, so load A1 to print message
+0000123C  103C 000E                257          MOVE.B      #14, D0             ; command for trap call to display message
+00001240  4E4F                     258          TRAP        #15                 ; trap call
+00001242                           259  
+00001242                           260  endPROG    
+00001242                           261  
+00001242  FFFF FFFF                262      SIMHALT                             ; halt simulator
+00001246                           263  
+00001246= 20 0D 0A 00              264  newLine     DC.B    ' ', CR, LF, 0
+0000124A= 20 20 00                 265  space       DC.B    '  ', 0
+0000124D                           266  
+0000124D= 23 00                    267  hashTag     DC.B    '#', 0
+0000124F= 24 00                    268  dispHex     DC.B    '$', 0
+00001251                           269  
+00001251= 4F 52 49 00              270  ORImatch    DC.B    'ORI', 0
+00001255= 43 4D 50 49 00           271  CMPImatch   DC.B    'CMPI', 0
+0000125A= 42 43 4C 52 00           272  BCLRmatch   DC.B    'BCLR', 0
+0000125F= 4D 4F 56 45 00           273  MOVEmatch   DC.B    'MOVE', 0
+00001264= 4D 4F 56 45 41 00        274  MOVEAmatch  DC.B    'MOVEA', 0
+0000126A= 4E 45 47 00              275  NEGmatch    DC.B    'NEG', 0
+0000126E= 52 54 53 00              276  RTSmatch    DC.B    'RTS', 0
+00001272= 4A 53 52 00              277  JSRmatch    DC.B    'JSR', 0
+00001276= 4D 4F 56 45 4D 00        278  MOVEMmatch  DC.B    'MOVEM', 0
+0000127C= 4C 45 41 00              279  LEAmatch    DC.B    'LEA', 0
+00001280= 53 55 42 51 00           280  SUBQmatch   DC.B    'SUBQ', 0
+00001285= 42 52 41 00              281  BRAmatch    DC.B    'BRA', 0
+00001289= 42 43 53 00              282  BCSmatch    DC.B    'BCS', 0
+0000128D= 42 56 43 00              283  BVCmatch    DC.B    'BVC', 0
+00001291= 42 47 45 00              284  BGEmatch    DC.B    'BGE', 0
+00001295= 42 4C 54 00              285  BLTmatch    DC.B    'BLT', 0
+00001299= 44 49 56 53 00           286  DIVSmatch   DC.B    'DIVS', 0
+0000129E= 4F 52 00                 287  ORmatch     DC.B    'OR', 0
+000012A1= 53 55 42 00              288  SUBmatch    DC.B    'SUB', 0
+000012A5= 45 4F 52 00              289  EORmatch    DC.B    'EOR', 0
+000012A9= 43 4D 50 00              290  CMPmatch    DC.B    'CMP', 0
+000012AD= 4D 55 4C 53 00           291  MULSmatch   DC.B    'MULS', 0
+000012B2= 41 44 44 00              292  ADDmatch    DC.B    'ADD', 0
+000012B6= 41 44 44 41 00           293  ADDAmatch   DC.B    'ADDA', 0
+000012BB= 4C 53 52 00              294  LSRmatch    DC.B    'LSR', 0
+000012BF= 4C 53 4C 00              295  LSLmatch    DC.B    'LSL', 0
+000012C3= 41 53 52 00              296  ASRmatch    DC.B    'ASR', 0
+000012C7= 41 53 4C 00              297  ASLmatch    DC.B    'ASL', 0
+000012CB= 52 4F 52 00              298  RORmatch    DC.B    'ROR', 0
+000012CF= 52 4F 4C 00              299  ROLmatch    DC.B    'ROL', 0
+000012D3                           300   
+000012D3= 2E 42 00                 301  dispByte    DC.B    '.B', 0
+000012D6= 2E 57 00                 302  dispWord    DC.B    '.W', 0
+000012D9= 2E 4C 00                 303  dispLong    DC.B    '.L', 0
+000012DC                           304  
+000012DC= 41 30 00                 305  dispA0      DC.B    'A0', 0
+000012DF= 41 31 00                 306  dispA1      DC.B    'A1', 0
+000012E2= 41 32 00                 307  dispA2      DC.B    'A2', 0
+000012E5= 41 33 00                 308  dispA3      DC.B    'A3', 0
+000012E8= 41 34 00                 309  dispA4      DC.B    'A4', 0
+000012EB= 41 35 00                 310  dispA5      DC.B    'A5', 0
+000012EE= 41 36 00                 311  dispA6      DC.B    'A6', 0
+000012F1= 41 37 00                 312  dispA7      DC.B    'A7', 0
+000012F4                           313  
+000012F4= 44 30 00                 314  dispD0      DC.B    'D0', 0
+000012F7= 44 31 00                 315  dispD1      DC.B    'D1', 0
+000012FA= 44 32 00                 316  dispD2      DC.B    'D2', 0
+000012FD= 44 33 00                 317  dispD3      DC.B    'D3', 0
+00001300= 44 34 00                 318  dispD4      DC.B    'D4', 0
+00001303= 44 35 00                 319  dispD5      DC.B    'D5', 0
+00001306= 44 36 00                 320  dispD6      DC.B    'D6', 0
+00001309= 44 37 00                 321  dispD7      DC.B    'D7', 0      
+0000130C                           322  
+0000130C                           323             END    START                ; last line of source
 
 No errors detected
 No warnings generated
@@ -171,54 +333,104 @@ No warnings generated
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
+ADDAMATCH           12B6
+ADDMATCH            12B2
 ADDMATCHAD          2
 ADDMATCHAN          1
 ADDMATCHDI          7
 ADDMATCHDN          0
 ADDMATCHPD          4
 ADDMATCHPI          3
-BCLRMATCH           10E3
-BRAEIGHT            10A0
-BRAELEVEN           10A0
-BRAFIVE             10A0
-BRAFOUR             10A0
-BRAFOURTEEN         10A0
-BRANINE             10A0
+ASLMATCH            12C7
+ASRMATCH            12C3
+BCLRMATCH           125A
+BCSMATCH            1289
+BGEMATCH            1291
+BLTMATCH            1295
+BRAEIGHT            10F0
+BRAELEVEN           10F4
+BRAFIVE             10C0
+BRAFOUR             10A4
+BRAFOURTEEN         10F8
+BRAMATCH            1285
+BRANINE             10F0
 BRAONE              10A0
-BRASIX              10A0
-BRATHIRTEEN         10A0
-BRATHREE            10A0
-BRATWELVE           10A0
-BRATWO              10A0
+BRASIX              10C4
+BRATHIRTEEN         10F8
+BRATHREE            10A4
+BRATWELVE           10F4
+BRATWO              10A4
 BRAZERO             1084
-CMPIMATCH           10DE
+BVCMATCH            128D
+CMPIMATCH           1255
+CMPMATCH            12A9
 CR                  D
-DISPA0              10F7
-DISPA1              10FA
-DISPA2              10FD
-DISPA3              1100
-DISPA4              1103
-DISPA5              1106
-DISPA6              1109
-DISPA7              110C
-DISPBYTE            10E8
-DISPLONG            10F2
-DISPWORD            10ED
+DISPA0              12DC
+DISPA1              12DF
+DISPA2              12E2
+DISPA3              12E5
+DISPA4              12E8
+DISPA5              12EB
+DISPA6              12EE
+DISPA7              12F1
+DISPBYTE            12D3
+DISPD0              12F4
+DISPD1              12F7
+DISPD2              12FA
+DISPD3              12FD
+DISPD4              1300
+DISPD5              1303
+DISPD6              1306
+DISPD7              1309
+DISPHEX             124F
+DISPLONG            12D9
+DISPWORD            12D6
+DIVSMATCH           1299
 EIGHT               8
 ELEVEN              B
-ENDPROG             10D2
+ENDPROG             1242
+EORMATCH            12A5
 FIVE                5
 FOUR                4
 FOURTEEN            E
+HASHTAG             124D
+JSRMATCH            1272
+LEAMATCH            127C
 LF                  A
 LOOP                100C
-NEWLINE             10D6
+LSLMATCH            12BF
+LSRMATCH            12BB
+MOVEAMATCH          1264
+MOVEMATCH           125F
+MOVEMMATCH          1276
+MULSMATCH           12AD
+NEGMATCH            126A
+NEWLINE             1246
 NINE                9
 ONE                 1
-OPBCLR              10C2
-OPCMPI              10B2
-OPORI               10A0
-ORIMATCH            10DA
+OPASL               11FA
+OPASR               1206
+OPBCLR              114E
+OPBCS               11B2
+OPBGE               11CA
+OPBLT               11D6
+OPBRA               119A
+OPBVC               11BE
+OPCMPI              113E
+OPLSL               1212
+OPLSR               121E
+OPMOVEB             115E
+OPMOVEMLEA          118E
+OPMULS              11EE
+OPNEG               1182
+OPORI               112C
+OPROL               122A
+OPROR               1236
+OPRTSJSR            118E
+OPSUB               11E2
+OPSUBQ              118E
+ORIMATCH            1251
+ORMATCH             129E
 REG0                0
 REG1                1
 REG2                2
@@ -227,6 +439,9 @@ REG4                4
 REG5                5
 REG6                6
 REG7                7
+ROLMATCH            12CF
+RORMATCH            12CB
+RTSMATCH            126E
 S1B                 0
 S1L                 2
 S1W                 1
@@ -236,7 +451,10 @@ S3B                 1
 S3L                 2
 S3W                 3
 SIX                 6
+SPACE               124A
 START               1000
+SUBMATCH            12A1
+SUBQMATCH           1280
 TEST_END            2005
 TEST_START          2000
 THIRTEEN            D
