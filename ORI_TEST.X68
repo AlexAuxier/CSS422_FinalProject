@@ -9,12 +9,13 @@ testData        EQU     $B
                 ORG     $2000
 START:
 
-                ORI     #testData,D1
+                ORI     #2,(A2)
 
 
                 SIMHALT
 
                 END    START
+
 
 
 *~Font name~Courier Neqqw~
