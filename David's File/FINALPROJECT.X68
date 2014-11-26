@@ -50,6 +50,9 @@ reg4        EQU     %0100       ; register 4
 reg5        EQU     %0101       ; register 5
 reg6        EQU     %0110       ; register 6
 reg7        EQU     %0111       ; register 7
+
+firstNib    EQU     $F0
+secNib      EQU     $0F
              
             ORG    $1000
 START:                                  ; first instruction of program
@@ -101,7 +104,11 @@ braZero CLR         D2                  ; first nibble is 0, 3 opcodes are possi
         BEQ         opORI               ; branch to ORI method
         CMP.B       #twelve, D2         ; compare second nibble to 12
         BEQ         opCMPI              ; branch to CMPI method
-        BRA         opBCLR              ; otherwise, branch to BCLR method; I think we should fix this, there are other posibilities
+        CMP.B       #one,D2             ; Test for static BCLR
+        BEQ         opStatBCLR          ; branch to BCLR
+        CMP.B       #eight,D2           ; Test for static BCLR
+        BEQ         opBCLR
+        BRA         printInvalid
         
 braOne
 braTwo
@@ -152,15 +159,80 @@ opCMPI  LEA         CMPImatch, A1       ; we know that the opcode will be CMPI, 
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
                 
-        BRA         LOOP                ; go back to the loop
-
-
-
-opBCLR  LEA         BCLRmatch, A1       ; we know that the opcode will be CMPI, so load A1 to print message
-        MOVE.B      #14, D0             ; command for trap call to display message
-        TRAP        #15                 ; trap call
+        MOVE.B      (A0)+, D1
+        MOVE.B      D1,D2               ; copy data over
+        ASR         #6,D2               ; shifts 6 bits over to read just the size        
+        MOVE        D2,D3               ; store size into D3
+        CLR         D2
+        
+        MOVE.B      D1,D2               ; Reload D2 with the same byte to get mode
+        ASL         #two,D2             ; Moving two bits over to isolate and remove the size
+        MOVE.B      D2,D4               ; Move the mode and register to D4 and leave the size
+        CLR         D2                  ; Clear out data register
+        MOVE.B      D4,D2               ; Put data back into D2 with just the mode and register
+        ASR         #five,D2            ; Shift the register out to get just the mode
+        MOVE.B      D2,D4               ; Store mode into D4
+        CLR         D2
+        
+        MOVE.B      D1,D2               ; Getting the EA register
+        ASL         #five,D2
+        MOVE.B      D2,D5               ; Move just the register into D5
+        CLR         D2                  ; Clearing D2 to put data back
+        MOVE.B      D5,D2               ; Putting back the register
+        ASR         #five,D2            ; Shifting bits in order to read the register
+        MOVE.B      D2,D5               ; Store register into D5
         
         BRA         LOOP                ; go back to the loop
+
+
+
+opBCLR          LEA         BCLRmatch, A1       ; we know that the opcode will be CMPI, so load A1 to print message
+                MOVE.B      #14, D0             ; command for trap call to display message
+                TRAP        #15                 ; trap call
+                
+                ASR         #one,D2             ; Shift to the right to remove the 1
+                MOVE.B      D2,D3               ; Store register into D3
+                
+                CLR         D2
+                MOVE.B      (A0)+,D1
+                MOVE.B      D1,D2
+                ASR         #two,D2             ; Shift two bits over in order to put mode into the first nibble
+                AND         #secNib,D2          ; Clear first nibble
+                ASR         #one,D2             ; shift to remove register and have just the mode
+                MOVE.B      D2,D4               ; Move mode into D4
+                CLR         D2
+                
+                MOVE.B      D1,D2               ; Move data back into D2 to retrieve the register
+                ASL         #one,D2             ; shift one to the left to move node to other nibble
+                AND         #secNib,D2          ; Clear other nibble
+                ASR         #one,D2             ; Move register back 
+                MOVE.B      D2,D5               ; Store EA register
+
+
+                CLR         D2                
+        
+opStatBCLR      LEA         StatBCLRmatch, A1       ; we know that the opcode will be CMPI, so load A1 to print message
+                MOVE.B      #14, D0             ; command for trap call to display message
+                TRAP        #15                 ; trap call
+                
+                CLR         D2
+                MOVE.B      (A0)+,D1
+                MOVE.B      D1,D2
+                ASR         #two,D2             ; Shift two bits over in order to put mode into the first nibble
+                AND         #secNib,D2          ; Clear first nibble
+                ASR         #one,D2             ; shift to remove register and have just the mode
+                MOVE.B      D2,D3               ; Move mode into D3
+                CLR         D2
+                
+                MOVE.B      D1,D2               ; Move data back into D2 to retrieve the register
+                ASL         #one,D2             ; shift one to the left to move node to other nibble
+                AND         #secNib,D2          ; Clear other nibble
+                ASR         #one,D2             ; Move register back 
+                MOVE.B      D2,D4               ; Store register
+
+                BRA         LOOP                ; go back to the loop
+        
+printInvalid
  
 endPROG    
 
@@ -171,6 +243,7 @@ newLine     DC.B    ' ', CR, LF, 0
 ORImatch    DC.B    'ORI', 0
 CMPImatch   DC.B    'CMPI', 0
 BCLRmatch   DC.B    'BCLR', 0
+StatBCLRmatch   DC.B    'BCLR', 0
  
 dispByte    DC.B    '.B  ', 0
 dispWord    DC.B    '.W  ', 0
@@ -187,6 +260,7 @@ dispA7      DC.B    'A7', 0
 
 
            END    START                ; last line of source
+
 
 
 

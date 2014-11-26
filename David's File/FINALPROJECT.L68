@@ -1,6 +1,6 @@
 00001000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 11/25/2014 1:57:01 PM
+Created On: 11/26/2014 1:32:13 AM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -54,160 +54,216 @@ Created On: 11/25/2014 1:57:01 PM
 00000000  =00000005                 50  reg5        EQU     %0101       ; register 5
 00000000  =00000006                 51  reg6        EQU     %0110       ; register 6
 00000000  =00000007                 52  reg7        EQU     %0111       ; register 7
-00000000                            53               
-00001000                            54              ORG    $1000
-00001000                            55  START:                                  ; first instruction of program
-00001000                            56        
-00001000  207C 00002000             57          MOVEA.L     #test_start, A0     ; load starting address
-00001006  247C 00002005             58          MOVEA.L     #test_end, A2       ; load ending address
-0000100C                            59            
-0000100C  4241                      60  LOOP    CLR         D1                  ; clear out D1
-0000100E  4242                      61          CLR         D2                  ; clear out D2
-00001010  B1CA                      62          CMPA.L      A2, A0              ; compare starting and ending addresses
-00001012  6E00 0106                 63          BGT         endProg             ; if A0 > A1, we've finished, end program
-00001016  1218                      64          MOVE.B      (A0)+, D1           ; load byte to D1 and increment A0 to next byte
-00001018  1401                      65          MOVE.B      D1, D2              ; copy byte to D2 for manipulation
-0000101A  E882                      66          ASR.L       #four, D2           ; get first nibble in D2
-0000101C                            67          
-0000101C  B43C 0000                 68          CMP.B       #zero, D2           ; compare with 0
-00001020  6700 0064                 69          BEQ         braZero             ; branch out to zero method
-00001024  B43C 0001                 70          CMP.B       #one, D2            ; compare with 1
-00001028  6700 0078                 71          BEQ         braOne              ; branch out to one method
-0000102C  B43C 0002                 72          CMP.B       #two, D2            ; compare with 2    
-00001030  6700 0070                 73          BEQ         braTwo              ; branch out to two method
-00001034  B43C 0003                 74          CMP.B       #three, D2          ; compare with 3
-00001038  6700 0068                 75          BEQ         braThree            ; branch out to three method
-0000103C  B43C 0004                 76          CMP.B       #four, D2           ; compare with 4
-00001040  6700 0060                 77          BEQ         braFour             ; branch out to four method
-00001044  B43C 0005                 78          CMP.B       #five, D2           ; compare with 5
-00001048  6700 0058                 79          BEQ         braFive             ; branch out to five method
-0000104C  B43C 0006                 80          CMP.B       #six, D2            ; compare with 6
-00001050  6700 0050                 81          BEQ         braSix              ; branch out to six method
-00001054  B43C 0008                 82          CMP.B       #eight, D2          ; compare with 8
-00001058  6700 0048                 83          BEQ         braEight            ; branch out to eight method
-0000105C  B43C 0009                 84          CMP.B       #nine, D2           ; compare with 9
-00001060  6700 0040                 85          BEQ         braNine             ; branch out to nine method
-00001064  B43C 000B                 86          CMP.B       #eleven, D2         ; compare with 11
-00001068  6700 0038                 87          BEQ         braEleven           ; branch out to eleven method
-0000106C  B43C 000C                 88          CMP.B       #twelve, D2         ; compare with 12
-00001070  6700 0030                 89          BEQ         braTwelve           ; branch out to twelve method
-00001074  B43C 000D                 90          CMP.B       #thirteen, D2       ; compare with 13
-00001078  6700 0028                 91          BEQ         braThirteen         ; branch out to thirteen method
-0000107C  B43C 000E                 92          CMP.B       #fourteen, D2       ; compare with 14
-00001080  6700 0020                 93          BEQ         braFourteen         ; branch out to fourteen method
-00001084  6086                      94          BRA         loop
-00001086                            95  
-00001086  4242                      96  braZero CLR         D2                  ; first nibble is 0, 3 opcodes are possible 
-00001088  1401                      97          MOVE.B      D1, D2              ; clear out D2 and copy D1 back in
-0000108A  C438 000F                 98          AND.B       $0F, D2             ; set first nibble to 0
-0000108E                            99   
-0000108E  B43C 0000                100          CMP.B       #zero, D2           ; compare second nibble to 0
-00001092  6700 000E                101          BEQ         opORI               ; branch to ORI method
-00001096  B43C 000C                102          CMP.B       #twelve, D2         ; compare second nibble to 12
-0000109A  6700 003A                103          BEQ         opCMPI              ; branch to CMPI method
-0000109E  6000 006A                104          BRA         opBCLR              ; otherwise, branch to BCLR method; I think we should fix this, there are other posibilities
-000010A2                           105          
-000010A2                           106  braOne
-000010A2                           107  braTwo
-000010A2                           108  braThree
-000010A2                           109  braFour
-000010A2                           110  braFive
-000010A2                           111  braSix
-000010A2                           112  braEight
-000010A2                           113  braNine
-000010A2                           114  braEleven
-000010A2                           115  braTwelve
-000010A2                           116  braThirteen
-000010A2                           117  braFourteen
-000010A2                           118  
-000010A2  43F9 00001122            119  opORI   LEA         ORImatch, A1        ; we know that the opcode will be ORI, so load A1 to print message
-000010A8  103C 000E                120          MOVE.B      #14, D0             ; command for trap call to display message
-000010AC  4E4F                     121          TRAP        #15                 ; trap call
-000010AE                           122        
-000010AE  1218                     123          MOVE.B      (A0)+, D1
-000010B0  1401                     124          MOVE.B      D1,D2               ; copy data over
-000010B2  EC42                     125          ASR         #6,D2               ; shifts 6 bits over to read just the size        
-000010B4  3602                     126          MOVE        D2,D3               ; store size into D3
-000010B6  4242                     127          CLR         D2
-000010B8                           128          
-000010B8  1401                     129          MOVE.B      D1,D2               ; Reload D2 with the same byte to get mode
-000010BA  E542                     130          ASL         #two,D2             ; Moving two bits over to isolate and remove the size
-000010BC  1802                     131          MOVE.B      D2,D4               ; Move the mode and register to D4 and leave the size
-000010BE  4242                     132          CLR         D2                  ; Clear out data register
-000010C0  1404                     133          MOVE.B      D4,D2               ; Put data back into D2 with just the mode and register
-000010C2  EA42                     134          ASR         #five,D2            ; Shift the register out to get just the mode
-000010C4  1802                     135          MOVE.B      D2,D4               ; Store mode into D4
-000010C6  4242                     136          CLR         D2
-000010C8                           137          
-000010C8  1401                     138          MOVE.B      D1,D2               ; Getting the EA register
-000010CA  EB42                     139          ASL         #five,D2
-000010CC  1A02                     140          MOVE.B      D2,D5               ; Move just the register into D5
-000010CE  4242                     141          CLR         D2                  ; Clearing D2 to put data back
-000010D0  1405                     142          MOVE.B      D5,D2               ; Putting back the register
-000010D2  EA42                     143          ASR         #five,D2            ; Shifting bits in order to read the register
-000010D4  1A02                     144          MOVE.B      D2,D5               ; Store register into D5
-000010D6                           145          
-000010D6                           146  
-000010D6                           147           
-000010D6  43F9 00001126            148  opCMPI  LEA         CMPImatch, A1       ; we know that the opcode will be CMPI, so load A1 to print message
-000010DC  103C 000E                149          MOVE.B      #14, D0             ; command for trap call to display message
-000010E0  4E4F                     150          TRAP        #15                 ; trap call
-000010E2                           151          
-000010E2  1218                     152          MOVE.B      (A0)+,D1            ; Load the next byte which contains size, mode, and register into D1    
-000010E4  1401                     153          MOVE.B      D1,D2               ; copy data over
-000010E6  EC42                     154          ASR         #6,D2               ; shifts 6 bits over to read just the size        
-000010E8  3602                     155          MOVE        D2,D3               ; store size into D3
-000010EA  4242                     156          CLR         D2
-000010EC                           157          
-000010EC  1401                     158          MOVE.B      D1,D2               ; Reload D2 with the same byte to get mode
-000010EE  E542                     159          ASL         #two,D2             ; Moving two bits over to isolate and remove the size
-000010F0  1802                     160          MOVE.B      D2,D4               ; Move the mode and register to D4 and leave the size
-000010F2  4242                     161          CLR         D2                  ; Clear out data register
-000010F4  1404                     162          MOVE.B      D4,D2               ; Put data back into D2 with just the mode and register
-000010F6  EA42                     163          ASR         #five,D2            ; Shift the register out to get just the mode
-000010F8  1802                     164          MOVE.B      D2,D4               ; Store mode into D4
-000010FA  4242                     165          CLR         D2
-000010FC                           166          
-000010FC  1401                     167          MOVE.B      D1,D2               ; Getting the EA register
-000010FE  EB42                     168          ASL         #five,D2
-00001100  1A02                     169          MOVE.B      D2,D5               ; Move just the register into D5
-00001102  4242                     170          CLR         D2                  ; Clearing D2 to put data back
-00001104  1405                     171          MOVE.B      D5,D2               ; Putting back the register
-00001106  EA42                     172          ASR         #five,D2            ; Shifting bits in order to read the register
-00001108  1A02                     173          MOVE.B      D2,D5               ; Store register into D5               
-0000110A                           174  
-0000110A                           175  
-0000110A  43F9 0000112B            176  opBCLR  LEA         BCLRmatch, A1       ; we know that the opcode will be CMPI, so load A1 to print message
-00001110  103C 000E                177          MOVE.B      #14, D0             ; command for trap call to display message
-00001114  4E4F                     178          TRAP        #15                 ; trap call
-00001116                           179          
-00001116  6000 FEF4                180          BRA         LOOP                ; go back to the loop
-0000111A                           181   
-0000111A                           182  endPROG    
-0000111A                           183  
-0000111A  FFFF FFFF                184      SIMHALT                             ; halt simulator
-0000111E                           185  
-0000111E= 20 0D 0A 00              186  newLine     DC.B    ' ', CR, LF, 0
+00000000                            53  
+00000000  =000000F0                 54  firstNib    EQU     $F0
+00000000  =0000000F                 55  secNib      EQU     $0F
+00000000                            56               
+00001000                            57              ORG    $1000
+00001000                            58  START:                                  ; first instruction of program
+00001000                            59        
+00001000  207C 00002000             60          MOVEA.L     #test_start, A0     ; load starting address
+00001006  247C 00002005             61          MOVEA.L     #test_end, A2       ; load ending address
+0000100C                            62            
+0000100C  4241                      63  LOOP    CLR         D1                  ; clear out D1
+0000100E  4242                      64          CLR         D2                  ; clear out D2
+00001010  B1CA                      65          CMPA.L      A2, A0              ; compare starting and ending addresses
+00001012  6E00 016C                 66          BGT         endProg             ; if A0 > A1, we've finished, end program
+00001016  1218                      67          MOVE.B      (A0)+, D1           ; load byte to D1 and increment A0 to next byte
+00001018  1401                      68          MOVE.B      D1, D2              ; copy byte to D2 for manipulation
+0000101A  E882                      69          ASR.L       #four, D2           ; get first nibble in D2
+0000101C                            70          
+0000101C  B43C 0000                 71          CMP.B       #zero, D2           ; compare with 0
+00001020  6700 0064                 72          BEQ         braZero             ; branch out to zero method
+00001024  B43C 0001                 73          CMP.B       #one, D2            ; compare with 1
+00001028  6700 0088                 74          BEQ         braOne              ; branch out to one method
+0000102C  B43C 0002                 75          CMP.B       #two, D2            ; compare with 2    
+00001030  6700 0080                 76          BEQ         braTwo              ; branch out to two method
+00001034  B43C 0003                 77          CMP.B       #three, D2          ; compare with 3
+00001038  6700 0078                 78          BEQ         braThree            ; branch out to three method
+0000103C  B43C 0004                 79          CMP.B       #four, D2           ; compare with 4
+00001040  6700 0070                 80          BEQ         braFour             ; branch out to four method
+00001044  B43C 0005                 81          CMP.B       #five, D2           ; compare with 5
+00001048  6700 0068                 82          BEQ         braFive             ; branch out to five method
+0000104C  B43C 0006                 83          CMP.B       #six, D2            ; compare with 6
+00001050  6700 0060                 84          BEQ         braSix              ; branch out to six method
+00001054  B43C 0008                 85          CMP.B       #eight, D2          ; compare with 8
+00001058  6700 0058                 86          BEQ         braEight            ; branch out to eight method
+0000105C  B43C 0009                 87          CMP.B       #nine, D2           ; compare with 9
+00001060  6700 0050                 88          BEQ         braNine             ; branch out to nine method
+00001064  B43C 000B                 89          CMP.B       #eleven, D2         ; compare with 11
+00001068  6700 0048                 90          BEQ         braEleven           ; branch out to eleven method
+0000106C  B43C 000C                 91          CMP.B       #twelve, D2         ; compare with 12
+00001070  6700 0040                 92          BEQ         braTwelve           ; branch out to twelve method
+00001074  B43C 000D                 93          CMP.B       #thirteen, D2       ; compare with 13
+00001078  6700 0038                 94          BEQ         braThirteen         ; branch out to thirteen method
+0000107C  B43C 000E                 95          CMP.B       #fourteen, D2       ; compare with 14
+00001080  6700 0030                 96          BEQ         braFourteen         ; branch out to fourteen method
+00001084  6086                      97          BRA         loop
+00001086                            98  
+00001086  4242                      99  braZero CLR         D2                  ; first nibble is 0, 3 opcodes are possible 
+00001088  1401                     100          MOVE.B      D1, D2              ; clear out D2 and copy D1 back in
+0000108A  C438 000F                101          AND.B       $0F, D2             ; set first nibble to 0
+0000108E                           102   
+0000108E  B43C 0000                103          CMP.B       #zero, D2           ; compare second nibble to 0
+00001092  6700 001E                104          BEQ         opORI               ; branch to ORI method
+00001096  B43C 000C                105          CMP.B       #twelve, D2         ; compare second nibble to 12
+0000109A  6700 004E                106          BEQ         opCMPI              ; branch to CMPI method
+0000109E  B43C 0001                107          CMP.B       #one,D2             ; Test for static BCLR
+000010A2  6700 00AE                108          BEQ         opStatBCLR          ; branch to BCLR
+000010A6  B43C 0008                109          CMP.B       #eight,D2           ; Test for static BCLR
+000010AA  6700 0076                110          BEQ         opBCLR
+000010AE  6000 00D0                111          BRA         printInvalid
+000010B2                           112          
+000010B2                           113  braOne
+000010B2                           114  braTwo
+000010B2                           115  braThree
+000010B2                           116  braFour
+000010B2                           117  braFive
+000010B2                           118  braSix
+000010B2                           119  braEight
+000010B2                           120  braNine
+000010B2                           121  braEleven
+000010B2                           122  braTwelve
+000010B2                           123  braThirteen
+000010B2                           124  braFourteen
+000010B2                           125  
+000010B2  43F9 00001188            126  opORI   LEA         ORImatch, A1        ; we know that the opcode will be ORI, so load A1 to print message
+000010B8  103C 000E                127          MOVE.B      #14, D0             ; command for trap call to display message
+000010BC  4E4F                     128          TRAP        #15                 ; trap call
+000010BE                           129        
+000010BE  1218                     130          MOVE.B      (A0)+, D1
+000010C0  1401                     131          MOVE.B      D1,D2               ; copy data over
+000010C2  EC42                     132          ASR         #6,D2               ; shifts 6 bits over to read just the size        
+000010C4  3602                     133          MOVE        D2,D3               ; store size into D3
+000010C6  4242                     134          CLR         D2
+000010C8                           135          
+000010C8  1401                     136          MOVE.B      D1,D2               ; Reload D2 with the same byte to get mode
+000010CA  E542                     137          ASL         #two,D2             ; Moving two bits over to isolate and remove the size
+000010CC  1802                     138          MOVE.B      D2,D4               ; Move the mode and register to D4 and leave the size
+000010CE  4242                     139          CLR         D2                  ; Clear out data register
+000010D0  1404                     140          MOVE.B      D4,D2               ; Put data back into D2 with just the mode and register
+000010D2  EA42                     141          ASR         #five,D2            ; Shift the register out to get just the mode
+000010D4  1802                     142          MOVE.B      D2,D4               ; Store mode into D4
+000010D6  4242                     143          CLR         D2
+000010D8                           144          
+000010D8  1401                     145          MOVE.B      D1,D2               ; Getting the EA register
+000010DA  EB42                     146          ASL         #five,D2
+000010DC  1A02                     147          MOVE.B      D2,D5               ; Move just the register into D5
+000010DE  4242                     148          CLR         D2                  ; Clearing D2 to put data back
+000010E0  1405                     149          MOVE.B      D5,D2               ; Putting back the register
+000010E2  EA42                     150          ASR         #five,D2            ; Shifting bits in order to read the register
+000010E4  1A02                     151          MOVE.B      D2,D5               ; Store register into D5
+000010E6                           152          
+000010E6  6000 FF24                153          BRA         LOOP                ; go back to the loop
+000010EA                           154  
+000010EA                           155  opORI0
+000010EA                           156  
+000010EA                           157           
+000010EA  43F9 0000118C            158  opCMPI  LEA         CMPImatch, A1       ; we know that the opcode will be CMPI, so load A1 to print message
+000010F0  103C 000E                159          MOVE.B      #14, D0             ; command for trap call to display message
+000010F4  4E4F                     160          TRAP        #15                 ; trap call
+000010F6                           161                  
+000010F6  1218                     162          MOVE.B      (A0)+, D1
+000010F8  1401                     163          MOVE.B      D1,D2               ; copy data over
+000010FA  EC42                     164          ASR         #6,D2               ; shifts 6 bits over to read just the size        
+000010FC  3602                     165          MOVE        D2,D3               ; store size into D3
+000010FE  4242                     166          CLR         D2
+00001100                           167          
+00001100  1401                     168          MOVE.B      D1,D2               ; Reload D2 with the same byte to get mode
+00001102  E542                     169          ASL         #two,D2             ; Moving two bits over to isolate and remove the size
+00001104  1802                     170          MOVE.B      D2,D4               ; Move the mode and register to D4 and leave the size
+00001106  4242                     171          CLR         D2                  ; Clear out data register
+00001108  1404                     172          MOVE.B      D4,D2               ; Put data back into D2 with just the mode and register
+0000110A  EA42                     173          ASR         #five,D2            ; Shift the register out to get just the mode
+0000110C  1802                     174          MOVE.B      D2,D4               ; Store mode into D4
+0000110E  4242                     175          CLR         D2
+00001110                           176          
+00001110  1401                     177          MOVE.B      D1,D2               ; Getting the EA register
+00001112  EB42                     178          ASL         #five,D2
+00001114  1A02                     179          MOVE.B      D2,D5               ; Move just the register into D5
+00001116  4242                     180          CLR         D2                  ; Clearing D2 to put data back
+00001118  1405                     181          MOVE.B      D5,D2               ; Putting back the register
+0000111A  EA42                     182          ASR         #five,D2            ; Shifting bits in order to read the register
+0000111C  1A02                     183          MOVE.B      D2,D5               ; Store register into D5
+0000111E                           184          
+0000111E  6000 FEEC                185          BRA         LOOP                ; go back to the loop
+00001122                           186  
 00001122                           187  
-00001122= 4F 52 49 00              188  ORImatch    DC.B    'ORI', 0
-00001126= 43 4D 50 49 00           189  CMPImatch   DC.B    'CMPI', 0
-0000112B= 42 43 4C 52 00           190  BCLRmatch   DC.B    'BCLR', 0
-00001130                           191   
-00001130= 2E 42 20 20 00           192  dispByte    DC.B    '.B  ', 0
-00001135= 2E 57 20 20 00           193  dispWord    DC.B    '.W  ', 0
-0000113A= 2E 4C 20 20 00           194  dispLong    DC.B    '.L  ', 0
-0000113F                           195  
-0000113F= 41 30 00                 196  dispA0      DC.B    'A0', 0
-00001142= 41 31 00                 197  dispA1      DC.B    'A1', 0
-00001145= 41 32 00                 198  dispA2      DC.B    'A2', 0
-00001148= 41 33 00                 199  dispA3      DC.B    'A3', 0
-0000114B= 41 34 00                 200  dispA4      DC.B    'A4', 0
-0000114E= 41 35 00                 201  dispA5      DC.B    'A5', 0
-00001151= 41 36 00                 202  dispA6      DC.B    'A6', 0
-00001154= 41 37 00                 203  dispA7      DC.B    'A7', 0
-00001157                           204  
-00001157                           205  
-00001157                           206             END    START                ; last line of source
+00001122                           188  
+00001122  43F9 00001191            189  opBCLR          LEA         BCLRmatch, A1       ; we know that the opcode will be CMPI, so load A1 to print message
+00001128  103C 000E                190                  MOVE.B      #14, D0             ; command for trap call to display message
+0000112C  4E4F                     191                  TRAP        #15                 ; trap call
+0000112E                           192                  
+0000112E  E242                     193                  ASR         #one,D2             ; Shift to the right to remove the 1
+00001130  1602                     194                  MOVE.B      D2,D3               ; Store register into D3
+00001132                           195                  
+00001132  4242                     196                  CLR         D2
+00001134  1218                     197                  MOVE.B      (A0)+,D1
+00001136  1401                     198                  MOVE.B      D1,D2
+00001138  E442                     199                  ASR         #two,D2             ; Shift two bits over in order to put mode into the first nibble
+0000113A  C47C 000F                200                  AND         #secNib,D2          ; Clear first nibble
+0000113E  E242                     201                  ASR         #one,D2             ; shift to remove register and have just the mode
+00001140  1802                     202                  MOVE.B      D2,D4               ; Move mode into D4
+00001142  4242                     203                  CLR         D2
+00001144                           204                  
+00001144  1401                     205                  MOVE.B      D1,D2               ; Move data back into D2 to retrieve the register
+00001146  E342                     206                  ASL         #one,D2             ; shift one to the left to move node to other nibble
+00001148  C47C 000F                207                  AND         #secNib,D2          ; Clear other nibble
+0000114C  E242                     208                  ASR         #one,D2             ; Move register back 
+0000114E  1A02                     209                  MOVE.B      D2,D5               ; Store EA register
+00001150                           210  
+00001150                           211  
+00001150  4242                     212                  CLR         D2                
+00001152                           213          
+00001152  43F9 00001196            214  opStatBCLR      LEA         StatBCLRmatch, A1       ; we know that the opcode will be CMPI, so load A1 to print message
+00001158  103C 000E                215                  MOVE.B      #14, D0             ; command for trap call to display message
+0000115C  4E4F                     216                  TRAP        #15                 ; trap call
+0000115E                           217                  
+0000115E  4242                     218                  CLR         D2
+00001160  1218                     219                  MOVE.B      (A0)+,D1
+00001162  1401                     220                  MOVE.B      D1,D2
+00001164  E442                     221                  ASR         #two,D2             ; Shift two bits over in order to put mode into the first nibble
+00001166  C47C 000F                222                  AND         #secNib,D2          ; Clear first nibble
+0000116A  E242                     223                  ASR         #one,D2             ; shift to remove register and have just the mode
+0000116C  1602                     224                  MOVE.B      D2,D3               ; Move mode into D3
+0000116E  4242                     225                  CLR         D2
+00001170                           226                  
+00001170  1401                     227                  MOVE.B      D1,D2               ; Move data back into D2 to retrieve the register
+00001172  E342                     228                  ASL         #one,D2             ; shift one to the left to move node to other nibble
+00001174  C47C 000F                229                  AND         #secNib,D2          ; Clear other nibble
+00001178  E242                     230                  ASR         #one,D2             ; Move register back 
+0000117A  1802                     231                  MOVE.B      D2,D4               ; Store register
+0000117C                           232  
+0000117C  6000 FE8E                233                  BRA         LOOP                ; go back to the loop
+00001180                           234          
+00001180                           235  printInvalid
+00001180                           236   
+00001180                           237  endPROG    
+00001180                           238  
+00001180  FFFF FFFF                239      SIMHALT                             ; halt simulator
+00001184                           240  
+00001184= 20 0D 0A 00              241  newLine     DC.B    ' ', CR, LF, 0
+00001188                           242  
+00001188= 4F 52 49 00              243  ORImatch    DC.B    'ORI', 0
+0000118C= 43 4D 50 49 00           244  CMPImatch   DC.B    'CMPI', 0
+00001191= 42 43 4C 52 00           245  BCLRmatch   DC.B    'BCLR', 0
+00001196= 42 43 4C 52 00           246  StatBCLRmatch   DC.B    'BCLR', 0
+0000119B                           247   
+0000119B= 2E 42 20 20 00           248  dispByte    DC.B    '.B  ', 0
+000011A0= 2E 57 20 20 00           249  dispWord    DC.B    '.W  ', 0
+000011A5= 2E 4C 20 20 00           250  dispLong    DC.B    '.L  ', 0
+000011AA                           251  
+000011AA= 41 30 00                 252  dispA0      DC.B    'A0', 0
+000011AD= 41 31 00                 253  dispA1      DC.B    'A1', 0
+000011B0= 41 32 00                 254  dispA2      DC.B    'A2', 0
+000011B3= 41 33 00                 255  dispA3      DC.B    'A3', 0
+000011B6= 41 34 00                 256  dispA4      DC.B    'A4', 0
+000011B9= 41 35 00                 257  dispA5      DC.B    'A5', 0
+000011BC= 41 36 00                 258  dispA6      DC.B    'A6', 0
+000011BF= 41 37 00                 259  dispA7      DC.B    'A7', 0
+000011C2                           260  
+000011C2                           261  
+000011C2                           262             END    START                ; last line of source
 
 No errors detected
 No warnings generated
@@ -222,48 +278,52 @@ ADDMATCHDI          7
 ADDMATCHDN          0
 ADDMATCHPD          4
 ADDMATCHPI          3
-BCLRMATCH           112B
-BRAEIGHT            10A2
-BRAELEVEN           10A2
-BRAFIVE             10A2
-BRAFOUR             10A2
-BRAFOURTEEN         10A2
-BRANINE             10A2
-BRAONE              10A2
-BRASIX              10A2
-BRATHIRTEEN         10A2
-BRATHREE            10A2
-BRATWELVE           10A2
-BRATWO              10A2
+BCLRMATCH           1191
+BRAEIGHT            10B2
+BRAELEVEN           10B2
+BRAFIVE             10B2
+BRAFOUR             10B2
+BRAFOURTEEN         10B2
+BRANINE             10B2
+BRAONE              10B2
+BRASIX              10B2
+BRATHIRTEEN         10B2
+BRATHREE            10B2
+BRATWELVE           10B2
+BRATWO              10B2
 BRAZERO             1086
-CMPIMATCH           1126
+CMPIMATCH           118C
 CR                  D
-DISPA0              113F
-DISPA1              1142
-DISPA2              1145
-DISPA3              1148
-DISPA4              114B
-DISPA5              114E
-DISPA6              1151
-DISPA7              1154
-DISPBYTE            1130
-DISPLONG            113A
-DISPWORD            1135
+DISPA0              11AA
+DISPA1              11AD
+DISPA2              11B0
+DISPA3              11B3
+DISPA4              11B6
+DISPA5              11B9
+DISPA6              11BC
+DISPA7              11BF
+DISPBYTE            119B
+DISPLONG            11A5
+DISPWORD            11A0
 EIGHT               8
 ELEVEN              B
-ENDPROG             111A
+ENDPROG             1180
+FIRSTNIB            F0
 FIVE                5
 FOUR                4
 FOURTEEN            E
 LF                  A
 LOOP                100C
-NEWLINE             111E
+NEWLINE             1184
 NINE                9
 ONE                 1
-OPBCLR              110A
-OPCMPI              10D6
-OPORI               10A2
-ORIMATCH            1122
+OPBCLR              1122
+OPCMPI              10EA
+OPORI               10B2
+OPORI0              10EA
+OPSTATBCLR          1152
+ORIMATCH            1188
+PRINTINVALID        1180
 REG0                0
 REG1                1
 REG2                2
@@ -280,8 +340,10 @@ S2W                 0
 S3B                 1
 S3L                 2
 S3W                 3
+SECNIB              F
 SIX                 6
 START               1000
+STATBCLRMATCH       1196
 TEST_END            2005
 TEST_START          2000
 THIRTEEN            D
