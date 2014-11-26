@@ -10,11 +10,12 @@ testData        EQU     $B
 START:
 
                 ORI     #testData,D1
-                BCLR    #4, D
+                BCLR    #4, D4
 
                 SIMHALT
 
                 END    START
+
 
 
 *~Font name~Courier Neqqw~
