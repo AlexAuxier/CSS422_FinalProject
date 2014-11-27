@@ -1,6 +1,6 @@
 00002000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 11/26/2014 2:36:17 PM
+Created On: 2014-11-26 16:49:13
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      : ORI Test File
@@ -13,12 +13,13 @@ Created On: 11/26/2014 2:36:17 PM
 00002000                             9                  ORG     $2000
 00002000                            10  START:
 00002000                            11  
-00002000  0012 0002                 12                  ORI.B     #2,(A2)
-00002004                            13  
-00002004                            14  
-00002004  FFFF FFFF                 15                  SIMHALT
-00002008                            16  
-00002008                            17                  END    START
+00002000  0052 0002                 12                  ORI     #2,(A2)
+00002004  0092 05F5E0FC             13                  ORI.L  #99999996,(A2)
+0000200A                            14  
+0000200A                            15  
+0000200A  FFFF FFFF                 16                  SIMHALT
+0000200E                            17  
+0000200E                            18                  END    START
 
 No errors detected
 No warnings generated

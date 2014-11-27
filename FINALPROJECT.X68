@@ -8,7 +8,7 @@ CR          EQU     $0D
 LF          EQU     $0A
   
 test_start  EQU     $00002000   ; defined starting address
-test_end    EQU     $00002005   ; defined ending address
+test_end    EQU     $00002009   ; defined ending address
      
 zero        EQU     $00         ; defined hex value 0
 one         EQU     $01         ; defined hex value 1 
@@ -225,7 +225,7 @@ opORIB  LEA         dispByte, A1        ; Display byte
         BRA         LOOP
         
         
-opORIW  LEA         dispByte, A1        ; Display byte
+opORIW  LEA         dispWord, A1        ; Display byte
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
         
@@ -263,7 +263,7 @@ opORIW  LEA         dispByte, A1        ; Display byte
         
         BRA         LOOP
      
-opORIL  LEA         dispByte, A1        ; Display byte
+opORIL  LEA         dispLong, A1        ; Display byte
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
         
@@ -969,6 +969,7 @@ dispD7      DC.B    'D7', 0
            
            
            
+
 
 
 *~Font name~Courier New~

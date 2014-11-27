@@ -10,11 +10,13 @@ testData        EQU     $B
 START:
 
                 ORI     #2,(A2)
+                ORI.L  #99999996,(A2)
 
 
                 SIMHALT
 
                 END    START
+
 
 
 
