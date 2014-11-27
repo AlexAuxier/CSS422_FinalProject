@@ -99,16 +99,17 @@ LOOP    CLR         D1                  ; clear out D1
 
 braZero CLR         D2                  ; first nibble is 0, 3 opcodes are possible 
         MOVE.B      D1, D2              ; clear out D2 and copy D1 back in
-        AND.B       $0F, D2             ; set first nibble to 0
+        AND.B       #secNib, D2             ; set first nibble to 0
  
         CMP.B       #zero, D2           ; compare second nibble to 0
         BEQ         opORI               ; branch to ORI method
         CMP.B       #twelve, D2         ; compare second nibble to 12
         BEQ         opCMPI              ; branch to CMPI method
-        CMP.B       #one,D2             ; Test for static BCLR
-        BEQ         opStatBCLR          ; branch to BCLR
         CMP.B       #eight,D2           ; Test for static BCLR
         BEQ         opBCLR
+        AND         #one,D2            ; Sets all bits to 0 except for first bit if it is 1
+        CMP.B       #one,D2          ; if it is one then there is a chance it is dynamic BCLR
+        BEQ         opDynBCLR
         BRA         printInvalid
         
         
@@ -308,8 +309,12 @@ opCMPI  LEA         CMPImatch, A1       ; we know that the opcode will be CMPI, 
         MOVE.B      (A0)+, D1
         MOVE.B      D1,D2               ; copy data over
         ASR         #6,D2               ; shifts 6 bits over to read just the size        
-        MOVE        D2,D3               ; store size into D3
-        CLR         D2
+        CMP.B       #zero,D2
+        BEQ         opCMPIB
+        CMP.B       #one,D2
+        BEQ         opCMPIW
+        CMP.B       #two,D2
+        BEQ         opCMPIL
         
         MOVE.B      D1,D2               ; Reload D2 with the same byte to get mode
         ASL         #two,D2             ; Moving two bits over to isolate and remove the size
@@ -330,34 +335,162 @@ opCMPI  LEA         CMPImatch, A1       ; we know that the opcode will be CMPI, 
         
         BRA         LOOP                ; go back to the loop
 
+opCMPIB LEA         dispByte, A1        ; Display byte
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        LEA         space, A1           ; Display space
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        CLR         D2
+        MOVE.B      D1,D2
+        ASR         #three,D2
+        AND         #seven,D2
+        CLR         D3        
+        MOVE.B      D1,D3
+        AND         #seven,D3
+        
+        CLR         D1
+        MOVE.W      (A0)+, D1
+        
+        LEA         hashTag, A1           ; Display space
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        MOVE.B      #3, D0
+        TRAP        #15
+        
+        LEA         comma, A1           ; Display space
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        JSR         printEA
+        
+        LEA        	newLine, A1           ; Display space
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
 
+        BRA         LOOP
+
+opCMPIW LEA         dispWord, A1        ; Display byte
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        LEA         space, A1           ; Display space
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        CLR         D2
+        MOVE.B      D1,D2
+        ASR         #three,D2
+        AND         #seven,D2
+        CLR         D3        
+        MOVE.B      D1,D3
+        AND         #seven,D3
+        
+        CLR         D1
+        MOVE.W      (A0)+, D1
+        
+        LEA         hashTag, A1           ; Display space
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        MOVE.B      #3, D0
+        TRAP        #15
+        
+        LEA         comma, A1           ; Display space
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        JSR         printEA
+        
+        LEA        	newLine, A1           ; Display space
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        BRA         LOOP
+
+opCMPIL LEA         dispLong, A1        ; Display byte
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        LEA         space, A1           ; Display space
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        CLR         D2
+        MOVE.B      D1,D2
+        ASR         #three,D2
+        AND         #seven,D2
+        CLR         D3        
+        MOVE.B      D1,D3
+        AND         #seven,D3
+        
+        CLR         D1
+        MOVE.W      (A0)+, D1
+        
+        LEA         hashTag, A1           ; Display space
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        MOVE.B      #3, D0
+        TRAP        #15
+        
+        LEA         comma, A1           ; Display space
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        JSR         printEA
+        
+        LEA        	newLine, A1           ; Display space
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        BRA         LOOP
 
 opBCLR          LEA         BCLRmatch, A1       ; we know that the opcode will be CMPI, so load A1 to print message
                 MOVE.B      #14, D0             ; command for trap call to display message
                 TRAP        #15                 ; trap call
-                
-                ASR         #one,D2             ; Shift to the right to remove the 1
-                MOVE.B      D2,D3               ; Store register into D3
-                
-                CLR         D2
-                MOVE.B      (A0)+,D1
-                MOVE.B      D1,D2
-                ASR         #two,D2             ; Shift two bits over in order to put mode into the first nibble
-                AND         #secNib,D2          ; Clear first nibble
-                ASR         #one,D2             ; shift to remove register and have just the mode
-                MOVE.B      D2,D4               ; Move mode into D4
-                CLR         D2
-                
-                MOVE.B      D1,D2               ; Move data back into D2 to retrieve the register
-                ASL         #one,D2             ; shift one to the left to move node to other nibble
-                AND         #secNib,D2          ; Clear other nibble
-                ASR         #one,D2             ; Move register back 
-                MOVE.B      D2,D5               ; Store EA register
-                
 
-                CLR         D2                
+                LEA         space, A1           ; Display space
+                MOVE.B      #14, D0             ; command for trap call to display message
+                TRAP        #15                 ; trap call
+                
+                CLR         D2
+                MOVE.B      (A0)+, D1
+                MOVE.B      D1,D2               ; copy data over
+                ASR         #three,D2           ; Shift to the right to remove register
+                AND         #seven,D2           ; Sets other bits to 0 and leave Mode the same
+                
+                CLR         D3                  ; Clear D3 so we can move D1 in
+                MOVE.B      D1,D3               ; Move othr byte in
+                AND         #seven,D3           ; Set everything besides register to 0
+                
+                CLR         D1
+                MOVE.W      (A0)+, D1
+               
+                
+                LEA         hashTag, A1           ; Display space
+                MOVE.B      #14, D0             ; command for trap call to display message
+                TRAP        #15                 ; trap call
         
-opStatBCLR      LEA         BCLRmatch, A1       ; we know that the opcode will be BCLR, so load A1 to print message
+                MOVE.B      #3, D0
+                TRAP        #15
+        
+                LEA         comma, A1           ; Display space
+                MOVE.B      #14, D0             ; command for trap call to display message
+                TRAP        #15                 ; trap call
+                
+                JSR         printEA
+        
+                LEA        	newLine, A1           ; Display space
+                MOVE.B      #14, D0             ; command for trap call to display message
+                TRAP        #15                 ; trap call
+                
+                
+                BRA         LOOP                
+        
+opDynBCLR      LEA         BCLRmatch, A1       ; we know that the opcode will be BCLR, so load A1 to print message
                 MOVE.B      #14, D0             ; command for trap call to display message
                 TRAP        #15                 ; trap call
                 
@@ -969,6 +1102,7 @@ dispD7      DC.B    'D7', 0
            
            
            
+
 
 
 
