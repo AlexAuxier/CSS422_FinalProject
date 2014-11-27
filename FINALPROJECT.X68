@@ -263,7 +263,43 @@ opORIW  LEA         dispByte, A1        ; Display byte
         
         BRA         LOOP
      
-opORIL  
+opORIL  LEA         dispByte, A1        ; Display byte
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        LEA         space, A1           ; Display space
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        CLR         D2
+        MOVE.B      D1,D2
+        ASR         #three,D2
+        AND         #seven,D2
+        CLR         D3        
+        MOVE.B      D1,D3
+        AND         #seven,D3
+        
+        CLR         D1
+        MOVE.L      (A0)+, D1
+        
+        LEA         hashTag, A1           ; Display space
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        MOVE.B      #3, D0
+        TRAP        #15
+        
+        LEA         comma, A1           ; Display space
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        JSR         printEA
+        
+        LEA        	newLine, A1           ; Display space
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        BRA         LOOP
          
 opCMPI  LEA         CMPImatch, A1       ; we know that the opcode will be CMPI, so load A1 to print message
         MOVE.B      #14, D0             ; command for trap call to display message
@@ -933,6 +969,7 @@ dispD7      DC.B    'D7', 0
            
            
            
+
 
 *~Font name~Courier New~
 *~Font size~10~
