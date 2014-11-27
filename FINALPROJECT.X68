@@ -490,24 +490,50 @@ opBCLR          LEA         BCLRmatch, A1       ; we know that the opcode will b
                 
                 BRA         LOOP                
         
-opDynBCLR      LEA         BCLRmatch, A1       ; we know that the opcode will be BCLR, so load A1 to print message
+opDynBCLR       
+                CLR         D1
+                MOVE.B      (A0)+,D1            ; Copy second byte in
+                MOVE.B      D1,D3               ; Will use D4 to store in the source register
+                ASR         #one,D3             ; Shift register over to the end
+                AND         #seven,D3           ; Change all bits except for the register to 0. Source Register is now in D4
+                
+                MOVE.B      D1,D2
+                ASR         #six,D2             ; Removing mode and register to check BCLR bits
+                CMP         #two,D2             ; Checking the static bits to make sure it is BCLR
+                BNE         printInvalid        ; If not equal, than this is not BCLR or any other mode we're dealing with
+
+                
+                LEA         BCLRmatch, A1       ; we now know that the opcode will be BCLR, so load A1 to print message
+                MOVE.B      #14, D0             ; command for trap call to display message
+                TRAP        #15                 ; trap call  
+                
+                LEA         space, A1           ; Display space
+                MOVE.B      #14, D0             ; command for trap call to display message
+                TRAP        #15                 ; trap call
+                
+                MOVE.B      #zero,D2                
+                JSR         printEA
+                
+                LEA         comma, A1           ; Display space
                 MOVE.B      #14, D0             ; command for trap call to display message
                 TRAP        #15                 ; trap call
                 
                 CLR         D2
-                MOVE.B      (A0)+,D1
-                MOVE.B      D1,D2
-                ASR         #two,D2             ; Shift two bits over in order to put mode into the first nibble
-                AND         #secNib,D2          ; Clear first nibble
-                ASR         #one,D2             ; shift to remove register and have just the mode
-                MOVE.B      D2,D3               ; Move mode into D3
-                CLR         D2
+                MOVE.B      D1,D2               ; Using D2 to store EA mode
+                ASR         #three,D2           ; Remove/shift the register out
+                AND         #seven,D2           ; Change all bits except for the mode bits to 0
                 
-                MOVE.B      D1,D2               ; Move data back into D2 to retrieve the register
-                ASL         #one,D2             ; shift one to the left to move node to other nibble
-                AND         #secNib,D2          ; Clear other nibble
-                ASR         #one,D2             ; Move register back 
-                MOVE.B      D2,D4               ; Store register
+                CLR         D3                  ; Clearing D3 to avoid mashing data
+                MOVE.B      D1,D3               ; Moving byte into D3. Using D3 to store EA register
+                AND         #seven,D3           ; Change all bits except for register bits to 0
+                
+
+                JSR         printEA
+        
+                LEA        	newLine, A1           ; Display space
+                MOVE.B      #14, D0             ; command for trap call to display message
+                TRAP        #15                 ; trap call            
+
 
                 BRA         LOOP                ; go back to the loop
  
@@ -1090,6 +1116,7 @@ dispA5      DC.B    'A5', 0
 dispA6      DC.B    'A6', 0
 dispA7      DC.B    'A7', 0
 
+dispD       DC.B    'D',0
 dispD0      DC.B    'D0', 0
 dispD1      DC.B    'D1', 0
 dispD2      DC.B    'D2', 0
@@ -1102,6 +1129,7 @@ dispD7      DC.B    'D7', 0
            
            
            
+
 
 
 

@@ -1,6 +1,6 @@
 00002000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 2014-11-25 18:41:11
+Created On: 11/27/2014 12:34:30 AM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      : BCLR Test File
@@ -12,13 +12,11 @@ Created On: 2014-11-25 18:41:11
 00000000                             8  
 00002000                             9                  ORG     $2000
 00002000                            10  START:
-00002000                            11  
-00002000  0041 000B                 12                  ORI     #testData,D1
-00002004  0884 0004                 13                  BCLR    #4, D4
-00002008                            14  
-00002008  FFFF FFFF                 15                  SIMHALT
-0000200C                            16  
-0000200C                            17                  END    START
+00002000  0584                      11                  BCLR    D2, D4
+00002002                            12  
+00002002  FFFF FFFF                 13                  SIMHALT
+00002006                            14  
+00002006                            15                  END    START
 
 No errors detected
 No warnings generated

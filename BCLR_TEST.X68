@@ -8,13 +8,15 @@ testData        EQU     $B
 
                 ORG     $2000
 START:
-
-                ORI     #testData,D1
-                BCLR    #4, D4
+                BCLR    D2, D4
 
                 SIMHALT
 
                 END    START
+
+
+
+
 
 
 
