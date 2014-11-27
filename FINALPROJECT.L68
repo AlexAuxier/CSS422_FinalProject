@@ -1,6 +1,6 @@
 00001000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 2014-11-26 16:50:38
+Created On: 11/26/2014 11:17:33 PM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -68,7 +68,7 @@ Created On: 2014-11-26 16:50:38
 0000100C  4241                      64  LOOP    CLR         D1                  ; clear out D1
 0000100E  4242                      65          CLR         D2                  ; clear out D2
 00001010  B1CA                      66          CMPA.L      A2, A0              ; compare starting and ending addresses
-00001012  6E00 099E                 67          BGT         endProg             ; if A0 > A1, we've finished, end program
+00001012  6E00 0B10                 67          BGT         endProg             ; if A0 > A1, we've finished, end program
 00001016  1218                      68          MOVE.B      (A0)+, D1           ; load byte to D1 and increment A0 to next byte
 00001018  1401                      69          MOVE.B      D1, D2              ; copy byte to D2 for manipulation
 0000101A  E882                      70          ASR.L       #four, D2           ; get first nibble in D2
@@ -76,900 +76,1033 @@ Created On: 2014-11-26 16:50:38
 0000101C  B43C 0000                 72          CMP.B       #zero, D2           ; compare with 0
 00001020  6700 0064                 73          BEQ         braZero             ; branch out to zero method
 00001024  B43C 0001                 74          CMP.B       #one, D2            ; compare with 1
-00001028  6700 0088                 75          BEQ         braOne              ; branch out to one method
+00001028  6700 008C                 75          BEQ         braOne              ; branch out to one method
 0000102C  B43C 0002                 76          CMP.B       #two, D2            ; compare with 2    
-00001030  6700 0084                 77          BEQ         braTwo              ; branch out to two method
+00001030  6700 0088                 77          BEQ         braTwo              ; branch out to two method
 00001034  B43C 0003                 78          CMP.B       #three, D2          ; compare with 3
-00001038  6700 007C                 79          BEQ         braThree            ; branch out to three method
+00001038  6700 0080                 79          BEQ         braThree            ; branch out to three method
 0000103C  B43C 0004                 80          CMP.B       #four, D2           ; compare with 4
-00001040  6700 0074                 81          BEQ         braFour             ; branch out to four method
+00001040  6700 0078                 81          BEQ         braFour             ; branch out to four method
 00001044  B43C 0005                 82          CMP.B       #five, D2           ; compare with 5
-00001048  6700 0088                 83          BEQ         braFive             ; branch out to five method
+00001048  6700 008C                 83          BEQ         braFive             ; branch out to five method
 0000104C  B43C 0006                 84          CMP.B       #six, D2            ; compare with 6
-00001050  6700 0084                 85          BEQ         braSix              ; branch out to six method
+00001050  6700 0088                 85          BEQ         braSix              ; branch out to six method
 00001054  B43C 0008                 86          CMP.B       #eight, D2          ; compare with 8
-00001058  6700 00A8                 87          BEQ         braEight            ; branch out to eight method
+00001058  6700 00AC                 87          BEQ         braEight            ; branch out to eight method
 0000105C  B43C 0009                 88          CMP.B       #nine, D2           ; compare with 9
-00001060  6700 00A0                 89          BEQ         braNine             ; branch out to nine method
+00001060  6700 00A4                 89          BEQ         braNine             ; branch out to nine method
 00001064  B43C 000B                 90          CMP.B       #eleven, D2         ; compare with 11
-00001068  6700 009C                 91          BEQ         braEleven           ; branch out to eleven method
+00001068  6700 00A0                 91          BEQ         braEleven           ; branch out to eleven method
 0000106C  B43C 000C                 92          CMP.B       #twelve, D2         ; compare with 12
-00001070  6700 0094                 93          BEQ         braTwelve           ; branch out to twelve method
+00001070  6700 0098                 93          BEQ         braTwelve           ; branch out to twelve method
 00001074  B43C 000D                 94          CMP.B       #thirteen, D2       ; compare with 13
-00001078  6700 0090                 95          BEQ         braThirteen         ; branch out to thirteen method
+00001078  6700 0094                 95          BEQ         braThirteen         ; branch out to thirteen method
 0000107C  B43C 000E                 96          CMP.B       #fourteen, D2       ; compare with 14
-00001080  6700 0088                 97          BEQ         braFourteen         ; branch out to fourteen method
+00001080  6700 008C                 97          BEQ         braFourteen         ; branch out to fourteen method
 00001084  6086                      98          BRA         loop
 00001086                            99  
 00001086  4242                     100  braZero CLR         D2                  ; first nibble is 0, 3 opcodes are possible 
 00001088  1401                     101          MOVE.B      D1, D2              ; clear out D2 and copy D1 back in
-0000108A  C438 000F                102          AND.B       $0F, D2             ; set first nibble to 0
+0000108A  C43C 000F                102          AND.B       #secNib, D2             ; set first nibble to 0
 0000108E                           103   
 0000108E  B43C 0000                104          CMP.B       #zero, D2           ; compare second nibble to 0
-00001092  6700 00AA                105          BEQ         opORI               ; branch to ORI method
+00001092  6700 00AE                105          BEQ         opORI               ; branch to ORI method
 00001096  B43C 000C                106          CMP.B       #twelve, D2         ; compare second nibble to 12
-0000109A  6700 01F6                107          BEQ         opCMPI              ; branch to CMPI method
-0000109E  B43C 0001                108          CMP.B       #one,D2             ; Test for static BCLR
-000010A2  6700 0256                109          BEQ         opStatBCLR          ; branch to BCLR
-000010A6  B43C 0008                110          CMP.B       #eight,D2           ; Test for static BCLR
-000010AA  6700 021E                111          BEQ         opBCLR
-000010AE  6000 0902                112          BRA         printInvalid
-000010B2                           113          
-000010B2                           114          
-000010B2  6000 0274                115  braOne  BRA         opMOVEB             ; we know that there is only one opcode that is MOVE.B
-000010B6                           116  
-000010B6                           117  braTwo  ; there are two opCodes available, MOVE.L, or MOVEA.L
-000010B6                           118  
-000010B6                           119  braThree ; there are two opCodes available, MOVE.W, or MOVEA.W
-000010B6                           120  
-000010B6  4242                     121  braFour CLR         D2                  ; first nibble is 4, 5 opcodes are possible 
-000010B8  1401                     122          MOVE.B      D1, D2              ; clear out D2 and copy D1 back in
-000010BA  C438 000F                123          AND.B       $0F, D2             ; set first nibble to 0
-000010BE                           124   
-000010BE  B43C 0004                125          CMP.B       #four, D2           ; compare second nibble to 4
-000010C2  6700 0288                126          BEQ         opNEG               ; branch to NEG method
-000010C6  B43C 000E                127          CMP.B       #fourteen, D2       ; compare second nibble to E
-000010CA  6700 028C                128          BEQ         opRTSJSR            ; branch to JSR or RTS method
-000010CE  6000 0288                129          BRA         opMOVEMLEA          ; otherwise, branch to MOVEM or LEA method
-000010D2                           130  
-000010D2  6000 0284                131  braFive BRA         opSUBQ              ; we know that there is only one opcode that is SUBQ
-000010D6                           132  
-000010D6  4242                     133  braSix  CLR         D2                  ; first nibble is 6, 5 opcodes are possible 
-000010D8  1401                     134          MOVE.B      D1, D2              ; clear out D2 and copy D1 back in
-000010DA  C438 000F                135          AND.B       $0F, D2             ; set first nibble to 0
-000010DE                           136   
-000010DE  B43C 0000                137          CMP.B       #zero, D2           ; compare second nibble to 0
-000010E2  6700 0280                138          BEQ         opBRA               ; branch to BRA method
-000010E6  B43C 0005                139          CMP.B       #five, D2           ; compare second nibble to 5
-000010EA  6700 0290                140          BEQ         opBCS               ; branch to BCS method
-000010EE  B43C 0008                141          CMP.B       #eight, D2          ; compare second nibble to 8
-000010F2  6700 0294                142          BEQ         opBVC               ; branch to BCS method
-000010F6  B43C 000C                143          CMP.B       #twelve, D2         ; compare second nibble to 12
-000010FA  6700 0298                144          BEQ         opBGE               ; branch to BGE method
-000010FE  6000 02A0                145          BRA         opBLT               ; otherwise, branch to BLT method
-00001102                           146  
-00001102                           147  braEight    ; there are two opCodes available DIVS, or OR
-00001102                           148  
-00001102  6000 02A8                149  braNine BRA         opSUB               ; we know that there is only one opcode that is SUB
-00001106                           150  
-00001106                           151  braEleven   ; there are two opCodes available EOR, or CMP
-00001106                           152  
-00001106  6000 02B0                153  braTwelve   BRA     opMULS              ; we know that there is only one opcode that is MULS    
-0000110A                           154    
-0000110A                           155  braThirteen ; there are two opCodes available ADD, or ADDA
-0000110A                           156  
-0000110A  4242                     157  braFourteen CLR         D2                  ; first nibble is E, 5 opcodes are possible 
-0000110C  1401                     158              MOVE.B      D1, D2              ; clear out D2 and copy D1 back in
-0000110E  C438 000F                159              AND.B       $0F, D2             ; set first nibble to 0
-00001112                           160   
-00001112  B43C 0000                161              CMP.B       #zero, D2           ; compare second nibble to 0
-00001116  6700 02B8                162              BEQ         opASR               ; branch to ASR method
-0000111A  B43C 0001                163              CMP.B       #one, D2            ; compare second nibble to 1
-0000111E  6700 02A4                164              BEQ         opASL               ; branch to ASL method
-00001122  B43C 0002                165              CMP.B       #two, D2            ; compare second nibble to 2
-00001126  6700 02C0                166              BEQ         opLSR               ; branch to LSR method
-0000112A  B43C 0003                167              CMP.B       #three, D2          ; compare second nibble to 3
-0000112E  6700 02AC                168              BEQ         opLSL               ; branch to LSL method
-00001132  B43C 0006                169              CMP.B       #six, D2            ; compare second nibble to 6
-00001136  6700 02C8                170              BEQ         opROR               ; branch to ROR method
-0000113A  6000 02B8                171              BRA         opROL               ; otherwise, branch to ROL method
-0000113E                           172  
-0000113E  43F9 000019CB            173  opORI   LEA         ORImatch, A1        ; we know that the opcode will be ORI, so load A1 to print message
-00001144  103C 000E                174          MOVE.B      #14, D0             ; command for trap call to display message
-00001148  4E4F                     175          TRAP        #15                 ; trap call
-0000114A                           176          
-0000114A  1218                     177          MOVE.B      (A0)+, D1
-0000114C  1401                     178          MOVE.B      D1,D2               ; copy data over
-0000114E  EC42                     179          ASR         #6,D2               ; shifts 6 bits over to read just the size        
-00001150  B43C 0000                180          CMP.B       #zero,D2
-00001154  6700 0016                181          BEQ         opORIB
-00001158  B43C 0001                182          CMP.B       #one,D2
-0000115C  6700 0070                183          BEQ         opORIW
-00001160  B43C 0002                184          CMP.B       #two,D2
-00001164  6700 00CA                185          BEQ         opORIL
-00001168                           186          
-00001168  6000 0848                187          BRA         printInvalid
-0000116C                           188          
-0000116C  43F9 00001A4D            189  opORIB  LEA         dispByte, A1        ; Display byte
-00001172  103C 000E                190          MOVE.B      #14, D0             ; command for trap call to display message
-00001176  4E4F                     191          TRAP        #15                 ; trap call
-00001178                           192          
-00001178  43F9 000019BA            193          LEA         space, A1           ; Display space
-0000117E  103C 000E                194          MOVE.B      #14, D0             ; command for trap call to display message
-00001182  4E4F                     195          TRAP        #15                 ; trap call
-00001184                           196          
-00001184  4242                     197          CLR         D2
-00001186  1401                     198          MOVE.B      D1,D2
-00001188  E642                     199          ASR         #three,D2
-0000118A  C47C 0007                200          AND         #seven,D2
-0000118E  4243                     201          CLR         D3        
-00001190  1601                     202          MOVE.B      D1,D3
-00001192  C67C 0007                203          AND         #seven,D3
-00001196                           204          
-00001196  4241                     205          CLR         D1
-00001198  3218                     206          MOVE.W      (A0)+, D1
-0000119A                           207          
-0000119A  43F9 000019BD            208          LEA         hashTag, A1           ; Display space
-000011A0  103C 000E                209          MOVE.B      #14, D0             ; command for trap call to display message
-000011A4  4E4F                     210          TRAP        #15                 ; trap call
-000011A6                           211          
-000011A6  103C 0003                212          MOVE.B      #3, D0
-000011AA  4E4F                     213          TRAP        #15
-000011AC                           214          
-000011AC  43F9 000019C1            215          LEA         comma, A1           ; Display space
-000011B2  103C 000E                216          MOVE.B      #14, D0             ; command for trap call to display message
-000011B6  4E4F                     217          TRAP        #15                 ; trap call
-000011B8                           218          
-000011B8  4EB9 0000140C            219          JSR         printEA
-000011BE                           220          
-000011BE  43F9 000019B6            221          LEA         newLine, A1           ; Display space
-000011C4  103C 000E                222          MOVE.B      #14, D0             ; command for trap call to display message
-000011C8  4E4F                     223          TRAP        #15                 ; trap call
-000011CA                           224          
-000011CA  6000 FE40                225          BRA         LOOP
-000011CE                           226          
-000011CE                           227          
-000011CE  43F9 00001A50            228  opORIW  LEA         dispWord, A1        ; Display byte
-000011D4  103C 000E                229          MOVE.B      #14, D0             ; command for trap call to display message
-000011D8  4E4F                     230          TRAP        #15                 ; trap call
-000011DA                           231          
-000011DA  43F9 000019BA            232          LEA         space, A1           ; Display space
-000011E0  103C 000E                233          MOVE.B      #14, D0             ; command for trap call to display message
-000011E4  4E4F                     234          TRAP        #15                 ; trap call
-000011E6                           235          
-000011E6  4242                     236          CLR         D2
-000011E8  1401                     237          MOVE.B      D1,D2
-000011EA  E642                     238          ASR         #three,D2
-000011EC  C47C 0007                239          AND         #seven,D2
-000011F0  4243                     240          CLR         D3        
-000011F2  1601                     241          MOVE.B      D1,D3
-000011F4  C67C 0007                242          AND         #seven,D3
-000011F8                           243          
-000011F8  4241                     244          CLR         D1
-000011FA  3218                     245          MOVE.W      (A0)+, D1
-000011FC                           246          
-000011FC  43F9 000019BD            247          LEA         hashTag, A1           ; Display space
-00001202  103C 000E                248          MOVE.B      #14, D0             ; command for trap call to display message
-00001206  4E4F                     249          TRAP        #15                 ; trap call
-00001208                           250          
-00001208  103C 0003                251          MOVE.B      #3, D0
-0000120C  4E4F                     252          TRAP        #15
-0000120E                           253          
-0000120E  43F9 000019C1            254          LEA         comma, A1           ; Display space
-00001214  103C 000E                255          MOVE.B      #14, D0             ; command for trap call to display message
-00001218  4E4F                     256          TRAP        #15                 ; trap call
-0000121A                           257          
-0000121A  4EB9 0000140C            258          JSR         printEA
-00001220                           259          
-00001220  43F9 000019B6            260          LEA         newLine, A1           ; Display space
-00001226  103C 000E                261          MOVE.B      #14, D0             ; command for trap call to display message
-0000122A  4E4F                     262          TRAP        #15                 ; trap call
-0000122C                           263          
-0000122C  6000 FDDE                264          BRA         LOOP
-00001230                           265       
-00001230  43F9 00001A53            266  opORIL  LEA         dispLong, A1        ; Display byte
-00001236  103C 000E                267          MOVE.B      #14, D0             ; command for trap call to display message
-0000123A  4E4F                     268          TRAP        #15                 ; trap call
-0000123C                           269          
-0000123C  43F9 000019BA            270          LEA         space, A1           ; Display space
-00001242  103C 000E                271          MOVE.B      #14, D0             ; command for trap call to display message
-00001246  4E4F                     272          TRAP        #15                 ; trap call
-00001248                           273          
-00001248  4242                     274          CLR         D2
-0000124A  1401                     275          MOVE.B      D1,D2
-0000124C  E642                     276          ASR         #three,D2
-0000124E  C47C 0007                277          AND         #seven,D2
-00001252  4243                     278          CLR         D3        
-00001254  1601                     279          MOVE.B      D1,D3
-00001256  C67C 0007                280          AND         #seven,D3
-0000125A                           281          
-0000125A  4241                     282          CLR         D1
-0000125C  2218                     283          MOVE.L      (A0)+, D1
-0000125E                           284          
-0000125E  43F9 000019BD            285          LEA         hashTag, A1           ; Display space
-00001264  103C 000E                286          MOVE.B      #14, D0             ; command for trap call to display message
-00001268  4E4F                     287          TRAP        #15                 ; trap call
-0000126A                           288          
-0000126A  103C 0003                289          MOVE.B      #3, D0
-0000126E  4E4F                     290          TRAP        #15
-00001270                           291          
-00001270  43F9 000019C1            292          LEA         comma, A1           ; Display space
-00001276  103C 000E                293          MOVE.B      #14, D0             ; command for trap call to display message
-0000127A  4E4F                     294          TRAP        #15                 ; trap call
-0000127C                           295          
-0000127C  4EB9 0000140C            296          JSR         printEA
-00001282                           297          
-00001282  43F9 000019B6            298          LEA         newLine, A1           ; Display space
-00001288  103C 000E                299          MOVE.B      #14, D0             ; command for trap call to display message
-0000128C  4E4F                     300          TRAP        #15                 ; trap call
-0000128E                           301          
-0000128E  6000 FD7C                302          BRA         LOOP
-00001292                           303           
-00001292  43F9 000019CF            304  opCMPI  LEA         CMPImatch, A1       ; we know that the opcode will be CMPI, so load A1 to print message
-00001298  103C 000E                305          MOVE.B      #14, D0             ; command for trap call to display message
-0000129C  4E4F                     306          TRAP        #15                 ; trap call
-0000129E                           307                  
-0000129E  1218                     308          MOVE.B      (A0)+, D1
-000012A0  1401                     309          MOVE.B      D1,D2               ; copy data over
-000012A2  EC42                     310          ASR         #6,D2               ; shifts 6 bits over to read just the size        
-000012A4  3602                     311          MOVE        D2,D3               ; store size into D3
-000012A6  4242                     312          CLR         D2
-000012A8                           313          
-000012A8  1401                     314          MOVE.B      D1,D2               ; Reload D2 with the same byte to get mode
-000012AA  E542                     315          ASL         #two,D2             ; Moving two bits over to isolate and remove the size
-000012AC  1802                     316          MOVE.B      D2,D4               ; Move the mode and register to D4 and leave the size
-000012AE  4242                     317          CLR         D2                  ; Clear out data register
-000012B0  1404                     318          MOVE.B      D4,D2               ; Put data back into D2 with just the mode and register
-000012B2  EA42                     319          ASR         #five,D2            ; Shift the register out to get just the mode
-000012B4  1802                     320          MOVE.B      D2,D4               ; Store mode into D4
-000012B6  4242                     321          CLR         D2
-000012B8                           322          
-000012B8  1401                     323          MOVE.B      D1,D2               ; Getting the EA register
-000012BA  EB42                     324          ASL         #five,D2
-000012BC  1A02                     325          MOVE.B      D2,D5               ; Move just the register into D5
-000012BE  4242                     326          CLR         D2                  ; Clearing D2 to put data back
-000012C0  1405                     327          MOVE.B      D5,D2               ; Putting back the register
-000012C2  EA42                     328          ASR         #five,D2            ; Shifting bits in order to read the register
-000012C4  1A02                     329          MOVE.B      D2,D5               ; Store register into D5
-000012C6                           330          
-000012C6  6000 FD44                331          BRA         LOOP                ; go back to the loop
-000012CA                           332  
-000012CA                           333  
-000012CA                           334  
-000012CA  43F9 000019D4            335  opBCLR          LEA         BCLRmatch, A1       ; we know that the opcode will be CMPI, so load A1 to print message
-000012D0  103C 000E                336                  MOVE.B      #14, D0             ; command for trap call to display message
-000012D4  4E4F                     337                  TRAP        #15                 ; trap call
-000012D6                           338                  
-000012D6  E242                     339                  ASR         #one,D2             ; Shift to the right to remove the 1
-000012D8  1602                     340                  MOVE.B      D2,D3               ; Store register into D3
-000012DA                           341                  
-000012DA  4242                     342                  CLR         D2
-000012DC  1218                     343                  MOVE.B      (A0)+,D1
-000012DE  1401                     344                  MOVE.B      D1,D2
-000012E0  E442                     345                  ASR         #two,D2             ; Shift two bits over in order to put mode into the first nibble
-000012E2  C47C 000F                346                  AND         #secNib,D2          ; Clear first nibble
-000012E6  E242                     347                  ASR         #one,D2             ; shift to remove register and have just the mode
-000012E8  1802                     348                  MOVE.B      D2,D4               ; Move mode into D4
-000012EA  4242                     349                  CLR         D2
-000012EC                           350                  
-000012EC  1401                     351                  MOVE.B      D1,D2               ; Move data back into D2 to retrieve the register
-000012EE  E342                     352                  ASL         #one,D2             ; shift one to the left to move node to other nibble
-000012F0  C47C 000F                353                  AND         #secNib,D2          ; Clear other nibble
-000012F4  E242                     354                  ASR         #one,D2             ; Move register back 
-000012F6  1A02                     355                  MOVE.B      D2,D5               ; Store EA register
-000012F8                           356                  
-000012F8                           357  
-000012F8  4242                     358                  CLR         D2                
-000012FA                           359          
-000012FA  43F9 000019D4            360  opStatBCLR      LEA         BCLRmatch, A1       ; we know that the opcode will be BCLR, so load A1 to print message
-00001300  103C 000E                361                  MOVE.B      #14, D0             ; command for trap call to display message
-00001304  4E4F                     362                  TRAP        #15                 ; trap call
-00001306                           363                  
-00001306  4242                     364                  CLR         D2
-00001308  1218                     365                  MOVE.B      (A0)+,D1
-0000130A  1401                     366                  MOVE.B      D1,D2
-0000130C  E442                     367                  ASR         #two,D2             ; Shift two bits over in order to put mode into the first nibble
-0000130E  C47C 000F                368                  AND         #secNib,D2          ; Clear first nibble
-00001312  E242                     369                  ASR         #one,D2             ; shift to remove register and have just the mode
-00001314  1602                     370                  MOVE.B      D2,D3               ; Move mode into D3
-00001316  4242                     371                  CLR         D2
-00001318                           372                  
-00001318  1401                     373                  MOVE.B      D1,D2               ; Move data back into D2 to retrieve the register
-0000131A  E342                     374                  ASL         #one,D2             ; shift one to the left to move node to other nibble
-0000131C  C47C 000F                375                  AND         #secNib,D2          ; Clear other nibble
-00001320  E242                     376                  ASR         #one,D2             ; Move register back 
-00001322  1802                     377                  MOVE.B      D2,D4               ; Store register
-00001324                           378  
-00001324  6000 FCE6                379                  BRA         LOOP                ; go back to the loop
-00001328                           380   
-00001328  43F9 000019D9            381  opMOVEB LEA         MOVEmatch, A1       ; we know that the opcode will be MOVE.B, so load A1 to print message
-0000132E  103C 000E                382          MOVE.B      #14, D0             ; command for trap call to display message
-00001332  4E4F                     383          TRAP        #15                 ; trap call
-00001334  43F9 00001A4D            384          LEA         dispByte, A1        ; display byte
-0000133A  103C 000E                385          MOVE.B      #14, D0             ; command for trap call to display message
-0000133E  4E4F                     386          TRAP        #15                 ; trap call
-00001340  43F9 000019BA            387          LEA         space, A1           ; create spaces
-00001346  103C 000E                388          MOVE.B      #14, D0             ; command for trap call to display message
-0000134A  4E4F                     389          TRAP        #15                 ; trap call
-0000134C                           390  
-0000134C  43F9 000019E4            391  opNEG   LEA         NEGmatch, A1        ; we know that the opcode will be NEG, so load A1 to print message
-00001352  103C 000E                392          MOVE.B      #14, D0             ; command for trap call to display message
-00001356  4E4F                     393          TRAP        #15                 ; trap call
-00001358                           394  
-00001358                           395  opRTSJSR
-00001358                           396  
-00001358                           397  opMOVEMLEA
-00001358                           398  
-00001358  43F9 000019FA            399  opSUBQ  LEA         SUBQmatch, A1       ; we know that the opcode will be SUBQ, so load A1 to print message
-0000135E  103C 000E                400          MOVE.B      #14, D0             ; command for trap call to display message
-00001362  4E4F                     401          TRAP        #15                 ; trap call
-00001364                           402  
-00001364  43F9 000019FF            403  opBRA   LEA         BRAmatch, A1        ; we know that the opcode will be BRA, so load A1 to print message
-0000136A  103C 000E                404          MOVE.B      #14, D0             ; command for trap call to display message
-0000136E  4E4F                     405          TRAP        #15                 ; trap call
-00001370  43F9 000019BA            406          LEA         space, A1           ; create spaces
-00001376  103C 000E                407          MOVE.B      #14, D0             ; command for trap call to display message
-0000137A  4E4F                     408          TRAP        #15                 ; trap call
-0000137C                           409  
-0000137C  43F9 00001A03            410  opBCS   LEA         BCSmatch, A1        ; we know that the opcode will be BCS, so load A1 to print message
-00001382  103C 000E                411          MOVE.B      #14, D0             ; command for trap call to display message
-00001386  4E4F                     412          TRAP        #15                 ; trap call
-00001388                           413  
-00001388  43F9 00001A07            414  opBVC   LEA         BVCmatch, A1        ; we know that the opcode will be BVC, so load A1 to print message
-0000138E  103C 000E                415          MOVE.B      #14, D0             ; command for trap call to display message
-00001392  4E4F                     416          TRAP        #15                 ; trap call
-00001394                           417  
-00001394  43F9 00001A0B            418  opBGE   LEA         BGEmatch, A1        ; we know that the opcode will be BGE, so load A1 to print message
-0000139A  103C 000E                419          MOVE.B      #14, D0             ; command for trap call to display message
-0000139E  4E4F                     420          TRAP        #15                 ; trap call
-000013A0                           421  
-000013A0  43F9 00001A0F            422  opBLT   LEA         BLTmatch, A1        ; we know that the opcode will be BLT, so load A1 to print message
-000013A6  103C 000E                423          MOVE.B      #14, D0             ; command for trap call to display message
-000013AA  4E4F                     424          TRAP        #15                 ; trap call
-000013AC                           425  
-000013AC  43F9 00001A1B            426  opSUB   LEA         SUBmatch, A1        ; we know that the opcode will be SUB, so load A1 to print message
-000013B2  103C 000E                427          MOVE.B      #14, D0             ; command for trap call to display message
-000013B6  4E4F                     428          TRAP        #15                 ; trap call
-000013B8                           429  
-000013B8  43F9 00001A27            430  opMULS  LEA         MULSmatch, A1       ; we know that the opcode will be MULS, so load A1 to print message
-000013BE  103C 000E                431          MOVE.B      #14, D0             ; command for trap call to display message
-000013C2  4E4F                     432          TRAP        #15                 ; trap call
-000013C4                           433  
-000013C4  43F9 00001A41            434  opASL   LEA         ASLmatch, A1        ; we know that the opcode will be ASL, so load A1 to print message
-000013CA  103C 000E                435          MOVE.B      #14, D0             ; command for trap call to display message
-000013CE  4E4F                     436          TRAP        #15                 ; trap call
-000013D0                           437  
-000013D0  43F9 00001A3D            438  opASR   LEA         ASRmatch, A1        ; we know that the opcode will be ASR, so load A1 to print message
-000013D6  103C 000E                439          MOVE.B      #14, D0             ; command for trap call to display message
-000013DA  4E4F                     440          TRAP        #15                 ; trap call
-000013DC                           441  
-000013DC  43F9 00001A39            442  opLSL   LEA         LSLmatch, A1        ; we know that the opcode will be LSL, so load A1 to print message
-000013E2  103C 000E                443          MOVE.B      #14, D0             ; command for trap call to display message
-000013E6  4E4F                     444          TRAP        #15                 ; trap call
-000013E8                           445  
-000013E8  43F9 00001A35            446  opLSR   LEA         LSRmatch, A1        ; we know that the opcode will be LSR, so load A1 to print message
-000013EE  103C 000E                447          MOVE.B      #14, D0             ; command for trap call to display message
-000013F2  4E4F                     448          TRAP        #15                 ; trap call
-000013F4                           449  
-000013F4  43F9 00001A49            450  opROL   LEA         ROLmatch, A1        ; we know that the opcode will be ROL, so load A1 to print message
-000013FA  103C 000E                451          MOVE.B      #14, D0             ; command for trap call to display message
-000013FE  4E4F                     452          TRAP        #15                 ; trap call
-00001400                           453  
-00001400  43F9 00001A45            454  opROR   LEA         RORmatch, A1        ; we know that the opcode will be ROR, so load A1 to print message
-00001406  103C 000E                455          MOVE.B      #14, D0             ; command for trap call to display message
-0000140A  4E4F                     456          TRAP        #15                 ; trap call
-0000140C                           457  
-0000140C                           458  
-0000140C                           459  ***********************************************************************************************************
-0000140C                           460  *
-0000140C                           461  *                                           EA Print Check
-0000140C                           462  *
-0000140C                           463  ***********************************************************************************************************
-0000140C  48E7 FFFE                464  printEA     MOVEM.L  D0-D7/A0-A6, -(SP)
-00001410                           465  
-00001410  B43C 0000                466              CMP.B       #zero, D2
-00001414  6700 0026                467              BEQ         pDataReg
-00001418  B43C 0001                468              CMP.B       #one, D2
-0000141C  6700 00DE                469              BEQ         pAddrReg
-00001420  B43C 0002                470              CMP.B       #two, D2
-00001424  6700 0196                471              BEQ         pAddrDir
-00001428  B43C 0003                472              CMP.B       #three, D2
-0000142C  6700 02BA                473              BEQ         pAddrPost
-00001430  B43C 0004                474              CMP.B       #four, D2
-00001434  6700 043E                475              BEQ         pAddrDec
-00001438  6000 0572                476              BRA         invalid
-0000143C                           477  
-0000143C                           478  ***********************************************************************************************************
-0000143C                           479  * Data Register        
-0000143C  B63C 0000                480  pDataReg    CMP.B   #zero,D3
-00001440  6700 003A                481              BEQ     displayD0
-00001444  B63C 0001                482              CMP.B   #one,D3
-00001448  6700 0042                483              BEQ     displayD1
-0000144C  B63C 0002                484              CMP.B   #two,D3
-00001450  6700 004A                485              BEQ     displayD2
-00001454  B63C 0003                486              CMP.B   #three,D3
-00001458  6700 0052                487              BEQ     displayD3
-0000145C  B63C 0004                488              CMP.B   #four,D3
-00001460  6700 005A                489              BEQ     displayD4
-00001464  B63C 0005                490              CMP.B   #five,D3
-00001468  6700 0062                491              BEQ     displayD5
-0000146C  B63C 0006                492              CMP.B   #six,D3
-00001470  6700 006A                493              BEQ     displayD6
-00001474  B63C 0007                494              CMP.B   #seven,D3
-00001478  6700 0072                495              BEQ     displayD7
-0000147C                           496              
-0000147C  43F9 00001A6E            497  displayD0   LEA         dispD0, A1          ; Display space
-00001482  103C 000E                498              MOVE.B      #14, D0             ; command for trap call to display message
-00001486  4E4F                     499              TRAP        #15                 ; trap call
-00001488  6000 0522                500              BRA         endSUB              ; go to the end of the subroutine
-0000148C                           501              
-0000148C  43F9 00001A71            502  displayD1   LEA         dispD1, A1          ; Display space
-00001492  103C 000E                503              MOVE.B      #14, D0             ; command for trap call to display message
-00001496  4E4F                     504              TRAP        #15                 ; trap call
-00001498  6000 0512                505              BRA         endSUB              ; go to the end of the subroutine
-0000149C                           506  
-0000149C  43F9 00001A74            507  displayD2   LEA         dispD2, A1          ; Display space
-000014A2  103C 000E                508              MOVE.B      #14, D0             ; command for trap call to display message
-000014A6  4E4F                     509              TRAP        #15                 ; trap call
-000014A8  6000 0502                510              BRA         endSUB              ; go to the end of the subroutine
-000014AC                           511  
-000014AC  43F9 00001A77            512  displayD3   LEA         dispD3, A1          ; Display space
-000014B2  103C 000E                513              MOVE.B      #14, D0             ; command for trap call to display message
-000014B6  4E4F                     514              TRAP        #15                 ; trap call
-000014B8  6000 04F2                515              BRA         endSUB              ; go to the end of the subroutine
-000014BC                           516  
-000014BC  43F9 00001A7A            517  displayD4   LEA         dispD4, A1          ; Display space
-000014C2  103C 000E                518              MOVE.B      #14, D0             ; command for trap call to display message
-000014C6  4E4F                     519              TRAP        #15                 ; trap call
-000014C8  6000 04E2                520              BRA         endSUB              ; go to the end of the subroutine
-000014CC                           521  
-000014CC  43F9 00001A7D            522  displayD5   LEA         dispD5, A1          ; Display space
-000014D2  103C 000E                523              MOVE.B      #14, D0             ; command for trap call to display message
-000014D6  4E4F                     524              TRAP        #15                 ; trap call
-000014D8  6000 04D2                525              BRA         endSUB              ; go to the end of the subroutine
-000014DC                           526  
-000014DC  43F9 00001A80            527  displayD6   LEA         dispD6, A1          ; Display space
-000014E2  103C 000E                528              MOVE.B      #14, D0             ; command for trap call to display message
-000014E6  4E4F                     529              TRAP        #15                 ; trap call
-000014E8  6000 04C2                530              BRA         endSUB              ; go to the end of the subroutine
-000014EC                           531  
-000014EC  43F9 00001A83            532  displayD7   LEA         dispD7, A1          ; Display space
-000014F2  103C 000E                533              MOVE.B      #14, D0             ; command for trap call to display message
-000014F6  4E4F                     534              TRAP        #15                 ; trap call
-000014F8  6000 04B2                535              BRA         endSUB              ; go to the end of the subroutine
-000014FC                           536  ***********************************************************************************************************
-000014FC                           537  * Address Register
-000014FC  B63C 0000                538  pAddrReg    CMP.B   #zero,D3
-00001500  6700 003A                539              BEQ     displayA0
-00001504  B63C 0001                540              CMP.B   #one,D3
-00001508  6700 0042                541              BEQ     displayA1
-0000150C  B63C 0002                542              CMP.B   #two,D3
-00001510  6700 004A                543              BEQ     displayA2
-00001514  B63C 0003                544              CMP.B   #three,D3
-00001518  6700 0052                545              BEQ     displayA3
-0000151C  B63C 0004                546              CMP.B   #four,D3
-00001520  6700 005A                547              BEQ     displayA4
-00001524  B63C 0005                548              CMP.B   #five,D3
-00001528  6700 0062                549              BEQ     displayA5
-0000152C  B63C 0006                550              CMP.B   #six,D3
-00001530  6700 006A                551              BEQ     displayA6
-00001534  B63C 0007                552              CMP.B   #seven,D3
-00001538  6700 0072                553              BEQ     displayA7
-0000153C                           554              
-0000153C  43F9 00001A56            555  displayA0   LEA         dispA0, A1          ; Display space
-00001542  103C 000E                556              MOVE.B      #14, D0             ; command for trap call to display message
-00001546  4E4F                     557              TRAP        #15                 ; trap call
-00001548  6000 0462                558              BRA         endSUB              ; go to the end of the subroutine
-0000154C                           559              
-0000154C  43F9 00001A59            560  displayA1   LEA         dispA1, A1          ; Display space
-00001552  103C 000E                561              MOVE.B      #14, D0             ; command for trap call to display message
-00001556  4E4F                     562              TRAP        #15                 ; trap call
-00001558  6000 0452                563              BRA         endSUB              ; go to the end of the subroutine
-0000155C                           564  
-0000155C  43F9 00001A5C            565  displayA2   LEA         dispA2, A1          ; Display space
-00001562  103C 000E                566              MOVE.B      #14, D0             ; command for trap call to display message
-00001566  4E4F                     567              TRAP        #15                 ; trap call
-00001568  6000 0442                568              BRA         endSUB              ; go to the end of the subroutine
-0000156C                           569  
-0000156C  43F9 00001A5F            570  displayA3   LEA         dispA3, A1          ; Display space
-00001572  103C 000E                571              MOVE.B      #14, D0             ; command for trap call to display message
-00001576  4E4F                     572              TRAP        #15                 ; trap call
-00001578  6000 0432                573              BRA         endSUB              ; go to the end of the subroutine
-0000157C                           574  
-0000157C  43F9 00001A62            575  displayA4   LEA         dispA4, A1          ; Display space
-00001582  103C 000E                576              MOVE.B      #14, D0             ; command for trap call to display message
-00001586  4E4F                     577              TRAP        #15                 ; trap call
-00001588  6000 0422                578              BRA         endSUB              ; go to the end of the subroutine
-0000158C                           579  
-0000158C  43F9 00001A65            580  displayA5   LEA         dispA5, A1          ; Display space
-00001592  103C 000E                581              MOVE.B      #14, D0             ; command for trap call to display message
-00001596  4E4F                     582              TRAP        #15                 ; trap call
-00001598  6000 0412                583              BRA         endSUB              ; go to the end of the subroutine
-0000159C                           584  
-0000159C  43F9 00001A68            585  displayA6   LEA         dispA6, A1          ; Display space
-000015A2  103C 000E                586              MOVE.B      #14, D0             ; command for trap call to display message
-000015A6  4E4F                     587              TRAP        #15                 ; trap call
-000015A8  6000 0402                588              BRA         endSUB              ; go to the end of the subroutine
-000015AC                           589  
-000015AC  43F9 00001A6B            590  displayA7   LEA         dispA7, A1          ; Display space
-000015B2  103C 000E                591              MOVE.B      #14, D0             ; command for trap call to display message
-000015B6  4E4F                     592              TRAP        #15                 ; trap call
-000015B8  6000 03F2                593              BRA         endSUB              ; go to the end of the subroutine
-000015BC                           594  
-000015BC                           595  ***********************************************************************************************************
-000015BC                           596  * Address Register Direct
-000015BC                           597  
-000015BC  43F9 000019C3            598  pAddrDir    LEA         opPer, A1           ; Display space
-000015C2  103C 000E                599              MOVE.B      #14, D0             ; command for trap call to display message
-000015C6  4E4F                     600              TRAP        #15                 ; trap call
-000015C8                           601              
-000015C8  B63C 0000                602              CMP.B   #zero,D3
-000015CC  6700 003A                603              BEQ     displayA0A
-000015D0  B63C 0001                604              CMP.B   #one,D3
-000015D4  6700 004E                605              BEQ     displayA1A
-000015D8  B63C 0002                606              CMP.B   #two,D3
-000015DC  6700 0062                607              BEQ     displayA2A
-000015E0  B63C 0003                608              CMP.B   #three,D3
-000015E4  6700 0076                609              BEQ     displayA3A
-000015E8  B63C 0004                610              CMP.B   #four,D3
-000015EC  6700 008A                611              BEQ     displayA4A
-000015F0  B63C 0005                612              CMP.B   #five,D3
-000015F4  6700 009E                613              BEQ     displayA5A
-000015F8  B63C 0006                614              CMP.B   #six,D3
-000015FC  6700 00B2                615              BEQ     displayA6A
-00001600  B63C 0007                616              CMP.B   #seven,D3
-00001604  6700 00C6                617              BEQ     displayA7A
-00001608                           618              
-00001608  43F9 00001A56            619  displayA0A  LEA         dispA0, A1          ; Display space
-0000160E  103C 000E                620              MOVE.B      #14, D0             ; command for trap call to display message
-00001612  4E4F                     621              TRAP        #15                 ; trap call
-00001614  43F9 000019C5            622              LEA         clPer, A1           ; Display space
-0000161A  103C 000E                623              MOVE.B      #14, D0             ; command for trap call to display message
-0000161E  4E4F                     624              TRAP        #15                 ; trap call
-00001620  6000 038A                625              BRA         endSUB              ; go to the end of the subroutine
-00001624                           626              
-00001624  43F9 00001A59            627  displayA1A  LEA         dispA1, A1          ; Display space
-0000162A  103C 000E                628              MOVE.B      #14, D0             ; command for trap call to display message
-0000162E  4E4F                     629              TRAP        #15                 ; trap call
-00001630  43F9 000019C5            630              LEA         clPer, A1           ; Display space
-00001636  103C 000E                631              MOVE.B      #14, D0             ; command for trap call to display message
-0000163A  4E4F                     632              TRAP        #15                 ; trap call
-0000163C  6000 036E                633              BRA         endSUB              ; go to the end of the subroutine
-00001640                           634  
-00001640  43F9 00001A5C            635  displayA2A  LEA         dispA2, A1          ; Display space
-00001646  103C 000E                636              MOVE.B      #14, D0             ; command for trap call to display message
-0000164A  4E4F                     637              TRAP        #15                 ; trap call
-0000164C  43F9 000019C5            638              LEA         clPer, A1           ; Display space
-00001652  103C 000E                639              MOVE.B      #14, D0             ; command for trap call to display message
-00001656  4E4F                     640              TRAP        #15                 ; trap call
-00001658  6000 0352                641              BRA         endSUB              ; go to the end of the subroutine
-0000165C                           642  
-0000165C  43F9 00001A5F            643  displayA3A  LEA         dispA3, A1          ; Display space
-00001662  103C 000E                644              MOVE.B      #14, D0             ; command for trap call to display message
-00001666  4E4F                     645              TRAP        #15                 ; trap call
-00001668  43F9 000019C5            646              LEA         clPer, A1           ; Display space
-0000166E  103C 000E                647              MOVE.B      #14, D0             ; command for trap call to display message
-00001672  4E4F                     648              TRAP        #15                 ; trap call
-00001674  6000 0336                649              BRA         endSUB              ; go to the end of the subroutine
-00001678                           650  
-00001678  43F9 00001A62            651  displayA4A  LEA         dispA4, A1          ; Display space
-0000167E  103C 000E                652              MOVE.B      #14, D0             ; command for trap call to display message
-00001682  4E4F                     653              TRAP        #15                 ; trap call
-00001684  43F9 000019C5            654              LEA         clPer, A1           ; Display space
-0000168A  103C 000E                655              MOVE.B      #14, D0             ; command for trap call to display message
-0000168E  4E4F                     656              TRAP        #15                 ; trap call
-00001690  6000 031A                657              BRA         endSUB              ; go to the end of the subroutine
-00001694                           658  
-00001694  43F9 00001A65            659  displayA5A  LEA         dispA5, A1          ; Display space
-0000169A  103C 000E                660              MOVE.B      #14, D0             ; command for trap call to display message
-0000169E  4E4F                     661              TRAP        #15                 ; trap call
-000016A0  43F9 000019C5            662              LEA         clPer, A1           ; Display space
-000016A6  103C 000E                663              MOVE.B      #14, D0             ; command for trap call to display message
-000016AA  4E4F                     664              TRAP        #15                 ; trap call
-000016AC  6000 02FE                665              BRA         endSUB              ; go to the end of the subroutine
-000016B0                           666  
-000016B0  43F9 00001A68            667  displayA6A  LEA         dispA6, A1          ; Display space
-000016B6  103C 000E                668              MOVE.B      #14, D0             ; command for trap call to display message
-000016BA  4E4F                     669              TRAP        #15                 ; trap call
-000016BC  43F9 000019C5            670              LEA         clPer, A1           ; Display space
-000016C2  103C 000E                671              MOVE.B      #14, D0             ; command for trap call to display message
-000016C6  4E4F                     672              TRAP        #15                 ; trap call
-000016C8  6000 02E2                673              BRA         endSUB              ; go to the end of the subroutine
-000016CC                           674  
-000016CC  43F9 00001A6B            675  displayA7A  LEA         dispA7, A1          ; Display space
-000016D2  103C 000E                676              MOVE.B      #14, D0             ; command for trap call to display message
-000016D6  4E4F                     677              TRAP        #15                 ; trap call
-000016D8  43F9 000019C5            678              LEA         clPer, A1           ; Display space
-000016DE  103C 000E                679              MOVE.B      #14, D0             ; command for trap call to display message
-000016E2  4E4F                     680              TRAP        #15                 ; trap call
-000016E4  6000 02C6                681              BRA         endSUB              ; go to the end of the subroutine
-000016E8                           682              
-000016E8                           683  ***********************************************************************************************************
-000016E8                           684  * Addr Postincrement
-000016E8                           685              
-000016E8  43F9 000019C3            686  pAddrPost   LEA         opPer, A1           ; Display space
-000016EE  103C 000E                687              MOVE.B      #14, D0             ; command for trap call to display message
-000016F2  4E4F                     688              TRAP        #15                 ; trap call
-000016F4                           689              
-000016F4  B63C 0000                690              CMP.B   #zero,D3
-000016F8  6700 003A                691              BEQ     displayA0P
-000016FC  B63C 0001                692              CMP.B   #one,D3
-00001700  6700 005A                693              BEQ     displayA1P
-00001704  B63C 0002                694              CMP.B   #two,D3
-00001708  6700 007A                695              BEQ     displayA2P
-0000170C  B63C 0003                696              CMP.B   #three,D3
-00001710  6700 009A                697              BEQ     displayA3P
-00001714  B63C 0004                698              CMP.B   #four,D3
-00001718  6700 00BA                699              BEQ     displayA4P
-0000171C  B63C 0005                700              CMP.B   #five,D3
-00001720  6700 00DA                701              BEQ     displayA5P
-00001724  B63C 0006                702              CMP.B   #six,D3
-00001728  6700 00FA                703              BEQ     displayA6P
-0000172C  B63C 0007                704              CMP.B   #seven,D3
-00001730  6700 011A                705              BEQ     displayA7P
-00001734                           706              
-00001734  43F9 00001A56            707  displayA0P  LEA         dispA0, A1          ; Display space
-0000173A  103C 000E                708              MOVE.B      #14, D0             ; command for trap call to display message
-0000173E  4E4F                     709              TRAP        #15                 ; trap call
-00001740  43F9 000019C5            710              LEA         clPer, A1           ; Display space
-00001746  103C 000E                711              MOVE.B      #14, D0             ; command for trap call to display message
-0000174A  4E4F                     712              TRAP        #15                 ; trap call
-0000174C  43F9 000019C9            713              LEA         inc, A1             ; Display space
-00001752  103C 000E                714              MOVE.B      #14, D0             ; command for trap call to display message
-00001756  4E4F                     715              TRAP        #15                 ; trap call
-00001758  6000 0252                716              BRA         endSUB              ; go to the end of the subroutine
-0000175C                           717              
-0000175C  43F9 00001A59            718  displayA1P  LEA         dispA1, A1          ; Display space
-00001762  103C 000E                719              MOVE.B      #14, D0             ; command for trap call to display message
-00001766  4E4F                     720              TRAP        #15                 ; trap call
-00001768  43F9 000019C5            721              LEA         clPer, A1           ; Display space
-0000176E  103C 000E                722              MOVE.B      #14, D0             ; command for trap call to display message
-00001772  4E4F                     723              TRAP        #15                 ; trap call
-00001774  43F9 000019C9            724              LEA         inc, A1             ; Display space
-0000177A  103C 000E                725              MOVE.B      #14, D0             ; command for trap call to display message
-0000177E  4E4F                     726              TRAP        #15                 ; trap call
-00001780  6000 022A                727              BRA         endSUB              ; go to the end of the subroutine
-00001784                           728  
-00001784  43F9 00001A5C            729  displayA2P  LEA         dispA2, A1          ; Display space
-0000178A  103C 000E                730              MOVE.B      #14, D0             ; command for trap call to display message
-0000178E  4E4F                     731              TRAP        #15                 ; trap call
-00001790  43F9 000019C5            732              LEA         clPer, A1           ; Display space
-00001796  103C 000E                733              MOVE.B      #14, D0             ; command for trap call to display message
-0000179A  4E4F                     734              TRAP        #15                 ; trap call
-0000179C  43F9 000019C9            735              LEA         inc, A1             ; Display space
-000017A2  103C 000E                736              MOVE.B      #14, D0             ; command for trap call to display message
-000017A6  4E4F                     737              TRAP        #15                 ; trap call
-000017A8  6000 0202                738              BRA         endSUB              ; go to the end of the subroutine
-000017AC                           739  
-000017AC  43F9 00001A5F            740  displayA3P  LEA         dispA3, A1          ; Display space
-000017B2  103C 000E                741              MOVE.B      #14, D0             ; command for trap call to display message
-000017B6  4E4F                     742              TRAP        #15                 ; trap call
-000017B8  43F9 000019C5            743              LEA         clPer, A1           ; Display space
-000017BE  103C 000E                744              MOVE.B      #14, D0             ; command for trap call to display message
-000017C2  4E4F                     745              TRAP        #15                 ; trap call
-000017C4  43F9 000019C9            746              LEA         inc, A1             ; Display space
-000017CA  103C 000E                747              MOVE.B      #14, D0             ; command for trap call to display message
-000017CE  4E4F                     748              TRAP        #15                 ; trap call
-000017D0  6000 01DA                749              BRA         endSUB              ; go to the end of the subroutine
-000017D4                           750  
-000017D4  43F9 00001A62            751  displayA4P  LEA         dispA4, A1          ; Display space
-000017DA  103C 000E                752              MOVE.B      #14, D0             ; command for trap call to display message
-000017DE  4E4F                     753              TRAP        #15                 ; trap call
-000017E0  43F9 000019C5            754              LEA         clPer, A1           ; Display space
-000017E6  103C 000E                755              MOVE.B      #14, D0             ; command for trap call to display message
-000017EA  4E4F                     756              TRAP        #15                 ; trap call
-000017EC  43F9 000019C9            757              LEA         inc, A1             ; Display space
-000017F2  103C 000E                758              MOVE.B      #14, D0             ; command for trap call to display message
-000017F6  4E4F                     759              TRAP        #15                 ; trap call
-000017F8  6000 01B2                760              BRA         endSUB              ; go to the end of the subroutine
-000017FC                           761  
-000017FC  43F9 00001A65            762  displayA5P  LEA         dispA5, A1          ; Display space
-00001802  103C 000E                763              MOVE.B      #14, D0             ; command for trap call to display message
-00001806  4E4F                     764              TRAP        #15                 ; trap call
-00001808  43F9 000019C5            765              LEA         clPer, A1           ; Display space
-0000180E  103C 000E                766              MOVE.B      #14, D0             ; command for trap call to display message
-00001812  4E4F                     767              TRAP        #15                 ; trap call
-00001814  43F9 000019C9            768              LEA         inc, A1             ; Display space
-0000181A  103C 000E                769              MOVE.B      #14, D0             ; command for trap call to display message
-0000181E  4E4F                     770              TRAP        #15                 ; trap call
-00001820  6000 018A                771              BRA         endSUB              ; go to the end of the subroutine
-00001824                           772  
-00001824  43F9 00001A68            773  displayA6P  LEA         dispA6, A1          ; Display space
-0000182A  103C 000E                774              MOVE.B      #14, D0             ; command for trap call to display message
-0000182E  4E4F                     775              TRAP        #15                 ; trap call
-00001830  43F9 000019C5            776              LEA         clPer, A1           ; Display space
-00001836  103C 000E                777              MOVE.B      #14, D0             ; command for trap call to display message
-0000183A  4E4F                     778              TRAP        #15                 ; trap call
-0000183C  43F9 000019C9            779              LEA         inc, A1             ; Display space
-00001842  103C 000E                780              MOVE.B      #14, D0             ; command for trap call to display message
-00001846  4E4F                     781              TRAP        #15                 ; trap call
-00001848  6000 0162                782              BRA         endSUB              ; go to the end of the subroutine
-0000184C                           783  
-0000184C  43F9 00001A6B            784  displayA7P  LEA         dispA7, A1          ; Display space
-00001852  103C 000E                785              MOVE.B      #14, D0             ; command for trap call to display message
-00001856  4E4F                     786              TRAP        #15                 ; trap call
-00001858  43F9 000019C5            787              LEA         clPer, A1           ; Display space
-0000185E  103C 000E                788              MOVE.B      #14, D0             ; command for trap call to display message
-00001862  4E4F                     789              TRAP        #15                 ; trap call
-00001864  43F9 000019C9            790              LEA         inc, A1             ; Display space
-0000186A  103C 000E                791              MOVE.B      #14, D0             ; command for trap call to display message
-0000186E  4E4F                     792              TRAP        #15                 ; trap call
-00001870  6000 013A                793              BRA         endSUB              ; go to the end of the subroutine
-00001874                           794  
-00001874                           795  ***********************************************************************************************************
-00001874                           796  * Addr Postdecrement
-00001874                           797  
-00001874  43F9 000019C7            798  pAddrDec    LEA         dec, A1             ; Display space
-0000187A  103C 000E                799              MOVE.B      #14, D0             ; command for trap call to display message
-0000187E  4E4F                     800              TRAP        #15                 ; trap call
-00001880                           801              
-00001880  43F9 000019C3            802              LEA         opPer, A1           ; Display space
-00001886  103C 000E                803              MOVE.B      #14, D0             ; command for trap call to display message
-0000188A  4E4F                     804              TRAP        #15                 ; trap call
-0000188C                           805              
-0000188C  B63C 0000                806              CMP.B   #zero,D3
-00001890  6700 003A                807              BEQ     displayA0D
-00001894  B63C 0001                808              CMP.B   #one,D3
-00001898  6700 004E                809              BEQ     displayA1D
-0000189C  B63C 0002                810              CMP.B   #two,D3
-000018A0  6700 0062                811              BEQ     displayA2D
-000018A4  B63C 0003                812              CMP.B   #three,D3
-000018A8  6700 0076                813              BEQ     displayA3D
-000018AC  B63C 0004                814              CMP.B   #four,D3
-000018B0  6700 008A                815              BEQ     displayA4D
-000018B4  B63C 0005                816              CMP.B   #five,D3
-000018B8  6700 009E                817              BEQ     displayA5D
-000018BC  B63C 0006                818              CMP.B   #six,D3
-000018C0  6700 00B2                819              BEQ     displayA6D
-000018C4  B63C 0007                820              CMP.B   #seven,D3
-000018C8  6700 00C6                821              BEQ     displayA7D
-000018CC                           822              
-000018CC  43F9 00001A56            823  displayA0D  LEA         dispA0, A1          ; Display space
-000018D2  103C 000E                824              MOVE.B      #14, D0             ; command for trap call to display message
-000018D6  4E4F                     825              TRAP        #15                 ; trap call
-000018D8  43F9 000019C5            826              LEA         clPer, A1           ; Display space
-000018DE  103C 000E                827              MOVE.B      #14, D0             ; command for trap call to display message
-000018E2  4E4F                     828              TRAP        #15                 ; trap call
-000018E4  6000 00C6                829              BRA         endSUB              ; go to the end of the subroutine
-000018E8                           830              
-000018E8  43F9 00001A59            831  displayA1D  LEA         dispA1, A1          ; Display space
-000018EE  103C 000E                832              MOVE.B      #14, D0             ; command for trap call to display message
-000018F2  4E4F                     833              TRAP        #15                 ; trap call
-000018F4  43F9 000019C5            834              LEA         clPer, A1           ; Display space
-000018FA  103C 000E                835              MOVE.B      #14, D0             ; command for trap call to display message
-000018FE  4E4F                     836              TRAP        #15                 ; trap call
-00001900  6000 00AA                837              BRA         endSUB              ; go to the end of the subroutine
-00001904                           838  
-00001904  43F9 00001A5C            839  displayA2D  LEA         dispA2, A1          ; Display space
-0000190A  103C 000E                840              MOVE.B      #14, D0             ; command for trap call to display message
-0000190E  4E4F                     841              TRAP        #15                 ; trap call
-00001910  43F9 000019C5            842              LEA         clPer, A1           ; Display space
-00001916  103C 000E                843              MOVE.B      #14, D0             ; command for trap call to display message
-0000191A  4E4F                     844              TRAP        #15                 ; trap call
-0000191C  6000 008E                845              BRA         endSUB              ; go to the end of the subroutine
-00001920                           846  
-00001920  43F9 00001A5F            847  displayA3D  LEA         dispA3, A1          ; Display space
-00001926  103C 000E                848              MOVE.B      #14, D0             ; command for trap call to display message
-0000192A  4E4F                     849              TRAP        #15                 ; trap call
-0000192C  43F9 000019C5            850              LEA         clPer, A1           ; Display space
-00001932  103C 000E                851              MOVE.B      #14, D0             ; command for trap call to display message
-00001936  4E4F                     852              TRAP        #15                 ; trap call
-00001938  6000 0072                853              BRA         endSUB              ; go to the end of the subroutine
-0000193C                           854  
-0000193C  43F9 00001A62            855  displayA4D  LEA         dispA4, A1          ; Display space
-00001942  103C 000E                856              MOVE.B      #14, D0             ; command for trap call to display message
-00001946  4E4F                     857              TRAP        #15                 ; trap call
-00001948  43F9 000019C5            858              LEA         clPer, A1           ; Display space
-0000194E  103C 000E                859              MOVE.B      #14, D0             ; command for trap call to display message
-00001952  4E4F                     860              TRAP        #15                 ; trap call
-00001954  6000 0056                861              BRA         endSUB              ; go to the end of the subroutine
-00001958                           862  
-00001958  43F9 00001A65            863  displayA5D  LEA         dispA5, A1          ; Display space
-0000195E  103C 000E                864              MOVE.B      #14, D0             ; command for trap call to display message
-00001962  4E4F                     865              TRAP        #15                 ; trap call
-00001964  43F9 000019C5            866              LEA         clPer, A1           ; Display space
-0000196A  103C 000E                867              MOVE.B      #14, D0             ; command for trap call to display message
-0000196E  4E4F                     868              TRAP        #15                 ; trap call
-00001970  6000 003A                869              BRA         endSUB              ; go to the end of the subroutine
-00001974                           870  
-00001974  43F9 00001A68            871  displayA6D  LEA         dispA6, A1          ; Display space
-0000197A  103C 000E                872              MOVE.B      #14, D0             ; command for trap call to display message
-0000197E  4E4F                     873              TRAP        #15                 ; trap call
-00001980  43F9 000019C5            874              LEA         clPer, A1           ; Display space
-00001986  103C 000E                875              MOVE.B      #14, D0             ; command for trap call to display message
-0000198A  4E4F                     876              TRAP        #15                 ; trap call
-0000198C  6000 001E                877              BRA         endSUB              ; go to the end of the subroutine
-00001990                           878  
-00001990  43F9 00001A6B            879  displayA7D  LEA         dispA7, A1          ; Display space
-00001996  103C 000E                880              MOVE.B      #14, D0             ; command for trap call to display message
-0000199A  4E4F                     881              TRAP        #15                 ; trap call
-0000199C  43F9 000019C5            882              LEA         clPer, A1           ; Display space
-000019A2  103C 000E                883              MOVE.B      #14, D0             ; command for trap call to display message
-000019A6  4E4F                     884              TRAP        #15                 ; trap call
-000019A8  6000 0002                885              BRA         endSUB              ; go to the end of the subroutine
-000019AC                           886  
-000019AC                           887  
-000019AC                           888  invalid
-000019AC                           889  
-000019AC                           890  endSUB
-000019AC                           891          
-000019AC  4CDF 7FFF                892          MOVEM.L  (SP)+, D0-D7/A0-A6
-000019B0  4E75                     893          RTS
-000019B2                           894  
-000019B2                           895  ***********************************************************************************************************
-000019B2                           896  ***********************************************************************************************************
-000019B2                           897  ***********************************************************************************************************
-000019B2                           898  
-000019B2                           899  printInvalid
-000019B2                           900  endPROG    
-000019B2                           901  
-000019B2  FFFF FFFF                902      SIMHALT                             ; halt simulator
-000019B6                           903  
-000019B6= 20 0D 0A 00              904  newLine     DC.B    ' ', CR, LF, 0
-000019BA= 20 20 00                 905  space       DC.B    '  ', 0
-000019BD                           906  
-000019BD= 23 00                    907  hashTag     DC.B    '#', 0
-000019BF= 24 00                    908  dispHex     DC.B    '$', 0
-000019C1= 2C 00                    909  comma       DC.B    ',', 0
-000019C3                           910  
-000019C3= 28 00                    911  opPer       DC.B    '(', 0
-000019C5= 29 00                    912  clPer       DC.B    ')', 0
-000019C7= 2D 00                    913  dec         DC.B    '-', 0
-000019C9= 2B 00                    914  inc         DC.B    '+', 0
-000019CB                           915  
-000019CB= 4F 52 49 00              916  ORImatch    DC.B    'ORI', 0
-000019CF= 43 4D 50 49 00           917  CMPImatch   DC.B    'CMPI', 0
-000019D4= 42 43 4C 52 00           918  BCLRmatch   DC.B    'BCLR', 0
-000019D9= 4D 4F 56 45 00           919  MOVEmatch   DC.B    'MOVE', 0
-000019DE= 4D 4F 56 45 41 00        920  MOVEAmatch  DC.B    'MOVEA', 0
-000019E4= 4E 45 47 00              921  NEGmatch    DC.B    'NEG', 0
-000019E8= 52 54 53 00              922  RTSmatch    DC.B    'RTS', 0
-000019EC= 4A 53 52 00              923  JSRmatch    DC.B    'JSR', 0
-000019F0= 4D 4F 56 45 4D 00        924  MOVEMmatch  DC.B    'MOVEM', 0
-000019F6= 4C 45 41 00              925  LEAmatch    DC.B    'LEA', 0
-000019FA= 53 55 42 51 00           926  SUBQmatch   DC.B    'SUBQ', 0
-000019FF= 42 52 41 00              927  BRAmatch    DC.B    'BRA', 0
-00001A03= 42 43 53 00              928  BCSmatch    DC.B    'BCS', 0
-00001A07= 42 56 43 00              929  BVCmatch    DC.B    'BVC', 0
-00001A0B= 42 47 45 00              930  BGEmatch    DC.B    'BGE', 0
-00001A0F= 42 4C 54 00              931  BLTmatch    DC.B    'BLT', 0
-00001A13= 44 49 56 53 00           932  DIVSmatch   DC.B    'DIVS', 0
-00001A18= 4F 52 00                 933  ORmatch     DC.B    'OR', 0
-00001A1B= 53 55 42 00              934  SUBmatch    DC.B    'SUB', 0
-00001A1F= 45 4F 52 00              935  EORmatch    DC.B    'EOR', 0
-00001A23= 43 4D 50 00              936  CMPmatch    DC.B    'CMP', 0
-00001A27= 4D 55 4C 53 00           937  MULSmatch   DC.B    'MULS', 0
-00001A2C= 41 44 44 00              938  ADDmatch    DC.B    'ADD', 0
-00001A30= 41 44 44 41 00           939  ADDAmatch   DC.B    'ADDA', 0
-00001A35= 4C 53 52 00              940  LSRmatch    DC.B    'LSR', 0
-00001A39= 4C 53 4C 00              941  LSLmatch    DC.B    'LSL', 0
-00001A3D= 41 53 52 00              942  ASRmatch    DC.B    'ASR', 0
-00001A41= 41 53 4C 00              943  ASLmatch    DC.B    'ASL', 0
-00001A45= 52 4F 52 00              944  RORmatch    DC.B    'ROR', 0
-00001A49= 52 4F 4C 00              945  ROLmatch    DC.B    'ROL', 0
-00001A4D                           946   
-00001A4D= 2E 42 00                 947  dispByte    DC.B    '.B', 0
-00001A50= 2E 57 00                 948  dispWord    DC.B    '.W', 0
-00001A53= 2E 4C 00                 949  dispLong    DC.B    '.L', 0
-00001A56                           950  
-00001A56= 41 30 00                 951  dispA0      DC.B    'A0', 0
-00001A59= 41 31 00                 952  dispA1      DC.B    'A1', 0
-00001A5C= 41 32 00                 953  dispA2      DC.B    'A2', 0
-00001A5F= 41 33 00                 954  dispA3      DC.B    'A3', 0
-00001A62= 41 34 00                 955  dispA4      DC.B    'A4', 0
-00001A65= 41 35 00                 956  dispA5      DC.B    'A5', 0
-00001A68= 41 36 00                 957  dispA6      DC.B    'A6', 0
-00001A6B= 41 37 00                 958  dispA7      DC.B    'A7', 0
-00001A6E                           959  
-00001A6E= 44 30 00                 960  dispD0      DC.B    'D0', 0
-00001A71= 44 31 00                 961  dispD1      DC.B    'D1', 0
-00001A74= 44 32 00                 962  dispD2      DC.B    'D2', 0
-00001A77= 44 33 00                 963  dispD3      DC.B    'D3', 0
-00001A7A= 44 34 00                 964  dispD4      DC.B    'D4', 0
-00001A7D= 44 35 00                 965  dispD5      DC.B    'D5', 0
-00001A80= 44 36 00                 966  dispD6      DC.B    'D6', 0
-00001A83= 44 37 00                 967  dispD7      DC.B    'D7', 0  
-00001A86                           968             END    START                ; last line of source
+0000109A  6700 01FA                107          BEQ         opCMPI              ; branch to CMPI method
+0000109E  B43C 0008                108          CMP.B       #eight,D2           ; Test for static BCLR
+000010A2  6700 0364                109          BEQ         opBCLR
+000010A6  C47C 0001                110          AND         #one,D2            ; Sets all bits to 0 except for first bit if it is 1
+000010AA  B43C 0001                111          CMP.B       #one,D2          ; if it is one then there is a chance it is dynamic BCLR
+000010AE  6700 03BC                112          BEQ         opDynBCLR
+000010B2  6000 0A70                113          BRA         printInvalid
+000010B6                           114          
+000010B6                           115          
+000010B6  6000 03E2                116  braOne  BRA         opMOVEB             ; we know that there is only one opcode that is MOVE.B
+000010BA                           117  
+000010BA                           118  braTwo  ; there are two opCodes available, MOVE.L, or MOVEA.L
+000010BA                           119  
+000010BA                           120  braThree ; there are two opCodes available, MOVE.W, or MOVEA.W
+000010BA                           121  
+000010BA  4242                     122  braFour CLR         D2                  ; first nibble is 4, 5 opcodes are possible 
+000010BC  1401                     123          MOVE.B      D1, D2              ; clear out D2 and copy D1 back in
+000010BE  C438 000F                124          AND.B       $0F, D2             ; set first nibble to 0
+000010C2                           125   
+000010C2  B43C 0004                126          CMP.B       #four, D2           ; compare second nibble to 4
+000010C6  6700 03F6                127          BEQ         opNEG               ; branch to NEG method
+000010CA  B43C 000E                128          CMP.B       #fourteen, D2       ; compare second nibble to E
+000010CE  6700 03FA                129          BEQ         opRTSJSR            ; branch to JSR or RTS method
+000010D2  6000 03F6                130          BRA         opMOVEMLEA          ; otherwise, branch to MOVEM or LEA method
+000010D6                           131  
+000010D6  6000 03F2                132  braFive BRA         opSUBQ              ; we know that there is only one opcode that is SUBQ
+000010DA                           133  
+000010DA  4242                     134  braSix  CLR         D2                  ; first nibble is 6, 5 opcodes are possible 
+000010DC  1401                     135          MOVE.B      D1, D2              ; clear out D2 and copy D1 back in
+000010DE  C438 000F                136          AND.B       $0F, D2             ; set first nibble to 0
+000010E2                           137   
+000010E2  B43C 0000                138          CMP.B       #zero, D2           ; compare second nibble to 0
+000010E6  6700 03EE                139          BEQ         opBRA               ; branch to BRA method
+000010EA  B43C 0005                140          CMP.B       #five, D2           ; compare second nibble to 5
+000010EE  6700 03FE                141          BEQ         opBCS               ; branch to BCS method
+000010F2  B43C 0008                142          CMP.B       #eight, D2          ; compare second nibble to 8
+000010F6  6700 0402                143          BEQ         opBVC               ; branch to BCS method
+000010FA  B43C 000C                144          CMP.B       #twelve, D2         ; compare second nibble to 12
+000010FE  6700 0406                145          BEQ         opBGE               ; branch to BGE method
+00001102  6000 040E                146          BRA         opBLT               ; otherwise, branch to BLT method
+00001106                           147  
+00001106                           148  braEight    ; there are two opCodes available DIVS, or OR
+00001106                           149  
+00001106  6000 0416                150  braNine BRA         opSUB               ; we know that there is only one opcode that is SUB
+0000110A                           151  
+0000110A                           152  braEleven   ; there are two opCodes available EOR, or CMP
+0000110A                           153  
+0000110A  6000 041E                154  braTwelve   BRA     opMULS              ; we know that there is only one opcode that is MULS    
+0000110E                           155    
+0000110E                           156  braThirteen ; there are two opCodes available ADD, or ADDA
+0000110E                           157  
+0000110E  4242                     158  braFourteen CLR         D2                  ; first nibble is E, 5 opcodes are possible 
+00001110  1401                     159              MOVE.B      D1, D2              ; clear out D2 and copy D1 back in
+00001112  C438 000F                160              AND.B       $0F, D2             ; set first nibble to 0
+00001116                           161   
+00001116  B43C 0000                162              CMP.B       #zero, D2           ; compare second nibble to 0
+0000111A  6700 0426                163              BEQ         opASR               ; branch to ASR method
+0000111E  B43C 0001                164              CMP.B       #one, D2            ; compare second nibble to 1
+00001122  6700 0412                165              BEQ         opASL               ; branch to ASL method
+00001126  B43C 0002                166              CMP.B       #two, D2            ; compare second nibble to 2
+0000112A  6700 042E                167              BEQ         opLSR               ; branch to LSR method
+0000112E  B43C 0003                168              CMP.B       #three, D2          ; compare second nibble to 3
+00001132  6700 041A                169              BEQ         opLSL               ; branch to LSL method
+00001136  B43C 0006                170              CMP.B       #six, D2            ; compare second nibble to 6
+0000113A  6700 0436                171              BEQ         opROR               ; branch to ROR method
+0000113E  6000 0426                172              BRA         opROL               ; otherwise, branch to ROL method
+00001142                           173  
+00001142  43F9 00001B3D            174  opORI   LEA         ORImatch, A1        ; we know that the opcode will be ORI, so load A1 to print message
+00001148  103C 000E                175          MOVE.B      #14, D0             ; command for trap call to display message
+0000114C  4E4F                     176          TRAP        #15                 ; trap call
+0000114E                           177          
+0000114E  1218                     178          MOVE.B      (A0)+, D1
+00001150  1401                     179          MOVE.B      D1,D2               ; copy data over
+00001152  EC42                     180          ASR         #6,D2               ; shifts 6 bits over to read just the size        
+00001154  B43C 0000                181          CMP.B       #zero,D2
+00001158  6700 0016                182          BEQ         opORIB
+0000115C  B43C 0001                183          CMP.B       #one,D2
+00001160  6700 0070                184          BEQ         opORIW
+00001164  B43C 0002                185          CMP.B       #two,D2
+00001168  6700 00CA                186          BEQ         opORIL
+0000116C                           187          
+0000116C  6000 09B6                188          BRA         printInvalid
+00001170                           189          
+00001170  43F9 00001BBF            190  opORIB  LEA         dispByte, A1        ; Display byte
+00001176  103C 000E                191          MOVE.B      #14, D0             ; command for trap call to display message
+0000117A  4E4F                     192          TRAP        #15                 ; trap call
+0000117C                           193          
+0000117C  43F9 00001B2C            194          LEA         space, A1           ; Display space
+00001182  103C 000E                195          MOVE.B      #14, D0             ; command for trap call to display message
+00001186  4E4F                     196          TRAP        #15                 ; trap call
+00001188                           197          
+00001188  4242                     198          CLR         D2
+0000118A  1401                     199          MOVE.B      D1,D2
+0000118C  E642                     200          ASR         #three,D2
+0000118E  C47C 0007                201          AND         #seven,D2
+00001192  4243                     202          CLR         D3        
+00001194  1601                     203          MOVE.B      D1,D3
+00001196  C67C 0007                204          AND         #seven,D3
+0000119A                           205          
+0000119A  4241                     206          CLR         D1
+0000119C  3218                     207          MOVE.W      (A0)+, D1
+0000119E                           208          
+0000119E  43F9 00001B2F            209          LEA         hashTag, A1           ; Display space
+000011A4  103C 000E                210          MOVE.B      #14, D0             ; command for trap call to display message
+000011A8  4E4F                     211          TRAP        #15                 ; trap call
+000011AA                           212          
+000011AA  103C 0003                213          MOVE.B      #3, D0
+000011AE  4E4F                     214          TRAP        #15
+000011B0                           215          
+000011B0  43F9 00001B33            216          LEA         comma, A1           ; Display space
+000011B6  103C 000E                217          MOVE.B      #14, D0             ; command for trap call to display message
+000011BA  4E4F                     218          TRAP        #15                 ; trap call
+000011BC                           219          
+000011BC  4EB9 0000157E            220          JSR         printEA
+000011C2                           221          
+000011C2  43F9 00001B28            222          LEA         newLine, A1           ; Display space
+000011C8  103C 000E                223          MOVE.B      #14, D0             ; command for trap call to display message
+000011CC  4E4F                     224          TRAP        #15                 ; trap call
+000011CE                           225          
+000011CE  6000 FE3C                226          BRA         LOOP
+000011D2                           227          
+000011D2                           228          
+000011D2  43F9 00001BC2            229  opORIW  LEA         dispWord, A1        ; Display byte
+000011D8  103C 000E                230          MOVE.B      #14, D0             ; command for trap call to display message
+000011DC  4E4F                     231          TRAP        #15                 ; trap call
+000011DE                           232          
+000011DE  43F9 00001B2C            233          LEA         space, A1           ; Display space
+000011E4  103C 000E                234          MOVE.B      #14, D0             ; command for trap call to display message
+000011E8  4E4F                     235          TRAP        #15                 ; trap call
+000011EA                           236          
+000011EA  4242                     237          CLR         D2
+000011EC  1401                     238          MOVE.B      D1,D2
+000011EE  E642                     239          ASR         #three,D2
+000011F0  C47C 0007                240          AND         #seven,D2
+000011F4  4243                     241          CLR         D3        
+000011F6  1601                     242          MOVE.B      D1,D3
+000011F8  C67C 0007                243          AND         #seven,D3
+000011FC                           244          
+000011FC  4241                     245          CLR         D1
+000011FE  3218                     246          MOVE.W      (A0)+, D1
+00001200                           247          
+00001200  43F9 00001B2F            248          LEA         hashTag, A1           ; Display space
+00001206  103C 000E                249          MOVE.B      #14, D0             ; command for trap call to display message
+0000120A  4E4F                     250          TRAP        #15                 ; trap call
+0000120C                           251          
+0000120C  103C 0003                252          MOVE.B      #3, D0
+00001210  4E4F                     253          TRAP        #15
+00001212                           254          
+00001212  43F9 00001B33            255          LEA         comma, A1           ; Display space
+00001218  103C 000E                256          MOVE.B      #14, D0             ; command for trap call to display message
+0000121C  4E4F                     257          TRAP        #15                 ; trap call
+0000121E                           258          
+0000121E  4EB9 0000157E            259          JSR         printEA
+00001224                           260          
+00001224  43F9 00001B28            261          LEA         newLine, A1           ; Display space
+0000122A  103C 000E                262          MOVE.B      #14, D0             ; command for trap call to display message
+0000122E  4E4F                     263          TRAP        #15                 ; trap call
+00001230                           264          
+00001230  6000 FDDA                265          BRA         LOOP
+00001234                           266       
+00001234  43F9 00001BC5            267  opORIL  LEA         dispLong, A1        ; Display byte
+0000123A  103C 000E                268          MOVE.B      #14, D0             ; command for trap call to display message
+0000123E  4E4F                     269          TRAP        #15                 ; trap call
+00001240                           270          
+00001240  43F9 00001B2C            271          LEA         space, A1           ; Display space
+00001246  103C 000E                272          MOVE.B      #14, D0             ; command for trap call to display message
+0000124A  4E4F                     273          TRAP        #15                 ; trap call
+0000124C                           274          
+0000124C  4242                     275          CLR         D2
+0000124E  1401                     276          MOVE.B      D1,D2
+00001250  E642                     277          ASR         #three,D2
+00001252  C47C 0007                278          AND         #seven,D2
+00001256  4243                     279          CLR         D3        
+00001258  1601                     280          MOVE.B      D1,D3
+0000125A  C67C 0007                281          AND         #seven,D3
+0000125E                           282          
+0000125E  4241                     283          CLR         D1
+00001260  2218                     284          MOVE.L      (A0)+, D1
+00001262                           285          
+00001262  43F9 00001B2F            286          LEA         hashTag, A1           ; Display space
+00001268  103C 000E                287          MOVE.B      #14, D0             ; command for trap call to display message
+0000126C  4E4F                     288          TRAP        #15                 ; trap call
+0000126E                           289          
+0000126E  103C 0003                290          MOVE.B      #3, D0
+00001272  4E4F                     291          TRAP        #15
+00001274                           292          
+00001274  43F9 00001B33            293          LEA         comma, A1           ; Display space
+0000127A  103C 000E                294          MOVE.B      #14, D0             ; command for trap call to display message
+0000127E  4E4F                     295          TRAP        #15                 ; trap call
+00001280                           296          
+00001280  4EB9 0000157E            297          JSR         printEA
+00001286                           298          
+00001286  43F9 00001B28            299          LEA         newLine, A1           ; Display space
+0000128C  103C 000E                300          MOVE.B      #14, D0             ; command for trap call to display message
+00001290  4E4F                     301          TRAP        #15                 ; trap call
+00001292                           302          
+00001292  6000 FD78                303          BRA         LOOP
+00001296                           304           
+00001296  43F9 00001B41            305  opCMPI  LEA         CMPImatch, A1       ; we know that the opcode will be CMPI, so load A1 to print message
+0000129C  103C 000E                306          MOVE.B      #14, D0             ; command for trap call to display message
+000012A0  4E4F                     307          TRAP        #15                 ; trap call
+000012A2                           308                  
+000012A2  1218                     309          MOVE.B      (A0)+, D1
+000012A4  1401                     310          MOVE.B      D1,D2               ; copy data over
+000012A6  EC42                     311          ASR         #6,D2               ; shifts 6 bits over to read just the size        
+000012A8  B43C 0000                312          CMP.B       #zero,D2
+000012AC  6700 0034                313          BEQ         opCMPIB
+000012B0  B43C 0001                314          CMP.B       #one,D2
+000012B4  6700 008E                315          BEQ         opCMPIW
+000012B8  B43C 0002                316          CMP.B       #two,D2
+000012BC  6700 00E8                317          BEQ         opCMPIL
+000012C0                           318          
+000012C0  1401                     319          MOVE.B      D1,D2               ; Reload D2 with the same byte to get mode
+000012C2  E542                     320          ASL         #two,D2             ; Moving two bits over to isolate and remove the size
+000012C4  1802                     321          MOVE.B      D2,D4               ; Move the mode and register to D4 and leave the size
+000012C6  4242                     322          CLR         D2                  ; Clear out data register
+000012C8  1404                     323          MOVE.B      D4,D2               ; Put data back into D2 with just the mode and register
+000012CA  EA42                     324          ASR         #five,D2            ; Shift the register out to get just the mode
+000012CC  1802                     325          MOVE.B      D2,D4               ; Store mode into D4
+000012CE  4242                     326          CLR         D2
+000012D0                           327          
+000012D0  1401                     328          MOVE.B      D1,D2               ; Getting the EA register
+000012D2  EB42                     329          ASL         #five,D2
+000012D4  1A02                     330          MOVE.B      D2,D5               ; Move just the register into D5
+000012D6  4242                     331          CLR         D2                  ; Clearing D2 to put data back
+000012D8  1405                     332          MOVE.B      D5,D2               ; Putting back the register
+000012DA  EA42                     333          ASR         #five,D2            ; Shifting bits in order to read the register
+000012DC  1A02                     334          MOVE.B      D2,D5               ; Store register into D5
+000012DE                           335          
+000012DE  6000 FD2C                336          BRA         LOOP                ; go back to the loop
+000012E2                           337  
+000012E2  43F9 00001BBF            338  opCMPIB LEA         dispByte, A1        ; Display byte
+000012E8  103C 000E                339          MOVE.B      #14, D0             ; command for trap call to display message
+000012EC  4E4F                     340          TRAP        #15                 ; trap call
+000012EE                           341          
+000012EE  43F9 00001B2C            342          LEA         space, A1           ; Display space
+000012F4  103C 000E                343          MOVE.B      #14, D0             ; command for trap call to display message
+000012F8  4E4F                     344          TRAP        #15                 ; trap call
+000012FA                           345          
+000012FA  4242                     346          CLR         D2
+000012FC  1401                     347          MOVE.B      D1,D2
+000012FE  E642                     348          ASR         #three,D2
+00001300  C47C 0007                349          AND         #seven,D2
+00001304  4243                     350          CLR         D3        
+00001306  1601                     351          MOVE.B      D1,D3
+00001308  C67C 0007                352          AND         #seven,D3
+0000130C                           353          
+0000130C  4241                     354          CLR         D1
+0000130E  3218                     355          MOVE.W      (A0)+, D1
+00001310                           356          
+00001310  43F9 00001B2F            357          LEA         hashTag, A1           ; Display space
+00001316  103C 000E                358          MOVE.B      #14, D0             ; command for trap call to display message
+0000131A  4E4F                     359          TRAP        #15                 ; trap call
+0000131C                           360          
+0000131C  103C 0003                361          MOVE.B      #3, D0
+00001320  4E4F                     362          TRAP        #15
+00001322                           363          
+00001322  43F9 00001B33            364          LEA         comma, A1           ; Display space
+00001328  103C 000E                365          MOVE.B      #14, D0             ; command for trap call to display message
+0000132C  4E4F                     366          TRAP        #15                 ; trap call
+0000132E                           367          
+0000132E  4EB9 0000157E            368          JSR         printEA
+00001334                           369          
+00001334  43F9 00001B28            370          LEA         newLine, A1           ; Display space
+0000133A  103C 000E                371          MOVE.B      #14, D0             ; command for trap call to display message
+0000133E  4E4F                     372          TRAP        #15                 ; trap call
+00001340                           373  
+00001340  6000 FCCA                374          BRA         LOOP
+00001344                           375  
+00001344  43F9 00001BC2            376  opCMPIW LEA         dispWord, A1        ; Display byte
+0000134A  103C 000E                377          MOVE.B      #14, D0             ; command for trap call to display message
+0000134E  4E4F                     378          TRAP        #15                 ; trap call
+00001350                           379          
+00001350  43F9 00001B2C            380          LEA         space, A1           ; Display space
+00001356  103C 000E                381          MOVE.B      #14, D0             ; command for trap call to display message
+0000135A  4E4F                     382          TRAP        #15                 ; trap call
+0000135C                           383          
+0000135C  4242                     384          CLR         D2
+0000135E  1401                     385          MOVE.B      D1,D2
+00001360  E642                     386          ASR         #three,D2
+00001362  C47C 0007                387          AND         #seven,D2
+00001366  4243                     388          CLR         D3        
+00001368  1601                     389          MOVE.B      D1,D3
+0000136A  C67C 0007                390          AND         #seven,D3
+0000136E                           391          
+0000136E  4241                     392          CLR         D1
+00001370  3218                     393          MOVE.W      (A0)+, D1
+00001372                           394          
+00001372  43F9 00001B2F            395          LEA         hashTag, A1           ; Display space
+00001378  103C 000E                396          MOVE.B      #14, D0             ; command for trap call to display message
+0000137C  4E4F                     397          TRAP        #15                 ; trap call
+0000137E                           398          
+0000137E  103C 0003                399          MOVE.B      #3, D0
+00001382  4E4F                     400          TRAP        #15
+00001384                           401          
+00001384  43F9 00001B33            402          LEA         comma, A1           ; Display space
+0000138A  103C 000E                403          MOVE.B      #14, D0             ; command for trap call to display message
+0000138E  4E4F                     404          TRAP        #15                 ; trap call
+00001390                           405          
+00001390  4EB9 0000157E            406          JSR         printEA
+00001396                           407          
+00001396  43F9 00001B28            408          LEA         newLine, A1           ; Display space
+0000139C  103C 000E                409          MOVE.B      #14, D0             ; command for trap call to display message
+000013A0  4E4F                     410          TRAP        #15                 ; trap call
+000013A2  6000 FC68                411          BRA         LOOP
+000013A6                           412  
+000013A6  43F9 00001BC5            413  opCMPIL LEA         dispLong, A1        ; Display byte
+000013AC  103C 000E                414          MOVE.B      #14, D0             ; command for trap call to display message
+000013B0  4E4F                     415          TRAP        #15                 ; trap call
+000013B2                           416          
+000013B2  43F9 00001B2C            417          LEA         space, A1           ; Display space
+000013B8  103C 000E                418          MOVE.B      #14, D0             ; command for trap call to display message
+000013BC  4E4F                     419          TRAP        #15                 ; trap call
+000013BE                           420          
+000013BE  4242                     421          CLR         D2
+000013C0  1401                     422          MOVE.B      D1,D2
+000013C2  E642                     423          ASR         #three,D2
+000013C4  C47C 0007                424          AND         #seven,D2
+000013C8  4243                     425          CLR         D3        
+000013CA  1601                     426          MOVE.B      D1,D3
+000013CC  C67C 0007                427          AND         #seven,D3
+000013D0                           428          
+000013D0  4241                     429          CLR         D1
+000013D2  3218                     430          MOVE.W      (A0)+, D1
+000013D4                           431          
+000013D4  43F9 00001B2F            432          LEA         hashTag, A1           ; Display space
+000013DA  103C 000E                433          MOVE.B      #14, D0             ; command for trap call to display message
+000013DE  4E4F                     434          TRAP        #15                 ; trap call
+000013E0                           435          
+000013E0  103C 0003                436          MOVE.B      #3, D0
+000013E4  4E4F                     437          TRAP        #15
+000013E6                           438          
+000013E6  43F9 00001B33            439          LEA         comma, A1           ; Display space
+000013EC  103C 000E                440          MOVE.B      #14, D0             ; command for trap call to display message
+000013F0  4E4F                     441          TRAP        #15                 ; trap call
+000013F2                           442          
+000013F2  4EB9 0000157E            443          JSR         printEA
+000013F8                           444          
+000013F8  43F9 00001B28            445          LEA         newLine, A1           ; Display space
+000013FE  103C 000E                446          MOVE.B      #14, D0             ; command for trap call to display message
+00001402  4E4F                     447          TRAP        #15                 ; trap call
+00001404                           448          
+00001404  6000 FC06                449          BRA         LOOP
+00001408                           450  
+00001408  43F9 00001B46            451  opBCLR          LEA         BCLRmatch, A1       ; we know that the opcode will be CMPI, so load A1 to print message
+0000140E  103C 000E                452                  MOVE.B      #14, D0             ; command for trap call to display message
+00001412  4E4F                     453                  TRAP        #15                 ; trap call
+00001414                           454  
+00001414  43F9 00001B2C            455                  LEA         space, A1           ; Display space
+0000141A  103C 000E                456                  MOVE.B      #14, D0             ; command for trap call to display message
+0000141E  4E4F                     457                  TRAP        #15                 ; trap call
+00001420                           458                  
+00001420  4242                     459                  CLR         D2
+00001422  1218                     460                  MOVE.B      (A0)+, D1
+00001424  1401                     461                  MOVE.B      D1,D2               ; copy data over
+00001426  E642                     462                  ASR         #three,D2           ; Shift to the right to remove register
+00001428  C47C 0007                463                  AND         #seven,D2           ; Sets other bits to 0 and leave Mode the same
+0000142C                           464                  
+0000142C  4243                     465                  CLR         D3                  ; Clear D3 so we can move D1 in
+0000142E  1601                     466                  MOVE.B      D1,D3               ; Move othr byte in
+00001430  C67C 0007                467                  AND         #seven,D3           ; Set everything besides register to 0
+00001434                           468                  
+00001434  4241                     469                  CLR         D1
+00001436  3218                     470                  MOVE.W      (A0)+, D1
+00001438                           471                 
+00001438                           472                  
+00001438  43F9 00001B2F            473                  LEA         hashTag, A1           ; Display space
+0000143E  103C 000E                474                  MOVE.B      #14, D0             ; command for trap call to display message
+00001442  4E4F                     475                  TRAP        #15                 ; trap call
+00001444                           476          
+00001444  103C 0003                477                  MOVE.B      #3, D0
+00001448  4E4F                     478                  TRAP        #15
+0000144A                           479          
+0000144A  43F9 00001B33            480                  LEA         comma, A1           ; Display space
+00001450  103C 000E                481                  MOVE.B      #14, D0             ; command for trap call to display message
+00001454  4E4F                     482                  TRAP        #15                 ; trap call
+00001456                           483                  
+00001456  4EB9 0000157E            484                  JSR         printEA
+0000145C                           485          
+0000145C  43F9 00001B28            486                  LEA         newLine, A1           ; Display space
+00001462  103C 000E                487                  MOVE.B      #14, D0             ; command for trap call to display message
+00001466  4E4F                     488                  TRAP        #15                 ; trap call
+00001468                           489                  
+00001468                           490                  
+00001468  6000 FBA2                491                  BRA         LOOP                
+0000146C                           492          
+0000146C  43F9 00001B46            493  opDynBCLR      LEA         BCLRmatch, A1       ; we know that the opcode will be BCLR, so load A1 to print message
+00001472  103C 000E                494                  MOVE.B      #14, D0             ; command for trap call to display message
+00001476  4E4F                     495                  TRAP        #15                 ; trap call
+00001478                           496                  
+00001478  4242                     497                  CLR         D2
+0000147A  1218                     498                  MOVE.B      (A0)+,D1
+0000147C  1401                     499                  MOVE.B      D1,D2
+0000147E  E442                     500                  ASR         #two,D2             ; Shift two bits over in order to put mode into the first nibble
+00001480  C47C 000F                501                  AND         #secNib,D2          ; Clear first nibble
+00001484  E242                     502                  ASR         #one,D2             ; shift to remove register and have just the mode
+00001486  1602                     503                  MOVE.B      D2,D3               ; Move mode into D3
+00001488  4242                     504                  CLR         D2
+0000148A                           505                  
+0000148A  1401                     506                  MOVE.B      D1,D2               ; Move data back into D2 to retrieve the register
+0000148C  E342                     507                  ASL         #one,D2             ; shift one to the left to move node to other nibble
+0000148E  C47C 000F                508                  AND         #secNib,D2          ; Clear other nibble
+00001492  E242                     509                  ASR         #one,D2             ; Move register back 
+00001494  1802                     510                  MOVE.B      D2,D4               ; Store register
+00001496                           511  
+00001496  6000 FB74                512                  BRA         LOOP                ; go back to the loop
+0000149A                           513   
+0000149A  43F9 00001B4B            514  opMOVEB LEA         MOVEmatch, A1       ; we know that the opcode will be MOVE.B, so load A1 to print message
+000014A0  103C 000E                515          MOVE.B      #14, D0             ; command for trap call to display message
+000014A4  4E4F                     516          TRAP        #15                 ; trap call
+000014A6  43F9 00001BBF            517          LEA         dispByte, A1        ; display byte
+000014AC  103C 000E                518          MOVE.B      #14, D0             ; command for trap call to display message
+000014B0  4E4F                     519          TRAP        #15                 ; trap call
+000014B2  43F9 00001B2C            520          LEA         space, A1           ; create spaces
+000014B8  103C 000E                521          MOVE.B      #14, D0             ; command for trap call to display message
+000014BC  4E4F                     522          TRAP        #15                 ; trap call
+000014BE                           523  
+000014BE  43F9 00001B56            524  opNEG   LEA         NEGmatch, A1        ; we know that the opcode will be NEG, so load A1 to print message
+000014C4  103C 000E                525          MOVE.B      #14, D0             ; command for trap call to display message
+000014C8  4E4F                     526          TRAP        #15                 ; trap call
+000014CA                           527  
+000014CA                           528  opRTSJSR
+000014CA                           529  
+000014CA                           530  opMOVEMLEA
+000014CA                           531  
+000014CA  43F9 00001B6C            532  opSUBQ  LEA         SUBQmatch, A1       ; we know that the opcode will be SUBQ, so load A1 to print message
+000014D0  103C 000E                533          MOVE.B      #14, D0             ; command for trap call to display message
+000014D4  4E4F                     534          TRAP        #15                 ; trap call
+000014D6                           535  
+000014D6  43F9 00001B71            536  opBRA   LEA         BRAmatch, A1        ; we know that the opcode will be BRA, so load A1 to print message
+000014DC  103C 000E                537          MOVE.B      #14, D0             ; command for trap call to display message
+000014E0  4E4F                     538          TRAP        #15                 ; trap call
+000014E2  43F9 00001B2C            539          LEA         space, A1           ; create spaces
+000014E8  103C 000E                540          MOVE.B      #14, D0             ; command for trap call to display message
+000014EC  4E4F                     541          TRAP        #15                 ; trap call
+000014EE                           542  
+000014EE  43F9 00001B75            543  opBCS   LEA         BCSmatch, A1        ; we know that the opcode will be BCS, so load A1 to print message
+000014F4  103C 000E                544          MOVE.B      #14, D0             ; command for trap call to display message
+000014F8  4E4F                     545          TRAP        #15                 ; trap call
+000014FA                           546  
+000014FA  43F9 00001B79            547  opBVC   LEA         BVCmatch, A1        ; we know that the opcode will be BVC, so load A1 to print message
+00001500  103C 000E                548          MOVE.B      #14, D0             ; command for trap call to display message
+00001504  4E4F                     549          TRAP        #15                 ; trap call
+00001506                           550  
+00001506  43F9 00001B7D            551  opBGE   LEA         BGEmatch, A1        ; we know that the opcode will be BGE, so load A1 to print message
+0000150C  103C 000E                552          MOVE.B      #14, D0             ; command for trap call to display message
+00001510  4E4F                     553          TRAP        #15                 ; trap call
+00001512                           554  
+00001512  43F9 00001B81            555  opBLT   LEA         BLTmatch, A1        ; we know that the opcode will be BLT, so load A1 to print message
+00001518  103C 000E                556          MOVE.B      #14, D0             ; command for trap call to display message
+0000151C  4E4F                     557          TRAP        #15                 ; trap call
+0000151E                           558  
+0000151E  43F9 00001B8D            559  opSUB   LEA         SUBmatch, A1        ; we know that the opcode will be SUB, so load A1 to print message
+00001524  103C 000E                560          MOVE.B      #14, D0             ; command for trap call to display message
+00001528  4E4F                     561          TRAP        #15                 ; trap call
+0000152A                           562  
+0000152A  43F9 00001B99            563  opMULS  LEA         MULSmatch, A1       ; we know that the opcode will be MULS, so load A1 to print message
+00001530  103C 000E                564          MOVE.B      #14, D0             ; command for trap call to display message
+00001534  4E4F                     565          TRAP        #15                 ; trap call
+00001536                           566  
+00001536  43F9 00001BB3            567  opASL   LEA         ASLmatch, A1        ; we know that the opcode will be ASL, so load A1 to print message
+0000153C  103C 000E                568          MOVE.B      #14, D0             ; command for trap call to display message
+00001540  4E4F                     569          TRAP        #15                 ; trap call
+00001542                           570  
+00001542  43F9 00001BAF            571  opASR   LEA         ASRmatch, A1        ; we know that the opcode will be ASR, so load A1 to print message
+00001548  103C 000E                572          MOVE.B      #14, D0             ; command for trap call to display message
+0000154C  4E4F                     573          TRAP        #15                 ; trap call
+0000154E                           574  
+0000154E  43F9 00001BAB            575  opLSL   LEA         LSLmatch, A1        ; we know that the opcode will be LSL, so load A1 to print message
+00001554  103C 000E                576          MOVE.B      #14, D0             ; command for trap call to display message
+00001558  4E4F                     577          TRAP        #15                 ; trap call
+0000155A                           578  
+0000155A  43F9 00001BA7            579  opLSR   LEA         LSRmatch, A1        ; we know that the opcode will be LSR, so load A1 to print message
+00001560  103C 000E                580          MOVE.B      #14, D0             ; command for trap call to display message
+00001564  4E4F                     581          TRAP        #15                 ; trap call
+00001566                           582  
+00001566  43F9 00001BBB            583  opROL   LEA         ROLmatch, A1        ; we know that the opcode will be ROL, so load A1 to print message
+0000156C  103C 000E                584          MOVE.B      #14, D0             ; command for trap call to display message
+00001570  4E4F                     585          TRAP        #15                 ; trap call
+00001572                           586  
+00001572  43F9 00001BB7            587  opROR   LEA         RORmatch, A1        ; we know that the opcode will be ROR, so load A1 to print message
+00001578  103C 000E                588          MOVE.B      #14, D0             ; command for trap call to display message
+0000157C  4E4F                     589          TRAP        #15                 ; trap call
+0000157E                           590  
+0000157E                           591  
+0000157E                           592  ***********************************************************************************************************
+0000157E                           593  *
+0000157E                           594  *                                           EA Print Check
+0000157E                           595  *
+0000157E                           596  ***********************************************************************************************************
+0000157E  48E7 FFFE                597  printEA     MOVEM.L  D0-D7/A0-A6, -(SP)
+00001582                           598  
+00001582  B43C 0000                599              CMP.B       #zero, D2
+00001586  6700 0026                600              BEQ         pDataReg
+0000158A  B43C 0001                601              CMP.B       #one, D2
+0000158E  6700 00DE                602              BEQ         pAddrReg
+00001592  B43C 0002                603              CMP.B       #two, D2
+00001596  6700 0196                604              BEQ         pAddrDir
+0000159A  B43C 0003                605              CMP.B       #three, D2
+0000159E  6700 02BA                606              BEQ         pAddrPost
+000015A2  B43C 0004                607              CMP.B       #four, D2
+000015A6  6700 043E                608              BEQ         pAddrDec
+000015AA  6000 0572                609              BRA         invalid
+000015AE                           610  
+000015AE                           611  ***********************************************************************************************************
+000015AE                           612  * Data Register        
+000015AE  B63C 0000                613  pDataReg    CMP.B   #zero,D3
+000015B2  6700 003A                614              BEQ     displayD0
+000015B6  B63C 0001                615              CMP.B   #one,D3
+000015BA  6700 0042                616              BEQ     displayD1
+000015BE  B63C 0002                617              CMP.B   #two,D3
+000015C2  6700 004A                618              BEQ     displayD2
+000015C6  B63C 0003                619              CMP.B   #three,D3
+000015CA  6700 0052                620              BEQ     displayD3
+000015CE  B63C 0004                621              CMP.B   #four,D3
+000015D2  6700 005A                622              BEQ     displayD4
+000015D6  B63C 0005                623              CMP.B   #five,D3
+000015DA  6700 0062                624              BEQ     displayD5
+000015DE  B63C 0006                625              CMP.B   #six,D3
+000015E2  6700 006A                626              BEQ     displayD6
+000015E6  B63C 0007                627              CMP.B   #seven,D3
+000015EA  6700 0072                628              BEQ     displayD7
+000015EE                           629              
+000015EE  43F9 00001BE0            630  displayD0   LEA         dispD0, A1          ; Display space
+000015F4  103C 000E                631              MOVE.B      #14, D0             ; command for trap call to display message
+000015F8  4E4F                     632              TRAP        #15                 ; trap call
+000015FA  6000 0522                633              BRA         endSUB              ; go to the end of the subroutine
+000015FE                           634              
+000015FE  43F9 00001BE3            635  displayD1   LEA         dispD1, A1          ; Display space
+00001604  103C 000E                636              MOVE.B      #14, D0             ; command for trap call to display message
+00001608  4E4F                     637              TRAP        #15                 ; trap call
+0000160A  6000 0512                638              BRA         endSUB              ; go to the end of the subroutine
+0000160E                           639  
+0000160E  43F9 00001BE6            640  displayD2   LEA         dispD2, A1          ; Display space
+00001614  103C 000E                641              MOVE.B      #14, D0             ; command for trap call to display message
+00001618  4E4F                     642              TRAP        #15                 ; trap call
+0000161A  6000 0502                643              BRA         endSUB              ; go to the end of the subroutine
+0000161E                           644  
+0000161E  43F9 00001BE9            645  displayD3   LEA         dispD3, A1          ; Display space
+00001624  103C 000E                646              MOVE.B      #14, D0             ; command for trap call to display message
+00001628  4E4F                     647              TRAP        #15                 ; trap call
+0000162A  6000 04F2                648              BRA         endSUB              ; go to the end of the subroutine
+0000162E                           649  
+0000162E  43F9 00001BEC            650  displayD4   LEA         dispD4, A1          ; Display space
+00001634  103C 000E                651              MOVE.B      #14, D0             ; command for trap call to display message
+00001638  4E4F                     652              TRAP        #15                 ; trap call
+0000163A  6000 04E2                653              BRA         endSUB              ; go to the end of the subroutine
+0000163E                           654  
+0000163E  43F9 00001BEF            655  displayD5   LEA         dispD5, A1          ; Display space
+00001644  103C 000E                656              MOVE.B      #14, D0             ; command for trap call to display message
+00001648  4E4F                     657              TRAP        #15                 ; trap call
+0000164A  6000 04D2                658              BRA         endSUB              ; go to the end of the subroutine
+0000164E                           659  
+0000164E  43F9 00001BF2            660  displayD6   LEA         dispD6, A1          ; Display space
+00001654  103C 000E                661              MOVE.B      #14, D0             ; command for trap call to display message
+00001658  4E4F                     662              TRAP        #15                 ; trap call
+0000165A  6000 04C2                663              BRA         endSUB              ; go to the end of the subroutine
+0000165E                           664  
+0000165E  43F9 00001BF5            665  displayD7   LEA         dispD7, A1          ; Display space
+00001664  103C 000E                666              MOVE.B      #14, D0             ; command for trap call to display message
+00001668  4E4F                     667              TRAP        #15                 ; trap call
+0000166A  6000 04B2                668              BRA         endSUB              ; go to the end of the subroutine
+0000166E                           669  ***********************************************************************************************************
+0000166E                           670  * Address Register
+0000166E  B63C 0000                671  pAddrReg    CMP.B   #zero,D3
+00001672  6700 003A                672              BEQ     displayA0
+00001676  B63C 0001                673              CMP.B   #one,D3
+0000167A  6700 0042                674              BEQ     displayA1
+0000167E  B63C 0002                675              CMP.B   #two,D3
+00001682  6700 004A                676              BEQ     displayA2
+00001686  B63C 0003                677              CMP.B   #three,D3
+0000168A  6700 0052                678              BEQ     displayA3
+0000168E  B63C 0004                679              CMP.B   #four,D3
+00001692  6700 005A                680              BEQ     displayA4
+00001696  B63C 0005                681              CMP.B   #five,D3
+0000169A  6700 0062                682              BEQ     displayA5
+0000169E  B63C 0006                683              CMP.B   #six,D3
+000016A2  6700 006A                684              BEQ     displayA6
+000016A6  B63C 0007                685              CMP.B   #seven,D3
+000016AA  6700 0072                686              BEQ     displayA7
+000016AE                           687              
+000016AE  43F9 00001BC8            688  displayA0   LEA         dispA0, A1          ; Display space
+000016B4  103C 000E                689              MOVE.B      #14, D0             ; command for trap call to display message
+000016B8  4E4F                     690              TRAP        #15                 ; trap call
+000016BA  6000 0462                691              BRA         endSUB              ; go to the end of the subroutine
+000016BE                           692              
+000016BE  43F9 00001BCB            693  displayA1   LEA         dispA1, A1          ; Display space
+000016C4  103C 000E                694              MOVE.B      #14, D0             ; command for trap call to display message
+000016C8  4E4F                     695              TRAP        #15                 ; trap call
+000016CA  6000 0452                696              BRA         endSUB              ; go to the end of the subroutine
+000016CE                           697  
+000016CE  43F9 00001BCE            698  displayA2   LEA         dispA2, A1          ; Display space
+000016D4  103C 000E                699              MOVE.B      #14, D0             ; command for trap call to display message
+000016D8  4E4F                     700              TRAP        #15                 ; trap call
+000016DA  6000 0442                701              BRA         endSUB              ; go to the end of the subroutine
+000016DE                           702  
+000016DE  43F9 00001BD1            703  displayA3   LEA         dispA3, A1          ; Display space
+000016E4  103C 000E                704              MOVE.B      #14, D0             ; command for trap call to display message
+000016E8  4E4F                     705              TRAP        #15                 ; trap call
+000016EA  6000 0432                706              BRA         endSUB              ; go to the end of the subroutine
+000016EE                           707  
+000016EE  43F9 00001BD4            708  displayA4   LEA         dispA4, A1          ; Display space
+000016F4  103C 000E                709              MOVE.B      #14, D0             ; command for trap call to display message
+000016F8  4E4F                     710              TRAP        #15                 ; trap call
+000016FA  6000 0422                711              BRA         endSUB              ; go to the end of the subroutine
+000016FE                           712  
+000016FE  43F9 00001BD7            713  displayA5   LEA         dispA5, A1          ; Display space
+00001704  103C 000E                714              MOVE.B      #14, D0             ; command for trap call to display message
+00001708  4E4F                     715              TRAP        #15                 ; trap call
+0000170A  6000 0412                716              BRA         endSUB              ; go to the end of the subroutine
+0000170E                           717  
+0000170E  43F9 00001BDA            718  displayA6   LEA         dispA6, A1          ; Display space
+00001714  103C 000E                719              MOVE.B      #14, D0             ; command for trap call to display message
+00001718  4E4F                     720              TRAP        #15                 ; trap call
+0000171A  6000 0402                721              BRA         endSUB              ; go to the end of the subroutine
+0000171E                           722  
+0000171E  43F9 00001BDD            723  displayA7   LEA         dispA7, A1          ; Display space
+00001724  103C 000E                724              MOVE.B      #14, D0             ; command for trap call to display message
+00001728  4E4F                     725              TRAP        #15                 ; trap call
+0000172A  6000 03F2                726              BRA         endSUB              ; go to the end of the subroutine
+0000172E                           727  
+0000172E                           728  ***********************************************************************************************************
+0000172E                           729  * Address Register Direct
+0000172E                           730  
+0000172E  43F9 00001B35            731  pAddrDir    LEA         opPer, A1           ; Display space
+00001734  103C 000E                732              MOVE.B      #14, D0             ; command for trap call to display message
+00001738  4E4F                     733              TRAP        #15                 ; trap call
+0000173A                           734              
+0000173A  B63C 0000                735              CMP.B   #zero,D3
+0000173E  6700 003A                736              BEQ     displayA0A
+00001742  B63C 0001                737              CMP.B   #one,D3
+00001746  6700 004E                738              BEQ     displayA1A
+0000174A  B63C 0002                739              CMP.B   #two,D3
+0000174E  6700 0062                740              BEQ     displayA2A
+00001752  B63C 0003                741              CMP.B   #three,D3
+00001756  6700 0076                742              BEQ     displayA3A
+0000175A  B63C 0004                743              CMP.B   #four,D3
+0000175E  6700 008A                744              BEQ     displayA4A
+00001762  B63C 0005                745              CMP.B   #five,D3
+00001766  6700 009E                746              BEQ     displayA5A
+0000176A  B63C 0006                747              CMP.B   #six,D3
+0000176E  6700 00B2                748              BEQ     displayA6A
+00001772  B63C 0007                749              CMP.B   #seven,D3
+00001776  6700 00C6                750              BEQ     displayA7A
+0000177A                           751              
+0000177A  43F9 00001BC8            752  displayA0A  LEA         dispA0, A1          ; Display space
+00001780  103C 000E                753              MOVE.B      #14, D0             ; command for trap call to display message
+00001784  4E4F                     754              TRAP        #15                 ; trap call
+00001786  43F9 00001B37            755              LEA         clPer, A1           ; Display space
+0000178C  103C 000E                756              MOVE.B      #14, D0             ; command for trap call to display message
+00001790  4E4F                     757              TRAP        #15                 ; trap call
+00001792  6000 038A                758              BRA         endSUB              ; go to the end of the subroutine
+00001796                           759              
+00001796  43F9 00001BCB            760  displayA1A  LEA         dispA1, A1          ; Display space
+0000179C  103C 000E                761              MOVE.B      #14, D0             ; command for trap call to display message
+000017A0  4E4F                     762              TRAP        #15                 ; trap call
+000017A2  43F9 00001B37            763              LEA         clPer, A1           ; Display space
+000017A8  103C 000E                764              MOVE.B      #14, D0             ; command for trap call to display message
+000017AC  4E4F                     765              TRAP        #15                 ; trap call
+000017AE  6000 036E                766              BRA         endSUB              ; go to the end of the subroutine
+000017B2                           767  
+000017B2  43F9 00001BCE            768  displayA2A  LEA         dispA2, A1          ; Display space
+000017B8  103C 000E                769              MOVE.B      #14, D0             ; command for trap call to display message
+000017BC  4E4F                     770              TRAP        #15                 ; trap call
+000017BE  43F9 00001B37            771              LEA         clPer, A1           ; Display space
+000017C4  103C 000E                772              MOVE.B      #14, D0             ; command for trap call to display message
+000017C8  4E4F                     773              TRAP        #15                 ; trap call
+000017CA  6000 0352                774              BRA         endSUB              ; go to the end of the subroutine
+000017CE                           775  
+000017CE  43F9 00001BD1            776  displayA3A  LEA         dispA3, A1          ; Display space
+000017D4  103C 000E                777              MOVE.B      #14, D0             ; command for trap call to display message
+000017D8  4E4F                     778              TRAP        #15                 ; trap call
+000017DA  43F9 00001B37            779              LEA         clPer, A1           ; Display space
+000017E0  103C 000E                780              MOVE.B      #14, D0             ; command for trap call to display message
+000017E4  4E4F                     781              TRAP        #15                 ; trap call
+000017E6  6000 0336                782              BRA         endSUB              ; go to the end of the subroutine
+000017EA                           783  
+000017EA  43F9 00001BD4            784  displayA4A  LEA         dispA4, A1          ; Display space
+000017F0  103C 000E                785              MOVE.B      #14, D0             ; command for trap call to display message
+000017F4  4E4F                     786              TRAP        #15                 ; trap call
+000017F6  43F9 00001B37            787              LEA         clPer, A1           ; Display space
+000017FC  103C 000E                788              MOVE.B      #14, D0             ; command for trap call to display message
+00001800  4E4F                     789              TRAP        #15                 ; trap call
+00001802  6000 031A                790              BRA         endSUB              ; go to the end of the subroutine
+00001806                           791  
+00001806  43F9 00001BD7            792  displayA5A  LEA         dispA5, A1          ; Display space
+0000180C  103C 000E                793              MOVE.B      #14, D0             ; command for trap call to display message
+00001810  4E4F                     794              TRAP        #15                 ; trap call
+00001812  43F9 00001B37            795              LEA         clPer, A1           ; Display space
+00001818  103C 000E                796              MOVE.B      #14, D0             ; command for trap call to display message
+0000181C  4E4F                     797              TRAP        #15                 ; trap call
+0000181E  6000 02FE                798              BRA         endSUB              ; go to the end of the subroutine
+00001822                           799  
+00001822  43F9 00001BDA            800  displayA6A  LEA         dispA6, A1          ; Display space
+00001828  103C 000E                801              MOVE.B      #14, D0             ; command for trap call to display message
+0000182C  4E4F                     802              TRAP        #15                 ; trap call
+0000182E  43F9 00001B37            803              LEA         clPer, A1           ; Display space
+00001834  103C 000E                804              MOVE.B      #14, D0             ; command for trap call to display message
+00001838  4E4F                     805              TRAP        #15                 ; trap call
+0000183A  6000 02E2                806              BRA         endSUB              ; go to the end of the subroutine
+0000183E                           807  
+0000183E  43F9 00001BDD            808  displayA7A  LEA         dispA7, A1          ; Display space
+00001844  103C 000E                809              MOVE.B      #14, D0             ; command for trap call to display message
+00001848  4E4F                     810              TRAP        #15                 ; trap call
+0000184A  43F9 00001B37            811              LEA         clPer, A1           ; Display space
+00001850  103C 000E                812              MOVE.B      #14, D0             ; command for trap call to display message
+00001854  4E4F                     813              TRAP        #15                 ; trap call
+00001856  6000 02C6                814              BRA         endSUB              ; go to the end of the subroutine
+0000185A                           815              
+0000185A                           816  ***********************************************************************************************************
+0000185A                           817  * Addr Postincrement
+0000185A                           818              
+0000185A  43F9 00001B35            819  pAddrPost   LEA         opPer, A1           ; Display space
+00001860  103C 000E                820              MOVE.B      #14, D0             ; command for trap call to display message
+00001864  4E4F                     821              TRAP        #15                 ; trap call
+00001866                           822              
+00001866  B63C 0000                823              CMP.B   #zero,D3
+0000186A  6700 003A                824              BEQ     displayA0P
+0000186E  B63C 0001                825              CMP.B   #one,D3
+00001872  6700 005A                826              BEQ     displayA1P
+00001876  B63C 0002                827              CMP.B   #two,D3
+0000187A  6700 007A                828              BEQ     displayA2P
+0000187E  B63C 0003                829              CMP.B   #three,D3
+00001882  6700 009A                830              BEQ     displayA3P
+00001886  B63C 0004                831              CMP.B   #four,D3
+0000188A  6700 00BA                832              BEQ     displayA4P
+0000188E  B63C 0005                833              CMP.B   #five,D3
+00001892  6700 00DA                834              BEQ     displayA5P
+00001896  B63C 0006                835              CMP.B   #six,D3
+0000189A  6700 00FA                836              BEQ     displayA6P
+0000189E  B63C 0007                837              CMP.B   #seven,D3
+000018A2  6700 011A                838              BEQ     displayA7P
+000018A6                           839              
+000018A6  43F9 00001BC8            840  displayA0P  LEA         dispA0, A1          ; Display space
+000018AC  103C 000E                841              MOVE.B      #14, D0             ; command for trap call to display message
+000018B0  4E4F                     842              TRAP        #15                 ; trap call
+000018B2  43F9 00001B37            843              LEA         clPer, A1           ; Display space
+000018B8  103C 000E                844              MOVE.B      #14, D0             ; command for trap call to display message
+000018BC  4E4F                     845              TRAP        #15                 ; trap call
+000018BE  43F9 00001B3B            846              LEA         inc, A1             ; Display space
+000018C4  103C 000E                847              MOVE.B      #14, D0             ; command for trap call to display message
+000018C8  4E4F                     848              TRAP        #15                 ; trap call
+000018CA  6000 0252                849              BRA         endSUB              ; go to the end of the subroutine
+000018CE                           850              
+000018CE  43F9 00001BCB            851  displayA1P  LEA         dispA1, A1          ; Display space
+000018D4  103C 000E                852              MOVE.B      #14, D0             ; command for trap call to display message
+000018D8  4E4F                     853              TRAP        #15                 ; trap call
+000018DA  43F9 00001B37            854              LEA         clPer, A1           ; Display space
+000018E0  103C 000E                855              MOVE.B      #14, D0             ; command for trap call to display message
+000018E4  4E4F                     856              TRAP        #15                 ; trap call
+000018E6  43F9 00001B3B            857              LEA         inc, A1             ; Display space
+000018EC  103C 000E                858              MOVE.B      #14, D0             ; command for trap call to display message
+000018F0  4E4F                     859              TRAP        #15                 ; trap call
+000018F2  6000 022A                860              BRA         endSUB              ; go to the end of the subroutine
+000018F6                           861  
+000018F6  43F9 00001BCE            862  displayA2P  LEA         dispA2, A1          ; Display space
+000018FC  103C 000E                863              MOVE.B      #14, D0             ; command for trap call to display message
+00001900  4E4F                     864              TRAP        #15                 ; trap call
+00001902  43F9 00001B37            865              LEA         clPer, A1           ; Display space
+00001908  103C 000E                866              MOVE.B      #14, D0             ; command for trap call to display message
+0000190C  4E4F                     867              TRAP        #15                 ; trap call
+0000190E  43F9 00001B3B            868              LEA         inc, A1             ; Display space
+00001914  103C 000E                869              MOVE.B      #14, D0             ; command for trap call to display message
+00001918  4E4F                     870              TRAP        #15                 ; trap call
+0000191A  6000 0202                871              BRA         endSUB              ; go to the end of the subroutine
+0000191E                           872  
+0000191E  43F9 00001BD1            873  displayA3P  LEA         dispA3, A1          ; Display space
+00001924  103C 000E                874              MOVE.B      #14, D0             ; command for trap call to display message
+00001928  4E4F                     875              TRAP        #15                 ; trap call
+0000192A  43F9 00001B37            876              LEA         clPer, A1           ; Display space
+00001930  103C 000E                877              MOVE.B      #14, D0             ; command for trap call to display message
+00001934  4E4F                     878              TRAP        #15                 ; trap call
+00001936  43F9 00001B3B            879              LEA         inc, A1             ; Display space
+0000193C  103C 000E                880              MOVE.B      #14, D0             ; command for trap call to display message
+00001940  4E4F                     881              TRAP        #15                 ; trap call
+00001942  6000 01DA                882              BRA         endSUB              ; go to the end of the subroutine
+00001946                           883  
+00001946  43F9 00001BD4            884  displayA4P  LEA         dispA4, A1          ; Display space
+0000194C  103C 000E                885              MOVE.B      #14, D0             ; command for trap call to display message
+00001950  4E4F                     886              TRAP        #15                 ; trap call
+00001952  43F9 00001B37            887              LEA         clPer, A1           ; Display space
+00001958  103C 000E                888              MOVE.B      #14, D0             ; command for trap call to display message
+0000195C  4E4F                     889              TRAP        #15                 ; trap call
+0000195E  43F9 00001B3B            890              LEA         inc, A1             ; Display space
+00001964  103C 000E                891              MOVE.B      #14, D0             ; command for trap call to display message
+00001968  4E4F                     892              TRAP        #15                 ; trap call
+0000196A  6000 01B2                893              BRA         endSUB              ; go to the end of the subroutine
+0000196E                           894  
+0000196E  43F9 00001BD7            895  displayA5P  LEA         dispA5, A1          ; Display space
+00001974  103C 000E                896              MOVE.B      #14, D0             ; command for trap call to display message
+00001978  4E4F                     897              TRAP        #15                 ; trap call
+0000197A  43F9 00001B37            898              LEA         clPer, A1           ; Display space
+00001980  103C 000E                899              MOVE.B      #14, D0             ; command for trap call to display message
+00001984  4E4F                     900              TRAP        #15                 ; trap call
+00001986  43F9 00001B3B            901              LEA         inc, A1             ; Display space
+0000198C  103C 000E                902              MOVE.B      #14, D0             ; command for trap call to display message
+00001990  4E4F                     903              TRAP        #15                 ; trap call
+00001992  6000 018A                904              BRA         endSUB              ; go to the end of the subroutine
+00001996                           905  
+00001996  43F9 00001BDA            906  displayA6P  LEA         dispA6, A1          ; Display space
+0000199C  103C 000E                907              MOVE.B      #14, D0             ; command for trap call to display message
+000019A0  4E4F                     908              TRAP        #15                 ; trap call
+000019A2  43F9 00001B37            909              LEA         clPer, A1           ; Display space
+000019A8  103C 000E                910              MOVE.B      #14, D0             ; command for trap call to display message
+000019AC  4E4F                     911              TRAP        #15                 ; trap call
+000019AE  43F9 00001B3B            912              LEA         inc, A1             ; Display space
+000019B4  103C 000E                913              MOVE.B      #14, D0             ; command for trap call to display message
+000019B8  4E4F                     914              TRAP        #15                 ; trap call
+000019BA  6000 0162                915              BRA         endSUB              ; go to the end of the subroutine
+000019BE                           916  
+000019BE  43F9 00001BDD            917  displayA7P  LEA         dispA7, A1          ; Display space
+000019C4  103C 000E                918              MOVE.B      #14, D0             ; command for trap call to display message
+000019C8  4E4F                     919              TRAP        #15                 ; trap call
+000019CA  43F9 00001B37            920              LEA         clPer, A1           ; Display space
+000019D0  103C 000E                921              MOVE.B      #14, D0             ; command for trap call to display message
+000019D4  4E4F                     922              TRAP        #15                 ; trap call
+000019D6  43F9 00001B3B            923              LEA         inc, A1             ; Display space
+000019DC  103C 000E                924              MOVE.B      #14, D0             ; command for trap call to display message
+000019E0  4E4F                     925              TRAP        #15                 ; trap call
+000019E2  6000 013A                926              BRA         endSUB              ; go to the end of the subroutine
+000019E6                           927  
+000019E6                           928  ***********************************************************************************************************
+000019E6                           929  * Addr Postdecrement
+000019E6                           930  
+000019E6  43F9 00001B39            931  pAddrDec    LEA         dec, A1             ; Display space
+000019EC  103C 000E                932              MOVE.B      #14, D0             ; command for trap call to display message
+000019F0  4E4F                     933              TRAP        #15                 ; trap call
+000019F2                           934              
+000019F2  43F9 00001B35            935              LEA         opPer, A1           ; Display space
+000019F8  103C 000E                936              MOVE.B      #14, D0             ; command for trap call to display message
+000019FC  4E4F                     937              TRAP        #15                 ; trap call
+000019FE                           938              
+000019FE  B63C 0000                939              CMP.B   #zero,D3
+00001A02  6700 003A                940              BEQ     displayA0D
+00001A06  B63C 0001                941              CMP.B   #one,D3
+00001A0A  6700 004E                942              BEQ     displayA1D
+00001A0E  B63C 0002                943              CMP.B   #two,D3
+00001A12  6700 0062                944              BEQ     displayA2D
+00001A16  B63C 0003                945              CMP.B   #three,D3
+00001A1A  6700 0076                946              BEQ     displayA3D
+00001A1E  B63C 0004                947              CMP.B   #four,D3
+00001A22  6700 008A                948              BEQ     displayA4D
+00001A26  B63C 0005                949              CMP.B   #five,D3
+00001A2A  6700 009E                950              BEQ     displayA5D
+00001A2E  B63C 0006                951              CMP.B   #six,D3
+00001A32  6700 00B2                952              BEQ     displayA6D
+00001A36  B63C 0007                953              CMP.B   #seven,D3
+00001A3A  6700 00C6                954              BEQ     displayA7D
+00001A3E                           955              
+00001A3E  43F9 00001BC8            956  displayA0D  LEA         dispA0, A1          ; Display space
+00001A44  103C 000E                957              MOVE.B      #14, D0             ; command for trap call to display message
+00001A48  4E4F                     958              TRAP        #15                 ; trap call
+00001A4A  43F9 00001B37            959              LEA         clPer, A1           ; Display space
+00001A50  103C 000E                960              MOVE.B      #14, D0             ; command for trap call to display message
+00001A54  4E4F                     961              TRAP        #15                 ; trap call
+00001A56  6000 00C6                962              BRA         endSUB              ; go to the end of the subroutine
+00001A5A                           963              
+00001A5A  43F9 00001BCB            964  displayA1D  LEA         dispA1, A1          ; Display space
+00001A60  103C 000E                965              MOVE.B      #14, D0             ; command for trap call to display message
+00001A64  4E4F                     966              TRAP        #15                 ; trap call
+00001A66  43F9 00001B37            967              LEA         clPer, A1           ; Display space
+00001A6C  103C 000E                968              MOVE.B      #14, D0             ; command for trap call to display message
+00001A70  4E4F                     969              TRAP        #15                 ; trap call
+00001A72  6000 00AA                970              BRA         endSUB              ; go to the end of the subroutine
+00001A76                           971  
+00001A76  43F9 00001BCE            972  displayA2D  LEA         dispA2, A1          ; Display space
+00001A7C  103C 000E                973              MOVE.B      #14, D0             ; command for trap call to display message
+00001A80  4E4F                     974              TRAP        #15                 ; trap call
+00001A82  43F9 00001B37            975              LEA         clPer, A1           ; Display space
+00001A88  103C 000E                976              MOVE.B      #14, D0             ; command for trap call to display message
+00001A8C  4E4F                     977              TRAP        #15                 ; trap call
+00001A8E  6000 008E                978              BRA         endSUB              ; go to the end of the subroutine
+00001A92                           979  
+00001A92  43F9 00001BD1            980  displayA3D  LEA         dispA3, A1          ; Display space
+00001A98  103C 000E                981              MOVE.B      #14, D0             ; command for trap call to display message
+00001A9C  4E4F                     982              TRAP        #15                 ; trap call
+00001A9E  43F9 00001B37            983              LEA         clPer, A1           ; Display space
+00001AA4  103C 000E                984              MOVE.B      #14, D0             ; command for trap call to display message
+00001AA8  4E4F                     985              TRAP        #15                 ; trap call
+00001AAA  6000 0072                986              BRA         endSUB              ; go to the end of the subroutine
+00001AAE                           987  
+00001AAE  43F9 00001BD4            988  displayA4D  LEA         dispA4, A1          ; Display space
+00001AB4  103C 000E                989              MOVE.B      #14, D0             ; command for trap call to display message
+00001AB8  4E4F                     990              TRAP        #15                 ; trap call
+00001ABA  43F9 00001B37            991              LEA         clPer, A1           ; Display space
+00001AC0  103C 000E                992              MOVE.B      #14, D0             ; command for trap call to display message
+00001AC4  4E4F                     993              TRAP        #15                 ; trap call
+00001AC6  6000 0056                994              BRA         endSUB              ; go to the end of the subroutine
+00001ACA                           995  
+00001ACA  43F9 00001BD7            996  displayA5D  LEA         dispA5, A1          ; Display space
+00001AD0  103C 000E                997              MOVE.B      #14, D0             ; command for trap call to display message
+00001AD4  4E4F                     998              TRAP        #15                 ; trap call
+00001AD6  43F9 00001B37            999              LEA         clPer, A1           ; Display space
+00001ADC  103C 000E               1000              MOVE.B      #14, D0             ; command for trap call to display message
+00001AE0  4E4F                    1001              TRAP        #15                 ; trap call
+00001AE2  6000 003A               1002              BRA         endSUB              ; go to the end of the subroutine
+00001AE6                          1003  
+00001AE6  43F9 00001BDA           1004  displayA6D  LEA         dispA6, A1          ; Display space
+00001AEC  103C 000E               1005              MOVE.B      #14, D0             ; command for trap call to display message
+00001AF0  4E4F                    1006              TRAP        #15                 ; trap call
+00001AF2  43F9 00001B37           1007              LEA         clPer, A1           ; Display space
+00001AF8  103C 000E               1008              MOVE.B      #14, D0             ; command for trap call to display message
+00001AFC  4E4F                    1009              TRAP        #15                 ; trap call
+00001AFE  6000 001E               1010              BRA         endSUB              ; go to the end of the subroutine
+00001B02                          1011  
+00001B02  43F9 00001BDD           1012  displayA7D  LEA         dispA7, A1          ; Display space
+00001B08  103C 000E               1013              MOVE.B      #14, D0             ; command for trap call to display message
+00001B0C  4E4F                    1014              TRAP        #15                 ; trap call
+00001B0E  43F9 00001B37           1015              LEA         clPer, A1           ; Display space
+00001B14  103C 000E               1016              MOVE.B      #14, D0             ; command for trap call to display message
+00001B18  4E4F                    1017              TRAP        #15                 ; trap call
+00001B1A  6000 0002               1018              BRA         endSUB              ; go to the end of the subroutine
+00001B1E                          1019  
+00001B1E                          1020  
+00001B1E                          1021  invalid
+00001B1E                          1022  
+00001B1E                          1023  endSUB
+00001B1E                          1024          
+00001B1E  4CDF 7FFF               1025          MOVEM.L  (SP)+, D0-D7/A0-A6
+00001B22  4E75                    1026          RTS
+00001B24                          1027  
+00001B24                          1028  ***********************************************************************************************************
+00001B24                          1029  ***********************************************************************************************************
+00001B24                          1030  ***********************************************************************************************************
+00001B24                          1031  
+00001B24                          1032  printInvalid
+00001B24                          1033  endPROG    
+00001B24                          1034  
+00001B24  FFFF FFFF               1035      SIMHALT                             ; halt simulator
+00001B28                          1036  
+00001B28= 20 0D 0A 00             1037  newLine     DC.B    ' ', CR, LF, 0
+00001B2C= 20 20 00                1038  space       DC.B    '  ', 0
+00001B2F                          1039  
+00001B2F= 23 00                   1040  hashTag     DC.B    '#', 0
+00001B31= 24 00                   1041  dispHex     DC.B    '$', 0
+00001B33= 2C 00                   1042  comma       DC.B    ',', 0
+00001B35                          1043  
+00001B35= 28 00                   1044  opPer       DC.B    '(', 0
+00001B37= 29 00                   1045  clPer       DC.B    ')', 0
+00001B39= 2D 00                   1046  dec         DC.B    '-', 0
+00001B3B= 2B 00                   1047  inc         DC.B    '+', 0
+00001B3D                          1048  
+00001B3D= 4F 52 49 00             1049  ORImatch    DC.B    'ORI', 0
+00001B41= 43 4D 50 49 00          1050  CMPImatch   DC.B    'CMPI', 0
+00001B46= 42 43 4C 52 00          1051  BCLRmatch   DC.B    'BCLR', 0
+00001B4B= 4D 4F 56 45 00          1052  MOVEmatch   DC.B    'MOVE', 0
+00001B50= 4D 4F 56 45 41 00       1053  MOVEAmatch  DC.B    'MOVEA', 0
+00001B56= 4E 45 47 00             1054  NEGmatch    DC.B    'NEG', 0
+00001B5A= 52 54 53 00             1055  RTSmatch    DC.B    'RTS', 0
+00001B5E= 4A 53 52 00             1056  JSRmatch    DC.B    'JSR', 0
+00001B62= 4D 4F 56 45 4D 00       1057  MOVEMmatch  DC.B    'MOVEM', 0
+00001B68= 4C 45 41 00             1058  LEAmatch    DC.B    'LEA', 0
+00001B6C= 53 55 42 51 00          1059  SUBQmatch   DC.B    'SUBQ', 0
+00001B71= 42 52 41 00             1060  BRAmatch    DC.B    'BRA', 0
+00001B75= 42 43 53 00             1061  BCSmatch    DC.B    'BCS', 0
+00001B79= 42 56 43 00             1062  BVCmatch    DC.B    'BVC', 0
+00001B7D= 42 47 45 00             1063  BGEmatch    DC.B    'BGE', 0
+00001B81= 42 4C 54 00             1064  BLTmatch    DC.B    'BLT', 0
+00001B85= 44 49 56 53 00          1065  DIVSmatch   DC.B    'DIVS', 0
+00001B8A= 4F 52 00                1066  ORmatch     DC.B    'OR', 0
+00001B8D= 53 55 42 00             1067  SUBmatch    DC.B    'SUB', 0
+00001B91= 45 4F 52 00             1068  EORmatch    DC.B    'EOR', 0
+00001B95= 43 4D 50 00             1069  CMPmatch    DC.B    'CMP', 0
+00001B99= 4D 55 4C 53 00          1070  MULSmatch   DC.B    'MULS', 0
+00001B9E= 41 44 44 00             1071  ADDmatch    DC.B    'ADD', 0
+00001BA2= 41 44 44 41 00          1072  ADDAmatch   DC.B    'ADDA', 0
+00001BA7= 4C 53 52 00             1073  LSRmatch    DC.B    'LSR', 0
+00001BAB= 4C 53 4C 00             1074  LSLmatch    DC.B    'LSL', 0
+00001BAF= 41 53 52 00             1075  ASRmatch    DC.B    'ASR', 0
+00001BB3= 41 53 4C 00             1076  ASLmatch    DC.B    'ASL', 0
+00001BB7= 52 4F 52 00             1077  RORmatch    DC.B    'ROR', 0
+00001BBB= 52 4F 4C 00             1078  ROLmatch    DC.B    'ROL', 0
+00001BBF                          1079   
+00001BBF= 2E 42 00                1080  dispByte    DC.B    '.B', 0
+00001BC2= 2E 57 00                1081  dispWord    DC.B    '.W', 0
+00001BC5= 2E 4C 00                1082  dispLong    DC.B    '.L', 0
+00001BC8                          1083  
+00001BC8= 41 30 00                1084  dispA0      DC.B    'A0', 0
+00001BCB= 41 31 00                1085  dispA1      DC.B    'A1', 0
+00001BCE= 41 32 00                1086  dispA2      DC.B    'A2', 0
+00001BD1= 41 33 00                1087  dispA3      DC.B    'A3', 0
+00001BD4= 41 34 00                1088  dispA4      DC.B    'A4', 0
+00001BD7= 41 35 00                1089  dispA5      DC.B    'A5', 0
+00001BDA= 41 36 00                1090  dispA6      DC.B    'A6', 0
+00001BDD= 41 37 00                1091  dispA7      DC.B    'A7', 0
+00001BE0                          1092  
+00001BE0= 44 30 00                1093  dispD0      DC.B    'D0', 0
+00001BE3= 44 31 00                1094  dispD1      DC.B    'D1', 0
+00001BE6= 44 32 00                1095  dispD2      DC.B    'D2', 0
+00001BE9= 44 33 00                1096  dispD3      DC.B    'D3', 0
+00001BEC= 44 34 00                1097  dispD4      DC.B    'D4', 0
+00001BEF= 44 35 00                1098  dispD5      DC.B    'D5', 0
+00001BF2= 44 36 00                1099  dispD6      DC.B    'D6', 0
+00001BF5= 44 37 00                1100  dispD7      DC.B    'D7', 0  
+00001BF8                          1101             END    START                ; last line of source
 
 No errors detected
 No warnings generated
@@ -978,163 +1111,166 @@ No warnings generated
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
-ADDAMATCH           1A30
-ADDMATCH            1A2C
+ADDAMATCH           1BA2
+ADDMATCH            1B9E
 ADDMATCHAD          2
 ADDMATCHAN          1
 ADDMATCHDI          7
 ADDMATCHDN          0
 ADDMATCHPD          4
 ADDMATCHPI          3
-ASLMATCH            1A41
-ASRMATCH            1A3D
-BCLRMATCH           19D4
-BCSMATCH            1A03
-BGEMATCH            1A0B
-BLTMATCH            1A0F
-BRAEIGHT            1102
-BRAELEVEN           1106
-BRAFIVE             10D2
-BRAFOUR             10B6
-BRAFOURTEEN         110A
-BRAMATCH            19FF
-BRANINE             1102
-BRAONE              10B2
-BRASIX              10D6
-BRATHIRTEEN         110A
-BRATHREE            10B6
-BRATWELVE           1106
-BRATWO              10B6
+ASLMATCH            1BB3
+ASRMATCH            1BAF
+BCLRMATCH           1B46
+BCSMATCH            1B75
+BGEMATCH            1B7D
+BLTMATCH            1B81
+BRAEIGHT            1106
+BRAELEVEN           110A
+BRAFIVE             10D6
+BRAFOUR             10BA
+BRAFOURTEEN         110E
+BRAMATCH            1B71
+BRANINE             1106
+BRAONE              10B6
+BRASIX              10DA
+BRATHIRTEEN         110E
+BRATHREE            10BA
+BRATWELVE           110A
+BRATWO              10BA
 BRAZERO             1086
-BVCMATCH            1A07
-CLPER               19C5
-CMPIMATCH           19CF
-CMPMATCH            1A23
-COMMA               19C1
+BVCMATCH            1B79
+CLPER               1B37
+CMPIMATCH           1B41
+CMPMATCH            1B95
+COMMA               1B33
 CR                  D
-DEC                 19C7
-DISPA0              1A56
-DISPA1              1A59
-DISPA2              1A5C
-DISPA3              1A5F
-DISPA4              1A62
-DISPA5              1A65
-DISPA6              1A68
-DISPA7              1A6B
-DISPBYTE            1A4D
-DISPD0              1A6E
-DISPD1              1A71
-DISPD2              1A74
-DISPD3              1A77
-DISPD4              1A7A
-DISPD5              1A7D
-DISPD6              1A80
-DISPD7              1A83
-DISPHEX             19BF
-DISPLAYA0           153C
-DISPLAYA0A          1608
-DISPLAYA0D          18CC
-DISPLAYA0P          1734
-DISPLAYA1           154C
-DISPLAYA1A          1624
-DISPLAYA1D          18E8
-DISPLAYA1P          175C
-DISPLAYA2           155C
-DISPLAYA2A          1640
-DISPLAYA2D          1904
-DISPLAYA2P          1784
-DISPLAYA3           156C
-DISPLAYA3A          165C
-DISPLAYA3D          1920
-DISPLAYA3P          17AC
-DISPLAYA4           157C
-DISPLAYA4A          1678
-DISPLAYA4D          193C
-DISPLAYA4P          17D4
-DISPLAYA5           158C
-DISPLAYA5A          1694
-DISPLAYA5D          1958
-DISPLAYA5P          17FC
-DISPLAYA6           159C
-DISPLAYA6A          16B0
-DISPLAYA6D          1974
-DISPLAYA6P          1824
-DISPLAYA7           15AC
-DISPLAYA7A          16CC
-DISPLAYA7D          1990
-DISPLAYA7P          184C
-DISPLAYD0           147C
-DISPLAYD1           148C
-DISPLAYD2           149C
-DISPLAYD3           14AC
-DISPLAYD4           14BC
-DISPLAYD5           14CC
-DISPLAYD6           14DC
-DISPLAYD7           14EC
-DISPLONG            1A53
-DISPWORD            1A50
-DIVSMATCH           1A13
+DEC                 1B39
+DISPA0              1BC8
+DISPA1              1BCB
+DISPA2              1BCE
+DISPA3              1BD1
+DISPA4              1BD4
+DISPA5              1BD7
+DISPA6              1BDA
+DISPA7              1BDD
+DISPBYTE            1BBF
+DISPD0              1BE0
+DISPD1              1BE3
+DISPD2              1BE6
+DISPD3              1BE9
+DISPD4              1BEC
+DISPD5              1BEF
+DISPD6              1BF2
+DISPD7              1BF5
+DISPHEX             1B31
+DISPLAYA0           16AE
+DISPLAYA0A          177A
+DISPLAYA0D          1A3E
+DISPLAYA0P          18A6
+DISPLAYA1           16BE
+DISPLAYA1A          1796
+DISPLAYA1D          1A5A
+DISPLAYA1P          18CE
+DISPLAYA2           16CE
+DISPLAYA2A          17B2
+DISPLAYA2D          1A76
+DISPLAYA2P          18F6
+DISPLAYA3           16DE
+DISPLAYA3A          17CE
+DISPLAYA3D          1A92
+DISPLAYA3P          191E
+DISPLAYA4           16EE
+DISPLAYA4A          17EA
+DISPLAYA4D          1AAE
+DISPLAYA4P          1946
+DISPLAYA5           16FE
+DISPLAYA5A          1806
+DISPLAYA5D          1ACA
+DISPLAYA5P          196E
+DISPLAYA6           170E
+DISPLAYA6A          1822
+DISPLAYA6D          1AE6
+DISPLAYA6P          1996
+DISPLAYA7           171E
+DISPLAYA7A          183E
+DISPLAYA7D          1B02
+DISPLAYA7P          19BE
+DISPLAYD0           15EE
+DISPLAYD1           15FE
+DISPLAYD2           160E
+DISPLAYD3           161E
+DISPLAYD4           162E
+DISPLAYD5           163E
+DISPLAYD6           164E
+DISPLAYD7           165E
+DISPLONG            1BC5
+DISPWORD            1BC2
+DIVSMATCH           1B85
 EIGHT               8
 ELEVEN              B
-ENDPROG             19B2
-ENDSUB              19AC
-EORMATCH            1A1F
+ENDPROG             1B24
+ENDSUB              1B1E
+EORMATCH            1B91
 FIRSTNIB            F0
 FIVE                5
 FOUR                4
 FOURTEEN            E
-HASHTAG             19BD
-INC                 19C9
-INVALID             19AC
-JSRMATCH            19EC
-LEAMATCH            19F6
+HASHTAG             1B2F
+INC                 1B3B
+INVALID             1B1E
+JSRMATCH            1B5E
+LEAMATCH            1B68
 LF                  A
 LOOP                100C
-LSLMATCH            1A39
-LSRMATCH            1A35
-MOVEAMATCH          19DE
-MOVEMATCH           19D9
-MOVEMMATCH          19F0
-MULSMATCH           1A27
-NEGMATCH            19E4
-NEWLINE             19B6
+LSLMATCH            1BAB
+LSRMATCH            1BA7
+MOVEAMATCH          1B50
+MOVEMATCH           1B4B
+MOVEMMATCH          1B62
+MULSMATCH           1B99
+NEGMATCH            1B56
+NEWLINE             1B28
 NINE                9
 ONE                 1
-OPASL               13C4
-OPASR               13D0
-OPBCLR              12CA
-OPBCS               137C
-OPBGE               1394
-OPBLT               13A0
-OPBRA               1364
-OPBVC               1388
-OPCMPI              1292
-OPLSL               13DC
-OPLSR               13E8
-OPMOVEB             1328
-OPMOVEMLEA          1358
-OPMULS              13B8
-OPNEG               134C
-OPORI               113E
-OPORIB              116C
-OPORIL              1230
-OPORIW              11CE
-OPPER               19C3
-OPROL               13F4
-OPROR               1400
-OPRTSJSR            1358
-OPSTATBCLR          12FA
-OPSUB               13AC
-OPSUBQ              1358
-ORIMATCH            19CB
-ORMATCH             1A18
-PADDRDEC            1874
-PADDRDIR            15BC
-PADDRPOST           16E8
-PADDRREG            14FC
-PDATAREG            143C
-PRINTEA             140C
-PRINTINVALID        19B2
+OPASL               1536
+OPASR               1542
+OPBCLR              1408
+OPBCS               14EE
+OPBGE               1506
+OPBLT               1512
+OPBRA               14D6
+OPBVC               14FA
+OPCMPI              1296
+OPCMPIB             12E2
+OPCMPIL             13A6
+OPCMPIW             1344
+OPDYNBCLR           146C
+OPLSL               154E
+OPLSR               155A
+OPMOVEB             149A
+OPMOVEMLEA          14CA
+OPMULS              152A
+OPNEG               14BE
+OPORI               1142
+OPORIB              1170
+OPORIL              1234
+OPORIW              11D2
+OPPER               1B35
+OPROL               1566
+OPROR               1572
+OPRTSJSR            14CA
+OPSUB               151E
+OPSUBQ              14CA
+ORIMATCH            1B3D
+ORMATCH             1B8A
+PADDRDEC            19E6
+PADDRDIR            172E
+PADDRPOST           185A
+PADDRREG            166E
+PDATAREG            15AE
+PRINTEA             157E
+PRINTINVALID        1B24
 REG0                0
 REG1                1
 REG2                2
@@ -1143,9 +1279,9 @@ REG4                4
 REG5                5
 REG6                6
 REG7                7
-ROLMATCH            1A49
-RORMATCH            1A45
-RTSMATCH            19E8
+ROLMATCH            1BBB
+RORMATCH            1BB7
+RTSMATCH            1B5A
 S1B                 0
 S1L                 2
 S1W                 1
@@ -1157,10 +1293,10 @@ S3W                 3
 SECNIB              F
 SEVEN               7
 SIX                 6
-SPACE               19BA
+SPACE               1B2C
 START               1000
-SUBMATCH            1A1B
-SUBQMATCH           19FA
+SUBMATCH            1B8D
+SUBQMATCH           1B6C
 TEST_END            2009
 TEST_START          2000
 THIRTEEN            D
