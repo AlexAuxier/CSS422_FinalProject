@@ -546,6 +546,54 @@ opMOVEB LEA         MOVEmatch, A1       ; we know that the opcode will be MOVE.B
         LEA         space, A1           ; create spaces
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
+        
+        
+        CLR         D5                  ; Clear D5
+        MOVE.B      D1,D5               ; Copying byte over to D5. Will use D5 to store destination Register
+        ASR         #one,D5             ; shifted mode out. Register is now stored into D5
+        AND         #seven,D5
+        
+        CLR         D4                  ; Clear out D4
+        MOVE.B      D1,D4               ; Copy byte over to store destination mode
+        AND         #one,D4             ; Set all the other bits to 0, leave the bit for the destination mode alone.
+        
+        CLR          D1
+        CLR          D2
+        MOVE.B      (A0)+,D1            ; Copy byte into D1
+        MOVE.B      D1,D2
+        ASR         #6,D2               ; Shifts source mode and register out to get destination mode
+        ADD         D2,D4               ; Adds the remaining bits to D4
+        
+        CLR         D2
+        MOVE.B      D1,D2               ; Copy new byte over to D2
+        ASR         #three,D2           ; Shift source register out
+        AND         #seven,D2           ; Set everything to 0 except for the mode
+        
+        CLR         D3
+        MOVE.B      D1,D3
+        AND         #seven,D3
+        
+        JSR         printEA
+        
+        LEA         comma, A1           ; Display space
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        CLR         D2
+        CLR         D3
+        MOVE.B      D4,D2
+        MOVE.B      D5,D3
+        
+        JSR         printEA
+        
+        
+        LEA        	newLine, A1           ; Display space
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call            
+
+
+        BRA         LOOP                ; go back to the loop
+        
 
 opNEG   LEA         NEGmatch, A1        ; we know that the opcode will be NEG, so load A1 to print message
         MOVE.B      #14, D0             ; command for trap call to display message
@@ -1129,6 +1177,7 @@ dispD7      DC.B    'D7', 0
            
            
            
+
 
 
 
