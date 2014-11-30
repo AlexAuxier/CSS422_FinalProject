@@ -117,7 +117,9 @@ braOne  BRA         opMOVEB             ; we know that there is only one opcode 
 
 braTwo  BRA         opMOVEL             ; there are two opCodes available, MOVE.L, or MOVEA.L
 
-braThree ; there are two opCodes available, MOVE.W, or MOVEA.W
+braThree                                ; there are two opCodes available, MOVE.W, or MOVEA.W
+
+        BRA         opMOVEW
 
 braFour CLR         D2                  ; first nibble is 4, 5 opcodes are possible 
         MOVE.B      D1, D2              ; clear out D2 and copy D1 back in
@@ -619,7 +621,10 @@ opMOVEL
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call  
             
+            
             LEA         dispLong,A1
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
             
             LEA         space, A1           ; create spaces
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -661,9 +666,15 @@ opMOVEL
             BRA         LOOP                ; go back to the loop
             
 opMOVEAL
+
             LEA         MOVEAmatch,A1
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
+            
+            LEA         dispLong,A1
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+            
 
             LEA         space, A1           ; create spaces
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -679,7 +690,7 @@ opMOVEAL
             AND         #seven,D3
             
             CLR         D1                  ; Clear D1
-            MOVE.L      (A0)+, D1           ; Read in next word to find the immediate data
+            MOVE.W      (A0)+, D1           ; Read in next word to find the immediate data
             
             
             JSR         printEA
@@ -701,7 +712,122 @@ opMOVEAL
             TRAP        #15                 ; trap call            
 
 
-            BRA         LOOP                ; go back to the loop  
+            BRA         LOOP                ; go back to the loop
+
+opMOVEW
+        
+            CLR         D5                  ; Clear D5
+            MOVE.B      D1,D5               ; Copying byte over to D5. Will use D5 to store destination Register
+            ASR         #one,D5             ; shifted mode out. Register is now stored into D5
+            AND         #seven,D5
+        
+            CLR         D4                  ; Clear out D4
+            MOVE.B      D1,D4               ; Copy byte over to store destination mode
+            AND         #one,D4             ; Set all the other bits to 0, leave the bit for the destination mode alone.
+        
+            CLR          D1
+            CLR          D2
+            MOVE.B      (A0)+,D1            ; Copy byte into D1
+            MOVE.B      D1,D2
+            ASR         #6,D2               ; Shifts source mode and register out to get destination mode
+            ADD         D2,D4               ; Adds the remaining bits to D4
+        
+            CMP         #one,D4             ; Check if it is MOVEA
+            BEQ         opMOVEAW            ; If it is, branch off
+            
+            LEA         MOVEmatch, A1       ; we know that the opcode will be MOVE.L OR MOVEA.L, so load A1 to print message
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call  
+            
+            LEA         dispWord,A1
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+            
+            LEA         space, A1           ; create spaces
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+        
+            CLR         D2
+            MOVE.B      D1,D2               ; Copy new byte over to D2
+            ASR         #three,D2           ; Shift source register out
+            AND         #seven,D2           ; Set everything to 0 except for the mode
+        
+            CLR         D3
+            MOVE.B      D1,D3
+            AND         #seven,D3
+            
+            CLR         D1                  ; Clear D1
+            MOVE.W      (A0)+, D1           ; Read in next word to find the immediate data
+            
+            JSR         printEA
+            
+            LEA         comma, A1           ; Display comma
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+        
+            CLR         D2
+            CLR         D3
+            MOVE.B      D4,D2
+            MOVE.B      D5,D3
+            
+
+            
+            JSR         printEA
+        
+        
+            LEA        	newLine, A1           ; Display space
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call            
+
+
+            BRA         LOOP                ; go back to the loop
+opMOVEAW  
+            LEA         MOVEAmatch,A1
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+            
+            LEA         dispWord,A1
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+            
+
+            LEA         space, A1           ; create spaces
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+            
+            CLR         D2
+            MOVE.B      D1,D2               ; Copy new byte over to D2
+            ASR         #three,D2           ; Shift source register out
+            AND         #seven,D2           ; Set everything to 0 except for the mode
+        
+            CLR         D3
+            MOVE.B      D1,D3
+            AND         #seven,D3
+            
+            CLR         D1                  ; Clear D1
+            MOVE.W      (A0)+, D1           ; Read in next word to find the immediate data
+            
+            
+            JSR         printEA
+            
+            LEA         comma, A1           ; Display comma
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+
+            CLR         D2
+            CLR         D3
+            MOVE.B      D4,D2
+            MOVE.B      D5,D3
+        
+            JSR         printEA
+        
+        
+            LEA        	newLine, A1           ; Display space
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call            
+
+
+            BRA         LOOP                ; go back to the loop
 
 opNEG   LEA         NEGmatch, A1        ; we know that the opcode will be NEG, so load A1 to print message
         MOVE.B      #14, D0             ; command for trap call to display message
