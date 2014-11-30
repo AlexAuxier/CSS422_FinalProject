@@ -115,7 +115,7 @@ braZero CLR         D2                  ; first nibble is 0, 3 opcodes are possi
         
 braOne  BRA         opMOVEB             ; we know that there is only one opcode that is MOVE.B
 
-braTwo  ; there are two opCodes available, MOVE.L, or MOVEA.L
+braTwo  BRA         opMOVEL             ; there are two opCodes available, MOVE.L, or MOVEA.L
 
 braThree ; there are two opCodes available, MOVE.W, or MOVEA.W
 
@@ -594,6 +594,114 @@ opMOVEB LEA         MOVEmatch, A1       ; we know that the opcode will be MOVE.B
 
         BRA         LOOP                ; go back to the loop
         
+opMOVEL     
+        
+            CLR         D5                  ; Clear D5
+            MOVE.B      D1,D5               ; Copying byte over to D5. Will use D5 to store destination Register
+            ASR         #one,D5             ; shifted mode out. Register is now stored into D5
+            AND         #seven,D5
+        
+            CLR         D4                  ; Clear out D4
+            MOVE.B      D1,D4               ; Copy byte over to store destination mode
+            AND         #one,D4             ; Set all the other bits to 0, leave the bit for the destination mode alone.
+        
+            CLR          D1
+            CLR          D2
+            MOVE.B      (A0)+,D1            ; Copy byte into D1
+            MOVE.B      D1,D2
+            ASR         #6,D2               ; Shifts source mode and register out to get destination mode
+            ADD         D2,D4               ; Adds the remaining bits to D4
+        
+            CMP         #one,D4             ; Check if it is MOVEA
+            BEQ         opMOVEAL            ; If it is, branch off
+            
+            LEA         MOVEmatch, A1       ; we know that the opcode will be MOVE.L OR MOVEA.L, so load A1 to print message
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call  
+            
+            LEA         dispLong,A1
+            
+            LEA         space, A1           ; create spaces
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+        
+            CLR         D2
+            MOVE.B      D1,D2               ; Copy new byte over to D2
+            ASR         #three,D2           ; Shift source register out
+            AND         #seven,D2           ; Set everything to 0 except for the mode
+        
+            CLR         D3
+            MOVE.B      D1,D3
+            AND         #seven,D3
+            
+            CLR         D1                  ; Clear D1
+            MOVE.L      (A0)+, D1           ; Read in next word to find the immediate data
+            
+            JSR         printEA
+            
+            LEA         comma, A1           ; Display comma
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+        
+            CLR         D2
+            CLR         D3
+            MOVE.B      D4,D2
+            MOVE.B      D5,D3
+            
+
+            
+            JSR         printEA
+        
+        
+            LEA        	newLine, A1           ; Display space
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call            
+
+
+            BRA         LOOP                ; go back to the loop
+            
+opMOVEAL
+            LEA         MOVEAmatch,A1
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+
+            LEA         space, A1           ; create spaces
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+            
+            CLR         D2
+            MOVE.B      D1,D2               ; Copy new byte over to D2
+            ASR         #three,D2           ; Shift source register out
+            AND         #seven,D2           ; Set everything to 0 except for the mode
+        
+            CLR         D3
+            MOVE.B      D1,D3
+            AND         #seven,D3
+            
+            CLR         D1                  ; Clear D1
+            MOVE.L      (A0)+, D1           ; Read in next word to find the immediate data
+            
+            
+            JSR         printEA
+            
+            LEA         comma, A1           ; Display comma
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+
+            CLR         D2
+            CLR         D3
+            MOVE.B      D4,D2
+            MOVE.B      D5,D3
+        
+            JSR         printEA
+        
+        
+            LEA        	newLine, A1           ; Display space
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call            
+
+
+            BRA         LOOP                ; go back to the loop  
 
 opNEG   LEA         NEGmatch, A1        ; we know that the opcode will be NEG, so load A1 to print message
         MOVE.B      #14, D0             ; command for trap call to display message
@@ -603,9 +711,9 @@ opRTSJSR
 
 opMOVEMLEA
 
-opSUBQ  LEA         SUBQmatch, A1       ; we know that the opcode will be SUBQ, so load A1 to print message
-        MOVE.B      #14, D0             ; command for trap call to display message
-        TRAP        #15                 ; trap call
+opSUBQ      LEA         SUBQmatch, A1       ; we know that the opcode will be SUBQ, so load A1 to print message
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
 
 opBRA   LEA         BRAmatch, A1        ; we know that the opcode will be BRA, so load A1 to print message
         MOVE.B      #14, D0             ; command for trap call to display message
@@ -680,6 +788,8 @@ printEA 	MOVEM.L  D0-D7/A0-A6, -(SP)
 	        BEQ         pAddrPost
     	    CMP.B       #four, D2
         	BEQ         pAddrDec
+        	CMP.B       #seven,D2
+        	BEQ         absAddr
         	BRA         invalid
 
 ***********************************************************************************************************
@@ -1092,6 +1202,53 @@ displayA7D  LEA         dispA7, A1          ; Display space
             BRA         endSUB              ; go to the end of the subroutine
 
 
+***********************************************************************************************************
+* Absolute Address
+absAddr
+            CMP         #zero,D3            ; This is (xxx).W
+            BEQ         absAddrW
+            CMP         #one,D3             ; This is (xxx).L
+            BEQ         absAddrL
+            CMP         #four,D3
+            BEQ         immData
+            BRA         invalid             ; Invalid, not equal to any of the opCodes handled
+            
+absAddrW                                    ; Does not work at the moment
+
+            LEA         hashTag, A1           ; Display space
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+            
+            MOVE.B      #2, D0              ; Load #2 into D0
+            TRAP        #15                 ; Display word in D1
+        
+
+            BRA         endSUB              ; End subroutine
+absAddrL                                    ; Does not work at the moment
+
+            LEA         hashTag, A1           ; Display space
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+            
+            MOVE.B      #3, D0              
+            TRAP        #15
+        
+
+            BRA         endSUB              ; End subroutine
+            
+immData     
+
+        
+            LEA         hashTag, A1           ; Display space
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+            
+            MOVE.B      #3, D0              
+            TRAP        #15
+        
+
+            BRA         endSUB              ; End subroutine
+
 invalid
 
 endSUB
@@ -1177,6 +1334,7 @@ dispD7      DC.B    'D7', 0
            
            
            
+
 
 
 
