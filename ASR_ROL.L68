@@ -1,0 +1,33 @@
+00003000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.15.02
+Created On: 11/30/2014 5:46:11 PM
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      :
+00000000                             3  * Written by :
+00000000                             4  * Date       :
+00000000                             5  * Description:
+00000000                             6  *-----------------------------------------------------------
+00003000                             7      ORG    $3000
+00003000                             8  START:                  ; first instruction of program
+00003000                             9  
+00003000                            10  * Put program code here
+00003000  E1D0                      11      ASL     (A0)
+00003002  E3F9 0000AAAA             12      LSL     ($AAAA).L
+00003008  E6DA                      13      ROR     (A2)+
+0000300A  E803                      14      ASR.B   #4,D3
+0000300C  EDAC                      15      LSL.L   D6,D4
+0000300E  EF58                      16      ROL.W   #$7,D0
+00003010                            17  
+00003010                            18  * Put variables and constants here
+00003010                            19  
+00003010                            20      END    START        ; last line of source
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+START               3000
