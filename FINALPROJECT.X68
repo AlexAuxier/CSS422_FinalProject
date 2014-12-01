@@ -8,7 +8,7 @@ CR          EQU     $0D
 LF          EQU     $0A
   
 test_start  EQU     $00003000   ; defined starting address
-test_end    EQU     $0000300F   ; defined ending address
+test_end    EQU     $00003009   ; defined ending address
      
 zero        EQU     $00         ; defined hex value 0
 one         EQU     $01         ; defined hex value 1 
@@ -151,10 +151,34 @@ braNine BRA         opSUB               ; we know that there is only one opcode 
 
 braEleven   ; there are two opCodes available EOR, or CMP
 
-braTwelve   BRA     opMULS              ; we know that there is only one opcode that is MULS    
+braTwelve   BRA         opMULS              ; we know that there is only one opcode that is MULS    
   
-braThirteen ; there are two opCodes available ADD, or ADDA
-
+braThirteen ASL         #eight, D1
+            MOVE.B      (A0)+, D1
+            
+            CLR         D2
+            MOVE.W      D1, D2
+            ASR         #six, D2
+            AND         #seven,D2 
+            
+            CMP.B       #zero,D2
+            BEQ         opADDB
+            CMP.B       #one, D2
+            BEQ         opADDW
+            CMP.B       #two, D2
+            BEQ         opADDL
+            CMP.B       #three, D2
+            BEQ         opADDAW
+            CMP.B       #four, D2
+            BEQ         opADDB
+            CMP.B       #five, D2
+            BEQ         opADDW
+            CMP.B       #six, D2
+            BEQ         opADDL
+            CMP.B       #seven, D2
+            BEQ         opADDAL
+            BRA         printInvalid
+             
 braFourteen ASL.W       #eight,D1
             MOVE.B      (A0)+, D1
             
@@ -659,7 +683,244 @@ opSUB   LEA         SUBmatch, A1        ; we know that the opcode will be SUB, s
 opMULS  LEA         MULSmatch, A1       ; we know that the opcode will be MULS, so load A1 to print message
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
+        LEA         space, A1           ; create spaces
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        ASL         #eight, D1
+        MOVE.B      (A0)+, D1
+        
+        CLR         D2
+        CLR         D3
+        MOVE.B      D1, D2
+        ASR         #three, D2
+        AND         #seven, D2
+        MOVE.B      D1, D3
+        AND         #seven, D3
+        
+        JSR         printEA
+        
+        LEA         comma, A1           ; create comma
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
 
+        CLR         D2
+        CLR         D3
+        MOVE.W      D1, D3
+        ASR         #eight, D3
+        ASR         #one, D3
+        AND         #seven, D3
+
+        JSR         printEA
+        
+        LEA         newLine, A1           ; create new line
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        BRA         LOOP
+        
+opADDB  LEA         ADDmatch, A1       ; we know that the opcode will be MULS, so load A1 to print message
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        LEA         dispByte, A1        ; display byte
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        LEA         space, A1           ; create spaces
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        CLR         D2
+        CLR         D3
+        MOVE.B      D1, D2
+        ASR         #three, D2
+        AND         #seven, D2
+        MOVE.B      D1, D3
+        AND         #seven, D3
+        
+        JSR         printEA
+        
+        LEA         comma, A1           ; create comma
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+
+        CLR         D2
+        CLR         D3
+        MOVE.W      D1, D3
+        ASR         #eight, D3
+        ASR         #one, D3
+        AND         #seven, D3
+
+        JSR         printEA
+        
+        LEA         newLine, A1           ; create new line
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        BRA         LOOP
+        
+opADDW  LEA         ADDmatch, A1       ; we know that the opcode will be MULS, so load A1 to print message
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+
+        LEA         dispWord, A1        ; display word
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        LEA         space, A1           ; create spaces
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        CLR         D2
+        CLR         D3
+        MOVE.B      D1, D2
+        ASR         #three, D2
+        AND         #seven, D2
+        MOVE.B      D1, D3
+        AND         #seven, D3
+        
+        JSR         printEA
+        
+        LEA         comma, A1           ; create comma
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+
+        CLR         D2
+        CLR         D3
+        MOVE.W      D1, D3
+        ASR         #eight, D3
+        ASR         #one, D3
+        AND         #seven, D3
+
+        JSR         printEA
+        
+        LEA         newLine, A1           ; create new line
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        BRA         LOOP
+        
+opADDL  LEA         ADDmatch, A1       ; we know that the opcode will be MULS, so load A1 to print message
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        LEA         dispLong, A1        ; display long
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        LEA         space, A1           ; create spaces
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        CLR         D2
+        CLR         D3
+        MOVE.B      D1, D2
+        ASR         #three, D2
+        AND         #seven, D2
+        MOVE.B      D1, D3
+        AND         #seven, D3
+        
+        JSR         printEA
+        
+        LEA         comma, A1           ; create comma
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+
+        CLR         D2
+        CLR         D3
+        MOVE.W      D1, D3
+        ASR         #eight, D3
+        ASR         #one, D3
+        AND         #seven, D3
+
+        JSR         printEA
+        
+        LEA         newLine, A1           ; create new line
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        BRA         LOOP
+
+opADDAW LEA         ADDAmatch, A1       ; we know that the opcode will be MULS, so load A1 to print message
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        LEA         dispWord, A1        ; display word
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        LEA         space, A1           ; create spaces
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        CLR         D2
+        CLR         D3
+        MOVE.B      D1, D2
+        ASR         #three, D2
+        AND         #seven, D2
+        MOVE.B      D1, D3
+        AND         #seven, D3
+        
+        JSR         printEA
+        
+        LEA         comma, A1           ; create comma
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+
+        CLR         D2
+        CLR         D3
+        MOVE.B      #one, D2
+        MOVE.W      D1, D3
+        ASR         #eight, D3
+        ASR         #one, D3
+        AND         #seven, D3
+
+        JSR         printEA
+        
+        LEA         newLine, A1           ; create new line
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        BRA         LOOP
+
+opADDAL LEA         ADDAmatch, A1       ; we know that the opcode will be MULS, so load A1 to print message
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+
+        LEA         dispLong, A1        ; display long
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        LEA         space, A1           ; create spaces
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        CLR         D2
+        CLR         D3
+        MOVE.B      D1, D2
+        ASR         #three, D2
+        AND         #seven, D2
+        MOVE.B      D1, D3
+        AND         #seven, D3
+        
+        JSR         printEA
+        
+        LEA         comma, A1           ; create comma
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+
+        CLR         D2
+        CLR         D3
+        MOVE.B      #one, D2
+        MOVE.W      D1, D3
+        ASR         #eight, D3
+        ASR         #one, D3
+        AND         #seven, D3
+
+        JSR         printEA
+        
+        LEA         newLine, A1           ; create new line
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+        
+        BRA         LOOP
+        
 opASL   LEA         ASLmatch, A1        ; we know that the opcode will be ASL, so load A1 to print message
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
@@ -2109,16 +2370,10 @@ DispImm     LEA         hashTag, A1         ; Display space
             
             CLR         D1
             MOVE.W      (A0)+, D1
-            
-            MOVE.B      #3, D0
-            TRAP        #15
 
             LEA         dispHex, A1         ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
-            
-            CLR         D1
-            MOVE.W      (A0)+, D1
             
             MOVE.B      #3, D0
             TRAP        #15
@@ -2207,6 +2462,8 @@ dispD6      DC.B    'D6', 0
 dispD7      DC.B    'D7', 0 
  
            END    START                ; last line of source
+
+
 
 
 *~Font name~Courier New~
