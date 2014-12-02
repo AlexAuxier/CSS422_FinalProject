@@ -123,7 +123,7 @@ braThree                                ; there are two opCodes available, MOVE.
 
 braFour CLR         D2                  ; first nibble is 4, 5 opcodes are possible 
         MOVE.B      D1, D2              ; clear out D2 and copy D1 back in
-        AND.B       $0F, D2             ; set first nibble to 0
+        AND.B       #secNib, D2             ; set first nibble to 0
  
         CMP.B       #four, D2           ; compare second nibble to 4
         BEQ         opNEG               ; branch to NEG method
@@ -539,7 +539,8 @@ opDynBCLR
 
                 BRA         LOOP                ; go back to the loop
  
-opMOVEB LEA         MOVEmatch, A1       ; we know that the opcode will be MOVE.B, so load A1 to print message
+opMOVEB 
+        LEA         MOVEmatch, A1       ; we know that the opcode will be MOVE.B, so load A1 to print message
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
         LEA         dispByte, A1        ; display byte
@@ -829,15 +830,188 @@ opMOVEAW
 
             BRA         LOOP                ; go back to the loop
 
-opNEG   LEA         NEGmatch, A1        ; we know that the opcode will be NEG, so load A1 to print message
-        MOVE.B      #14, D0             ; command for trap call to display message
-        TRAP        #15                 ; trap call
+opNEG   
+            LEA         NEGmatch, A1        ; we know that the opcode will be NEG, so load A1 to print message
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+        
+        
+            MOVE.B      (A0)+, D1
+            MOVE.B      D1,D2               ; copy data over
+            ASR         #six,D2
+            
+            CMP         #zero,D2
+            BEQ         opNEGB
+            CMP         #one,D2
+            BEQ         opNEGL
+            CMP         #two,D2
+            BEQ         opNEGW
+            BRA         INVALID
+opNEGB
+
+            LEA         dispByte, A1        ; we know that the opcode will be NEG, so load A1 to print message
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+        
+            LEA         space, A1           ; we know that the opcode will be NEG, so load A1 to print message
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+        
+            CLR         D2                  ; Clear Data register 2
+            MOVE        D1,D2               ; Move byte into D2
+            ASR         #three,D2           ; Shift mode into place and moves mode into place
+            AND         #seven,D2           ; Stores mode
+            
+            CLR         D3
+            MOVE        D1,D3
+            AND         #seven,D3
+        
+            JSR         printEA
+                
+            LEA        	newLine, A1           ; Display space
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call  
+        
+            BRA         LOOP
+                
+
+opNEGL
+
+            LEA         dispLong, A1        ; we know that the opcode will be NEG, so load A1 to print message
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+
+            LEA         space, A1           ; we know that the opcode will be NEG, so load A1 to print message
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+                
+            CLR         D2                  ; Clear Data register 2
+            MOVE        D1,D2               ; Move byte into D2
+            ASR         #three,D2           ; Shift mode into place and moves mode into place
+            AND         #seven,D2           ; Stores mode
+        
+            CLR         D3
+            MOVE        D1,D3
+            AND         #seven,D3
+        
+            JSR         printEA
+                    
+            LEA        	newLine, A1         ; Display space
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call  
+        
+            BRA         LOOP
+        
+
+opNEGW
+
+            LEA         dispWord, A1        ; we know that the opcode will be NEG, so load A1 to print message
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+        
+            LEA         space, A1           ; we know that the opcode will be NEG, so load A1 to print message
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call        
+                
+            CLR         D2                  ; Clear Data register 2
+            MOVE        D1,D2               ; Move byte into D2
+            ASR         #three,D2           ; Shift mode into place and moves mode into place
+            AND         #seven,D2           ; Stores mode
+        
+            CLR         D3
+            MOVE        D1,D3
+            AND         #seven,D3
+        
+            JSR         printEA
+            
+            LEA        	newLine, A1           ; Display space
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call  
+        
+            BRA         LOOP
 
 opRTSJSR
+        
+            MOVE.B      (A0)+, D1
+            
+            MOVE.B      D1,D2               ; copy data over
+            CMP         #117,D2
+            BEQ         opRTS
+            
+            ASR         #six,D2             ; Moving bits over to check if it matches the two static bits in JSR
+            CMP         #two,D2             ; Checking if it is JSR
+            BEQ         opJSR               ; It is equal, so branch off to opJSR
+
+            BRA         invalid
+
+opJSR
+                      
+            LEA         JSRMatch, A1       ; we know that the opcode will be JSR, so load A1 to print message
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+            
+            LEA         space, A1           ; we know that the opcode will be NEG, so load A1 to print message
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+            
+            CLR         D2
+            CLR         D3
+            
+            MOVE.B      D1,D2
+            ASR         #three,D2
+            AND         #seven,D2
+            
+            MOVE.B      D1,D3
+            AND         #seven,D3
+            
+            JSR         printEA
+            
+            LEA        	newLine, A1           ; Display space
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call  
+            
+            BRA         loop            
+opRTS
+
+            LEA         RTSMatch, A1       ; we know that the opcode will be RTS, so load A1 to print message
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+            
+            LEA        	newLine, A1           ; Display space
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call 
+            
+            BRA         loop
 
 opMOVEMLEA
+            CLR         D2                  ; Clear D2
+            MOVE.B      D1,D2               ; Copy byte over
+            AND         #secNib,D2          ; Check only the second nibble
+            CMP         #twelve,D2          ; Compare the second nibble to twelve
+            BEQ         opMOVEM             ; If it is twelve, then it is MOVEM
+            CMP         #eight,D2           ; Compare the second nibble to eight
+            BEQ         opMOVEM             ; If it is eight, then it is also MOVEM
+            BRA         opLEA               ; Otherwise branch to OPLEA and check for invalid in there
+            
+opMOVEM
 
-opSUBQ      LEA         SUBQmatch, A1       ; we know that the opcode will be SUBQ, so load A1 to print message
+            LEA         RTSMatch, A1       ; we know that the opcode will be MOVEM, so load A1 to print message
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+            
+            CLR         D4                  ; Clearing D4 to store dr field
+            MOVE.B      D1,D4               ; Moving byte to find dr field
+            ASR         #two,D4             ; Moving dr field to readable spot
+            AND         #one,D4             ; seting everything except dr to 0
+            
+            MOVE.B      (A0)+, D1
+            
+
+opLEA
+
+
+opSUBQ      
+            LEA         SUBQmatch, A1       ; we know that the opcode will be SUBQ, so load A1 to print message
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
 
@@ -902,7 +1076,7 @@ opROR   LEA         RORmatch, A1        ; we know that the opcode will be ROR, s
 * 											EA Print Check
 *
 ***********************************************************************************************************
-printEA 	MOVEM.L  D0-D7/A0-A6, -(SP)
+printEA 	MOVEM.L  D0-D7/A1-A6, -(SP)
 
         	CMP.B       #zero, D2
 	        BEQ         pDataReg
@@ -914,8 +1088,8 @@ printEA 	MOVEM.L  D0-D7/A0-A6, -(SP)
 	        BEQ         pAddrPost
     	    CMP.B       #four, D2
         	BEQ         pAddrDec
-        	CMP.B       #seven,D2
-        	BEQ         absAddr
+        	CMP.B       #seven, D2
+        	BEQ         pHex
         	BRA         invalid
 
 ***********************************************************************************************************
@@ -1330,56 +1504,74 @@ displayA7D  LEA         dispA7, A1          ; Display space
 
 ***********************************************************************************************************
 * Absolute Address
-absAddr
-            CMP         #zero,D3            ; This is (xxx).W
-            BEQ         absAddrW
-            CMP         #one,D3             ; This is (xxx).L
-            BEQ         absAddrL
-            CMP         #four,D3
-            BEQ         immData
-            BRA         invalid             ; Invalid, not equal to any of the opCodes handled
+pHex        CMP.B       #zero, D3
+            BEQ         AbsShort
+            CMP.B       #one, D3
+            BEQ         AbsLong
+            CMP.B       #four, D3
+            BEQ         DispImm
             
-absAddrW                                    ; Does not work at the moment
-
-            LEA         hashTag, A1           ; Display space
+AbsShort    LEA         opPer, A1           ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            MOVE.B      #2, D0              ; Load #2 into D0
-            TRAP        #15                 ; Display word in D1
-        
-
-            BRA         endSUB              ; End subroutine
-absAddrL                                    ; Does not work at the moment
-
-            LEA         hashTag, A1           ; Display space
+            LEA         dispHex, A1         ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            MOVE.B      #3, D0              
+            CLR         D1
+            MOVE.W      (A0)+, D1
+            
+            MOVE.B      #3, D0
             TRAP        #15
-        
-
-            BRA         endSUB              ; End subroutine
             
-immData     
-
-        
-            LEA         hashTag, A1           ; Display space
+            LEA         clPer, A1           ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            MOVE.B      #3, D0              
+            BRA         endSub
+            
+AbsLong     LEA         opPer, A1           ; Display space
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+            
+            LEA         dispHex, A1         ; Display space
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+            
+            CLR         D1
+            MOVE.L      (A0)+, D1
+            
+            MOVE.B      #3, D0
             TRAP        #15
-        
+            
+            LEA         clPer, A1           ; Display space
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+            
+            BRA         endSub
 
-            BRA         endSUB              ; End subroutine
+DispImm     LEA         hashTag, A1         ; Display space
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+            
+            CLR         D1
+            MOVE.W      (A0)+, D1
+
+            LEA         dispHex, A1         ; Display space
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+            
+            MOVE.B      #3, D0
+            TRAP        #15
+
+            BRA         endSub
 
 invalid
 
 endSUB
         
-        MOVEM.L  (SP)+, D0-D7/A0-A6
+        MOVEM.L  (SP)+, D0-D7/A1-A6
         RTS
 
 ***********************************************************************************************************
@@ -1460,6 +1652,7 @@ dispD7      DC.B    'D7', 0
            
            
            
+
 
 
 

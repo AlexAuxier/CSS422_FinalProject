@@ -1,6 +1,6 @@
 00002000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 12/1/2014 11:02:47 PM
+Created On: 12/1/2014 11:52:01 PM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -12,18 +12,13 @@ Created On: 12/1/2014 11:02:47 PM
 00002000                             8  START:                  ; first instruction of program
 00002000                             9  
 00002000                            10  * Put program code here
-00002000                            11      
-00002000  4EB9 00002006             12      JSR     break
-00002006                            13      
-00002006                            14      
-00002006                            15  break
-00002006                            16      
-00002006  4E75                      17      RTS
-00002008  FFFF FFFF                 18      SIMHALT             ; halt simulator
-0000200C                            19  
-0000200C                            20  * Put variables and constants here
-0000200C                            21  
-0000200C                            22      END    START        ; last line of source
+00002000  48F8 0703 0035            11      MOVEM.L D0-D1/A0-A2,$35
+00002006                            12  
+00002006  FFFF FFFF                 13      SIMHALT             ; halt simulator
+0000200A                            14  
+0000200A                            15  * Put variables and constants here
+0000200A                            16  
+0000200A                            17      END    START        ; last line of source
 
 No errors detected
 No warnings generated
@@ -32,5 +27,4 @@ No warnings generated
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
-BREAK               2006
 START               2000
