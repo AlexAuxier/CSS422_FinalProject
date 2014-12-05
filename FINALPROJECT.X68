@@ -1,5 +1,5 @@
 *-----------------------------------------------------------
-* Title      :
+* Title      :	Motorola 68k Disassembler
 * Written by :  Abdul Hakim, David Trinh, Alexander Auxier
 * Date       :
 * Description:

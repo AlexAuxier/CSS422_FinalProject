@@ -1,0 +1,31 @@
+00001000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.15.02
+Created On: 2014-12-04 18:15:31
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      : BRA Test File
+00000000                             3  * Written by : Alexander Auxier
+00000000                             4  * Date       : 2014-12-4
+00000000                             5  * Description:
+00000000                             6  *-----------------------------------------------------------
+00001000                             7      ORG    $1000
+00001000                             8  START:                  ; first instruction of program
+00001000                             9  
+00001000                            10  * Put program code here
+00001000  6000 0002                 11      BRA         codeEND
+00001004                            12  
+00001004  FFFF FFFF                 13  codeEND    SIMHALT             ; halt simulator
+00001008                            14  
+00001008                            15  * Put variables and constants here
+00001008                            16  
+00001008                            17      END    START        ; last line of source
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+CODEEND             1004
+START               1000
