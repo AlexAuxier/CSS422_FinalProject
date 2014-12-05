@@ -1,23 +1,24 @@
 *-----------------------------------------------------------
-* Title      : BRA Test File
-* Written by : Alexander Auxier
-* Date       : 2014-12-4
+* Title      : OR Test File
+* Written by :
+* Date       :
 * Description:
 *-----------------------------------------------------------
-    ORG    $3000
+    ORG    $1000
 START:                  ; first instruction of program
 
 * Put program code here
-	BRA			foo
-foo			
-	BRA			codeEND
-
-codeEND    SIMHALT             ; halt simulator
+	MOVE.B		#1,D1
+	MOVE.B		#2,D2
+	
+	OR.B		D1,D2
+	
+	
+    SIMHALT             ; halt simulator
 
 * Put variables and constants here
 
     END    START        ; last line of source
-
 
 *~Font name~Courier New~
 *~Font size~10~

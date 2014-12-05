@@ -1,6 +1,6 @@
-00001000 Starting Address
+00003000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 2014-12-04 18:15:31
+Created On: 2014-12-04 20:21:57
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      : BRA Test File
@@ -8,17 +8,19 @@ Created On: 2014-12-04 18:15:31
 00000000                             4  * Date       : 2014-12-4
 00000000                             5  * Description:
 00000000                             6  *-----------------------------------------------------------
-00001000                             7      ORG    $1000
-00001000                             8  START:                  ; first instruction of program
-00001000                             9  
-00001000                            10  * Put program code here
-00001000  6000 0002                 11      BRA         codeEND
-00001004                            12  
-00001004  FFFF FFFF                 13  codeEND    SIMHALT             ; halt simulator
-00001008                            14  
-00001008                            15  * Put variables and constants here
-00001008                            16  
-00001008                            17      END    START        ; last line of source
+00003000                             7      ORG    $3000
+00003000                             8  START:                  ; first instruction of program
+00003000                             9  
+00003000                            10  * Put program code here
+00003000  6000 0002                 11      BRA         foo
+00003004                            12  foo         
+00003004  6000 0002                 13      BRA         codeEND
+00003008                            14  
+00003008  FFFF FFFF                 15  codeEND    SIMHALT             ; halt simulator
+0000300C                            16  
+0000300C                            17  * Put variables and constants here
+0000300C                            18  
+0000300C                            19      END    START        ; last line of source
 
 No errors detected
 No warnings generated
@@ -27,5 +29,6 @@ No warnings generated
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
-CODEEND             1004
-START               1000
+CODEEND             3008
+FOO                 3004
+START               3000

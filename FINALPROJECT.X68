@@ -7,8 +7,8 @@
 CR          EQU     $0D     
 LF          EQU     $0A
   
-test_start  EQU     $00002000   ; defined starting address
-test_end    EQU     $00002009   ; defined ending address
+test_start  EQU     $00003000   ; defined starting address
+test_end    EQU     $00003009   ; defined ending address
      
 zero        EQU     $00         ; defined hex value 0
 one         EQU     $01         ; defined hex value 1 
@@ -135,7 +135,7 @@ braFive BRA         opSUBQ              ; we know that there is only one opcode 
 
 braSix  CLR         D2                  ; first nibble is 6, 5 opcodes are possible 
         MOVE.B      D1, D2              ; clear out D2 and copy D1 back in
-        AND.B       $0F, D2             ; set first nibble to 0
+        AND.B       #$0F, D2             ; set first nibble to 0
  
         CMP.B       #zero, D2           ; compare second nibble to 0
         BEQ         opBRA               ; branch to BRA method
@@ -147,7 +147,9 @@ braSix  CLR         D2                  ; first nibble is 6, 5 opcodes are possi
         BEQ         opBGE               ; branch to BGE method
         BRA         opBLT               ; otherwise, branch to BLT method
 
-braEight    ; there are two opCodes available DIVS, or OR
+braEight				; there are two opCodes available DIVS, or OR
+
+			
 
 braNine BRA         opSUB               ; we know that there is only one opcode that is SUB
 
@@ -172,6 +174,74 @@ braFourteen CLR         D2                  ; first nibble is E, 5 opcodes are p
             CMP.B       #six, D2            ; compare second nibble to 6
             BEQ         opROR               ; branch to ROR method
             BRA         opROL               ; otherwise, branch to ROL method
+			
+
+
+***********************************************************************************************************
+*
+*				BCC OPCODE
+*
+***********************************************************************************************************
+		
+opBCC		CLR		D2
+			; Determine Condition (4 bits)
+			; Determine Displacement AFTER condition (8 bits)
+			BRA 	LOOP
+			
+			
+***********************************************************************************************************
+*
+*				OR OPCODE
+*
+***********************************************************************************************************
+
+
+
+***********************************************************************************************************
+*
+*				DIVS OPCODE
+*
+***********************************************************************************************************
+
+
+
+***********************************************************************************************************
+*
+*				SUB OPCODE
+*
+***********************************************************************************************************
+
+	
+	
+**********************************************************************************************************
+*
+*				EOR OPCODE
+*
+***********************************************************************************************************
+
+
+
+***********************************************************************************************************
+*
+*				CMP OPCODE
+*
+***********************************************************************************************************
+
+
+
+***********************************************************************************************************
+*
+*				SUBQ OPCODE
+*
+***********************************************************************************************************
+
+
+
+***********************************************************************************************************
+*
+*				ORI OPCODE
+*
+***********************************************************************************************************
 
 opORI   LEA         ORImatch, A1        ; we know that the opcode will be ORI, so load A1 to print message
         MOVE.B      #14, D0             ; command for trap call to display message
@@ -1015,13 +1085,34 @@ opSUBQ
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
 
+***********************************************************************************************************
+*
+*				BRA OPCODE
+*
+***********************************************************************************************************
+			
 opBRA   LEA         BRAmatch, A1        ; we know that the opcode will be BRA, so load A1 to print message
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
-        LEA         space, A1           ; create spaces
+		
+		CLR			D2
+		CLR			D3		
+
+		LEA			space,A1
+		MOVE.B		#14,D0
+		TRAP		#15
+		
+		MOVE.B		#seven,D2
+		MOVE.B		(A0)+,D1
+		JSR			printEA
+		
+        LEA         newLine, A1           ; create new line
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
 
+		BRA			LOOP
+		
+		
 opBCS   LEA         BCSmatch, A1        ; we know that the opcode will be BCS, so load A1 to print message
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
@@ -1652,6 +1743,8 @@ dispD7      DC.B    'D7', 0
            
            
            
+
+
 
 
 
