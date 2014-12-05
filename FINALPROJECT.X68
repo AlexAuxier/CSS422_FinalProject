@@ -99,7 +99,7 @@ LOOP    CLR         D1                  ; clear out D1
 
 braZero CLR         D2                  ; first nibble is 0, 3 opcodes are possible 
         MOVE.B      D1, D2              ; clear out D2 and copy D1 back in
-        AND.B       #secNib, D2             ; set first nibble to 0
+        AND.B       #secNib, D2         ; set first nibble to 0
  
         CMP.B       #zero, D2           ; compare second nibble to 0
         BEQ         opORI               ; branch to ORI method
@@ -153,47 +153,47 @@ braEleven   ; there are two opCodes available EOR, or CMP
 
 braTwelve   BRA         opMULS              ; we know that there is only one opcode that is MULS    
   
-braThirteen ASL         #eight, D1
-            MOVE.B      (A0)+, D1
+braThirteen ASL         #eight, D1          ; we need the whole word to compare between add and adda, so move over the current byte 
+            MOVE.B      (A0)+, D1           ; load the remaining byte to D1
             
-            CLR         D2
-            MOVE.W      D1, D2
-            ASR         #six, D2
-            AND         #seven,D2 
+            CLR         D2                  ; clear D2
+            MOVE.W      D1, D2              ; copy opcode to D2
+            ASR         #six, D2            ; shift the bits right to get size and type
+            AND         #seven,D2           ; clear out all but first 3 bits
             
-            CMP.B       #zero,D2
-            BEQ         opADDB
-            CMP.B       #one, D2
-            BEQ         opADDW
-            CMP.B       #two, D2
-            BEQ         opADDL
-            CMP.B       #three, D2
-            BEQ         opADDAW
-            CMP.B       #four, D2
-            BEQ         opADDB
-            CMP.B       #five, D2
-            BEQ         opADDW
-            CMP.B       #six, D2
-            BEQ         opADDL
-            CMP.B       #seven, D2
-            BEQ         opADDAL
-            BRA         printInvalid
+            CMP.B       #zero,D2            ; compare 0 to D2
+            BEQ         opADDB              ; we know its ADDB
+            CMP.B       #one, D2            ; compare 1 to D2
+            BEQ         opADDW              ; we know its ADDW
+            CMP.B       #two, D2            ; compare 2 to D2
+            BEQ         opADDL              ; we know its ADDL
+            CMP.B       #three, D2          ; compare 3 to D2
+            BEQ         opADDAW             ; we know its ADDAW
+            CMP.B       #four, D2           ; compare 4 to D2
+            BEQ         opADDB              ; we know its ADDB
+            CMP.B       #five, D2           ; compare 5 to D2
+            BEQ         opADDW              ; we know its ADDW
+            CMP.B       #six, D2            ; compare 6 to D2
+            BEQ         opADDL              ; we know its ADDL
+            CMP.B       #seven, D2          ; compare 7 to D2
+            BEQ         opADDAL             ; we know its ADDAL
+            BRA         printInvalid        ; invalid opcode
              
-braFourteen ASL.W       #eight,D1
-            MOVE.B      (A0)+, D1
+braFourteen ASL.W       #eight,D1           ; we need the whole word to compare between add and adda, so move over the current byte
+            MOVE.B      (A0)+, D1           ; load the remaining byte to D1
             
-            CLR         D2
-            MOVE.B      D1, D2
-            ASR.L       #six, D2
-            
-            CMP.B       #three, D2
-            BEQ         memShifts
-            BRA         regShifts
+            CLR         D2                  ; clear D2
+            MOVE.W      D1, D2              ; copy opcode to D2
+            ASR.L       #six, D2            ; shift the bits right to get size
+        
+            CMP.B       #three, D2          ; if the size is three, we are shifting memory
+            BEQ         memShifts           ; go to memory shift
+            BRA         regShifts           ; else go to register shift
 
-memShifts   CLR         D2                  ; first nibble is E, 5 opcodes are possible 
+memShifts   CLR         D2             
             MOVE.W      D1, D2              ; clear out D2 and copy D1 back in
-            ASR.L       #eight,D2
-            AND         #$0F, D2            ; set first nibble to 0
+            ASR.L       #eight,D2           ; move to get first byte back
+            AND         #secNib, D2         ; set first nibble to 0
  
             CMP.B       #zero, D2           ; compare second nibble to 0
             BEQ         opASR               ; branch to ASR method
@@ -209,29 +209,28 @@ memShifts   CLR         D2                  ; first nibble is E, 5 opcodes are p
             BEQ         opROL               ; branch to ROL method
             BRA         printInvalid        ; otherwise, invalid
             
-regShifts   CMP.B       #zero, D2           
-            BEQ         memSB
-            CMP.B       #one, D2
-            BEQ         memSW
-            CMP.B       #two, D2
-            BEQ         memSL
-            BRA         printInvalid
+regShifts   CMP.B       #zero, D2           ; if size is 0, we are shifting a byte
+            BEQ         memSB               ; branch to register shift byte
+            CMP.B       #one, D2            ; if size is 1, we are shifting a word
+            BEQ         memSW               ; branch to register shift word
+            CMP.B       #two, D2            ; if size is 1, we are shifting a long
+            BEQ         memSL               ; branch to register shift long
+            BRA         printInvalid        ; otherwise, invalid
 
 opORI   LEA         ORImatch, A1        ; we know that the opcode will be ORI, so load A1 to print message
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
         
-        MOVE.B      (A0)+, D1
+        MOVE.B      (A0)+, D1           ; move next byte over
         MOVE.B      D1,D2               ; copy data over
         ASR         #6,D2               ; shifts 6 bits over to read just the size        
-        CMP.B       #zero,D2
-        BEQ         opORIB
-        CMP.B       #one,D2
+        CMP.B       #zero,D2            ; if size is 0, we are shifting a byte
+        BEQ         opORIB             
+        CMP.B       #one,D2             ; if size is 0, we are shifting a byte
         BEQ         opORIW
-        CMP.B       #two,D2
+        CMP.B       #two,D2             ; if size is 0, we are shifting a byte
         BEQ         opORIL
-        
-        BRA         printInvalid
+        BRA         printInvalid        ; otherwise, invalid
         
 opORIB  LEA         dispByte, A1        ; Display byte
         MOVE.B      #14, D0             ; command for trap call to display message
@@ -252,20 +251,20 @@ opORIB  LEA         dispByte, A1        ; Display byte
         CLR         D1
         MOVE.W      (A0)+, D1
         
-        LEA         hashTag, A1           ; Display space
+        LEA         hashTag, A1         ; Display immediate sign
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
         
         MOVE.B      #3, D0
         TRAP        #15
         
-        LEA         comma, A1           ; Display space
+        LEA         comma, A1           ; Display comma
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
         
         JSR         printEA
         
-        LEA        	newLine, A1           ; Display space
+        LEA        	newLine, A1         ; nextline
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
         
@@ -1796,7 +1795,8 @@ opROLLR LEA         ROLmatch, A1        ; we know that the opcode will be ASR, s
         JSR         PrntReg
         
         BRA         LOOP
-        
+* The following subroutine displays the immediate number to shift and the data register that is being shifted. 
+* This subroutine calls two printing immediate subroutine first, the the ea print subroutine.        
 PrntImm MOVEM.L D0-D7/A1-A6, -(SP)
         
         LEA         space, A1        ; we know that the opcode will be ASR, so load A1 to print message
@@ -1832,10 +1832,11 @@ PrntImm MOVEM.L D0-D7/A1-A6, -(SP)
         
         MOVEM.L  (SP)+, D0-D7/A1-A6
         RTS
-        
+* The following subroutine determines the correct data register to display, and sets the values of D2 and D3 accordingly to display the data register.
+* after setting the values, it calls another subroutine to actually display the data register.        
 PrntReg MOVEM.L D0-D7/A1-A6, -(SP)
         
-        LEA         space, A1        ; we know that the opcode will be ASR, so load A1 to print message
+        LEA         space, A1           ; display space
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
         
@@ -1848,7 +1849,7 @@ PrntReg MOVEM.L D0-D7/A1-A6, -(SP)
         
         JSR         printEA
         
-        LEA         comma, A1        ; we know that the opcode will be ASR, so load A1 to print message
+        LEA         comma, A1           ; display comma
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
         
@@ -1859,14 +1860,15 @@ PrntReg MOVEM.L D0-D7/A1-A6, -(SP)
         
         JSR         printEA
         
-        LEA         newLine, A1        ; we know that the opcode will be ASR, so load A1 to print message
+        LEA         newLine, A1         ; newline
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
         
         MOVEM.L  (SP)+, D0-D7/A1-A6
         RTS
-        
-MemShiftImm     MOVEM.L D0-D7/A1-A6, -(SP)
+* The following subroutine is used to display the number between 1-8 for the bit vount for the shift/rotate opcode
+* It displays it by storing the appropriate number in D1 and running trap task 3.        
+MemShiftImm     MOVEM.L D0-D7/A1-A6, -(SP)      ;caller saved data
                 CLR     D1
                 
                 MOVE.B  D2, D1
@@ -1881,8 +1883,8 @@ displayEight    MOVE.B  #$08, D1
                 MOVE.B  #3, D0
                 TRAP    #15                
 endSubroutine
-                MOVEM.L  (SP)+, D0-D7/A1-A6
-                RTS
+                MOVEM.L  (SP)+, D0-D7/A1-A6     ; recall data
+                RTS                             ; Return to main routine
         
 
 ***********************************************************************************************************
@@ -2462,6 +2464,8 @@ dispD6      DC.B    'D6', 0
 dispD7      DC.B    'D7', 0 
  
            END    START                ; last line of source
+
+
 
 
 
