@@ -147,9 +147,14 @@ braSix  CLR         D2                  ; first nibble is 6, 5 opcodes are possi
         BEQ         opBGE               ; branch to BGE method
         BRA         opBLT               ; otherwise, branch to BLT method
 
-braEight				; there are two opCodes available DIVS, or OR
-
-			
+braEight								; there are two opCodes available DIVS, or OR
+			CLR		D2
+			MOVE.B	D1,D2
+			AND.B	$0F,D2
+			ASR		#seven,D2
+			CMP.B	#seven,D2
+			BEQ		opDIVS				; If bits 8 - 6 are equal to 7, we have DIVS
+			BRA		opOR				; else opcode is OR
 
 braNine BRA         opSUB               ; we know that there is only one opcode that is SUB
 
@@ -208,6 +213,7 @@ opOR		LEA		ORmatch,A1
 			MOVE.B	#14,D0
 			TRAP	#15
 
+			BRA			LOOP
 ***********************************************************************************************************
 *
 *				DIVS OPCODE
@@ -218,7 +224,7 @@ opDIVS		LEA		DIVSmatch,A1
 			MOVE.B	#14,D0
 			TRAP	#15
 	
-	
+			BRA			LOOP
 **********************************************************************************************************
 *
 *				EOR OPCODE
