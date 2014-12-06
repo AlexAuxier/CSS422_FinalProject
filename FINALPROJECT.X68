@@ -1207,7 +1207,7 @@ printRegMem
             BEQ         DataReg7
             
             BRA         invalid
-printMem            
+            BRA         invalid        
             
 DataReg0
             LEA         dispD0, A1          ; Output string D0
@@ -1372,12 +1372,232 @@ DataReg7
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call        
             BRA         printMem            
+printMem               
+            LEA         slash, A1           ; Display slash
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+         
+            CLR         D4                  ; Using D4 to store predecrement mode addresses
+            MOVE.W      D1,D4               ; Stores bits for D0-D7
+            ASR         #eight,D4
+            
+            CLR         D5
+            MOVE.B      D4,D5
+            AND         #mask1,D5
+            CMP         #mask1,D5
+            BEQ         AddrReg0
+            
+            CLR         D5
+            MOVE.B      D4,D5
+            AND         #mask2,D5
+            CMP         #mask2,D5
+            BEQ         AddrReg1
+
+            CLR         D5
+            MOVE.B      D4,D5
+            AND         #mask3,D5
+            CMP         #mask3,D5
+            BEQ         AddrReg2            
+            
+            CLR         D5
+            MOVE.B      D4,D5
+            AND         #mask4,D5
+            CMP         #mask4,D5
+            BEQ         AddrReg3            
+            
+            CLR         D5
+            MOVE.B      D4,D5
+            AND         #mask5,D5
+            CMP         #mask5,D5
+            BEQ         AddrReg4
+
+            CLR         D5
+            MOVE.B      D4,D5
+            AND         #mask6,D5
+            CMP         #mask6,D5
+            BEQ         AddrReg5
+
+            CLR         D5
+            MOVE.B      D4,D5
+            AND         #mask7,D5
+            CMP         #mask7,D5
+            BEQ         AddrReg6
+
+            CLR         D5
+            MOVE.B      D4,D5
+            AND         #mask8,D5
+            CMP         #mask8,D5
+            BEQ         AddrReg7
+AddrReg0
+            LEA         dispA0, A1          ; Output string D0
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+            
+            CLR         D5
+            MOVE.B      D1,D5
+            AND         #mask2,D5
+            CMP         #mask2,D5
+            BEQ         Reg0Cont
+            BRA         endMOVE
+Addr0Cont        
+            LEA         dec, A1             ; Output -
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call        
+            BRA         AddrReg1
+
+AddrReg1
+            CLR         D5
+            MOVE.B      D4,D5
+            AND         #maskA,D5
+            CMP         #maskA,D5
+            BEQ         AddrReg2
+            
+            LEA         dispA1, A1          ; Output string D0
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+            
+            CLR         D5
+            MOVE.B      D4,D5
+            AND         #mask3,D5
+            CMP         #mask3,D5
+            BEQ         Addr1Cont
+            BRA         endMOVE
+Addr1Cont        
+            LEA         dec, A1             ; Output -
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call        
+            BRA         AddrReg2
+
+
+AddrReg2
+            CLR         D5
+            MOVE.B      D4,D5
+            AND         #maskB,D5
+            CMP         #maskB,D5
+            BEQ         AddrReg3
+            
+            
+            LEA         dispA2, A1          ; Output string D0
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+            
+            CLR         D5
+            MOVE.B      D4,D5
+            AND         #mask4,D5
+            CMP         #mask4,D5
+            BEQ         Addr2Cont
+            BRA         endMOVE
+Addr2Cont        
+            LEA         dec, A1             ; Output -
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call        
+            BRA         AddrReg3
+
+AddrReg3
+            CLR         D5
+            MOVE.B      D4,D5
+            AND         #maskC,D5
+            CMP         #maskC,D5
+            BEQ         AddrReg4
+            
+            LEA         dispA3, A1          ; Output string D0
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+            
+            CLR         D5
+            MOVE.B      D4,D5
+            AND         #mask5,D5
+            CMP         #mask5,D5
+            BEQ         Addr3Cont
+            BRA         endMOVE
+Addr3Cont        
+            LEA         dec, A1             ; Output -
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call        
+            BRA         AddrReg4
+
+
+AddrReg4
+            CLR         D5
+            MOVE.B      D4,D5
+            AND         #maskD,D5
+            CMP         #maskD,D5
+            BEQ         AddrReg5
+            
+            LEA         dispA4, A1          ; Output string D0
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+            
+            CLR         D5
+            MOVE.B      D4,D5
+            AND         #mask6,D5
+            CMP         #mask6,D5
+            BEQ         Addr4Cont
+            BRA         endMOVE
+Addr4Cont        
+            LEA         dec, A1             ; Output -
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call        
+            BRA         AddrReg5
+AddrReg5
+            CLR         D5
+            MOVE.B      D4,D5
+            AND         #maskE,D5
+            CMP         #maskE,D5
+            BEQ         AddrReg6
+            
+            LEA         dispA5, A1          ; Output string D0
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+            
+            CLR         D5
+            MOVE.B      D4,D5
+            AND         #mask7,D5
+            CMP         #mask7,D5
+            BEQ         Addr5Cont
+            BRA         endMOVE
+Addr5Cont        
+            LEA         dec, A1             ; Output -
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call        
+            BRA         AddrReg7
+
+AddrReg6
+            CLR         D5
+            MOVE.B      D4,D5
+            AND         #maskF,D5
+            CMP         #maskF,D5
+            BEQ         AddrReg7
+
+            LEA         dispA6, A1          ; Output string D0
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+            
+            CLR         D5
+            MOVE.B      D4,D5
+            AND         #mask8,D5
+            CMP         #mask8,D5
+            BEQ         Addr6Cont
+            BRA         endMOVE
+Addr6Cont        
+            LEA         dec, A1             ; Output -
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call        
+            BRA         AddrReg7
+
+AddrReg7    
+            LEA         dispA7, A1          ; Output -
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call        
+            BRA         endMOVE
 
 
 
 printMemReg             
             MOVE.W      (A0)+, D1           ; Taking in next word
-
+endMOVE
+        MOVEM.L  (SP)+, D0-D7/A1-A6
+        RTS
 
 
 ***********************************************************************************************************
@@ -1903,6 +2123,7 @@ opPer       DC.B    '(', 0
 clPer       DC.B    ')', 0
 dec         DC.B    '-', 0
 inc         DC.B    '+', 0
+slash       DC.B    '/', 0
 
 ORImatch    DC.B    'ORI', 0
 CMPImatch   DC.B    'CMPI', 0
