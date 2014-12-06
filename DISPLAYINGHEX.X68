@@ -12,8 +12,14 @@ START:                  ; first instruction of program
     
         JSR         dispHexWrd
         BRA         DONE
-    
-dispHexWrd  CLR     D3
+        
+*this subroutine displays hex code stored in D1. It displays based on the number of 
+*It displays based on the number of hex to display which is stored in D0. If it is a
+*long word to display, it will display figure out the ascii character and add $37 if it
+*is a letter, and $30 if its a number. It will then load the character into D1 and 
+*display it via trap task 6.
+dispHexWrd  MOVEM.L D0-D7/A1-A6, -(SP)
+            CLR     D3
             CLR     D4
             MOVE.B  D0, D4
             MOVE.L  D1, D3
@@ -52,7 +58,8 @@ DLetters    ADD     #$37, D5
             SUB     #1, D4
             BRA     dispLOOP        
 
-endDispSub  RTS
+endDispSub  MOVEM.L  (SP)+, D0-D7/A1-A6
+            RTS
 
 DONE 
 
@@ -61,6 +68,8 @@ DONE
 * Put variables and constants here
 
     END    START        ; last line of source
+
+
 
 
 *~Font name~Courier New~

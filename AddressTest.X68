@@ -29,6 +29,11 @@ START:                  ; first instruction of program
         JSR     Address
         MOVEA.L D2, A2    
     
+*the following subroutine gets the string address from the user
+*and converts it to Hex for a starting/ending address. it is done 
+*by checking each byte at address A1, and converting it from ascii to 
+*hex number. If the user enters an invalid character string, the
+*program will have a simhalt.
 Address MOVEM.L D3-D7/A2-A6, -(SP)
         CLR     D2
         CLR     D3
@@ -133,6 +138,7 @@ endingMessage   DC.B    'Enter Ending Address (in hex): ', 0
 
 
     END    START        ; last line of source
+
 
 
 

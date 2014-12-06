@@ -1,0 +1,41 @@
+00003000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.15.02
+Created On: 12/6/2014 2:38:04 PM
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      :
+00000000                             3  * Written by :
+00000000                             4  * Date       :
+00000000                             5  * Description:
+00000000                             6  *-----------------------------------------------------------
+00003000                             7      ORG    $3000
+00003000                             8  START:                  ; first instruction of program
+00003000                             9  
+00003000  D0FC 4AAA                 10      ADDA        #$4AAA, A0
+00003004  D7D9                      11      ADDA.L      (A1)+, A3
+00003006  C1FC 0037                 12      MULS        #55, D0
+0000300A  C1F8 0100                 13      MULS.W      $100, D0
+0000300E  CBC2                      14      MULS        D2, D5
+00003010  D038 0044                 15      ADD.B       $44, D0
+00003014  E1D0                      16      ASL         (A0)
+00003016  E3F9 0000AAAA             17      LSL         ($AAAA).L
+0000301C  E6DA                      18      ROR         (A2)+
+0000301E  E803                      19      ASR.B       #4,D3
+00003020  EDAC                      20      LSL.L       D6,D4
+00003022  EF58                      21      ROL.W       #$7,D0
+00003024  D2B9 0400A314             22      ADD.L       $0400A314,D1
+0000302A                            23  
+0000302A  FFFF FFFF                 24      SIMHALT             ; halt simulator
+0000302E                            25  
+0000302E                            26  * Put variables and constants here
+0000302E                            27  
+0000302E                            28      END    START        ; last line of source
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+START               3000

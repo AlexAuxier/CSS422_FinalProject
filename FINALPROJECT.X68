@@ -6,9 +6,6 @@
 *-----------------------------------------------------------
 CR          EQU     $0D     
 LF          EQU     $0A
-  
-test_start  EQU     $00003000   ; defined starting address
-test_end    EQU     $00003009   ; defined ending address
      
 zero        EQU     $00         ; defined hex value 0
 one         EQU     $01         ; defined hex value 1 
@@ -58,8 +55,29 @@ secNib      EQU     $0F
             ORG    $1000
 START:                                  ; first instruction of program
       
-        MOVEA.L     #test_start, A0     ; load starting address
-        MOVEA.L     #test_end, A2       ; load ending address
+        LEA     startingMessage, A1
+        MOVE.B  #14, D0
+        TRAP    #15    
+    
+        MOVE.B  #2, D0
+        TRAP    #15
+    
+        JSR     Address
+        MOVEA.L D2, A0
+        
+        LEA     endingMessage, A1
+        MOVE.B  #14, D0
+        TRAP    #15    
+    
+        MOVE.B  #2, D0
+        TRAP    #15
+    
+        JSR     Address
+        MOVEA.L D2, A2
+        
+        LEA     newline, A1
+        MOVE.B  #14, D0
+        TRAP    #15 
           
 LOOP    CLR         D1                  ; clear out D1
         CLR         D2                  ; clear out D2
@@ -184,7 +202,8 @@ braFourteen ASL.W       #eight,D1           ; we need the whole word to compare 
             
             CLR         D2                  ; clear D2
             MOVE.W      D1, D2              ; copy opcode to D2
-            ASR.L       #six, D2            ; shift the bits right to get size
+            ASR         #six, D2            ; shift the bits right to get size
+            AND         #03,D2
         
             CMP.B       #three, D2          ; if the size is three, we are shifting memory
             BEQ         memShifts           ; go to memory shift
@@ -2336,9 +2355,10 @@ AbsShort    LEA         opPer, A1           ; Display space
             
             CLR         D1
             MOVE.W      (A0)+, D1
+            CLR         D0
+            MOVE.B      #4, D0
             
-            MOVE.B      #3, D0
-            TRAP        #15
+            JSR         outHex
             
             LEA         clPer, A1           ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -2356,9 +2376,10 @@ AbsLong     LEA         opPer, A1           ; Display space
             
             CLR         D1
             MOVE.L      (A0)+, D1
+            CLR         D0
+            MOVE.B      #8, D0
             
-            MOVE.B      #3, D0
-            TRAP        #15
+            JSR         outHex
             
             LEA         clPer, A1           ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -2369,16 +2390,17 @@ AbsLong     LEA         opPer, A1           ; Display space
 DispImm     LEA         hashTag, A1         ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
-            
-            CLR         D1
-            MOVE.W      (A0)+, D1
 
             LEA         dispHex, A1         ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            MOVE.B      #3, D0
-            TRAP        #15
+            CLR         D1
+            MOVE.W      (A0)+, D1
+            CLR         D0
+            MOVE.B      #4, D0
+            
+            JSR         outHex
 
             BRA         endSub
 invalid
@@ -2392,10 +2414,164 @@ endSUB
 ***********************************************************************************************************
 ***********************************************************************************************************
 
+*this subroutine displays hex code stored in D1. It displays based on the number of 
+*It displays based on the number of hex to display which is stored in D0. If it is a
+*long or word to display, it will figure out the ascii character and add $37 if it
+*is a letter, and $30 if its a number. It will then load the character into D1 and 
+*display it via trap task 6 and loop however many times is needed, 4 or 8. If a word
+*needs to be displayed, it will roll the bits over so that, the hex are shifted by a word.
+outHex      MOVEM.L D0-D7/A1-A6, -(SP)
+            CLR     D3
+            CLR     D4
+            MOVE.B  D0, D4
+            MOVE.L  D1, D3
+            CMP.B   #4, D0
+            BEQ     moveOver
+            BRA     dispLOOP
+            
+moveOver    ROL.L   #8,D3
+            ROL.L   #8,D3
+            
+dispLOOP    CMP.B   #0, D4
+            BEQ     endDispSub
+            ROL.L   #4, D3
+            CLR     D5
+            MOVE.B  D3, D5 
+            AND.L   #$0F, D5
+            CMP.B   #10, D5
+            BLT     DLnine
+            BRA     DLetters
+            
+DLnine      ADD     #$30, D5
+            CLR     D1
+            MOVE.B  D5, D1
+            CLR     D0
+            MOVE.B  #6, D0
+            TRAP    #15
+            SUB     #1, D4
+            BRA     dispLOOP  
+ 
+DLetters    ADD     #$37, D5
+            CLR     D1
+            MOVE.B  D5, D1
+            CLR     D0
+            MOVE.B  #6, D0
+            TRAP    #15
+            SUB     #1, D4
+            BRA     dispLOOP        
+
+endDispSub  MOVEM.L  (SP)+, D0-D7/A1-A6
+            RTS
+
+*the following subroutine gets the string address from the user
+*and converts it to Hex for a starting/ending address. it is done 
+*by checking each byte at address A1, and converting it from ascii to 
+*hex number. If the user enters an invalid character string, the
+*program will have a simhalt.
+Address MOVEM.L D3-D7/A2-A6, -(SP)
+        CLR     D2
+        CLR     D3
+        CMP.B   #4, D1
+        BEQ     subLOOP
+        CMP.B   #8, D1
+        BEQ     subLOOP
+        BRA     ADDinvalid        
+        
+subLOOP ROR     #4, D4
+        MOVE.B  D4, D2
+        CLR     D4
+        CLR     D5
+        CMP.B   D1, D3
+        BEQ     endLOOP
+        ADD.W   #2, D3
+        ROL.L   #8, D2
+        
+bytLOOP ROL     #4, D4
+        
+        CMP.B   #$30, (A1)
+        BEQ     hZero 
+        CMP.B   #$31, (A1)
+        BEQ     hOne
+        CMP.B   #$32, (A1)
+        BEQ     hTwo
+        CMP.B   #$33, (A1)
+        BEQ     hThree
+        CMP.B   #$34, (A1)
+        BEQ     hFour
+        CMP.B   #$35, (A1)
+        BEQ     hFive
+        CMP.B   #$36, (A1)
+        BEQ     hSix
+        CMP.B   #$37, (A1)
+        BEQ     hSeven
+        CMP.B   #$38, (A1)
+        BEQ     hEight
+        CMP.B   #$39, (A1)
+        BEQ     hNine
+        CMP.B   #$41, (A1)
+        BEQ     hA
+        CMP.B   #$42, (A1)
+        BEQ     hB
+        CMP.B   #$43, (A1)
+        BEQ     hC
+        CMP.B   #$44, (A1)
+        BEQ     hD
+        CMP.B   #$45, (A1)
+        BEQ     hE
+        CMP.B   #$46, (A1)
+        BEQ     hF 
+        BRA     invalid      
+hZero   MOVE.B  #$00, D4
+        BRA     nextH
+hOne    MOVE.B  #$10, D4
+        BRA     nextH
+hTwo    MOVE.B  #$20, D4
+        BRA     nextH
+hThree  MOVE.B  #$30, D4
+        BRA     nextH
+hFour   MOVE.B  #$40, D4
+        BRA     nextH
+hFive   MOVE.B  #$50, D4
+        BRA     nextH
+hSix    MOVE.B  #$60, D4
+        BRA     nextH
+hSeven  MOVE.B  #$70, D4
+        BRA     nextH
+hEight  MOVE.B  #$80, D4
+        BRA     nextH
+hNine   MOVE.B  #$90, D4
+        BRA     nextH
+hA      MOVE.B  #$A0, D4
+        BRA     nextH
+hB      MOVE.B  #$B0, D4
+        BRA     nextH
+hC      MOVE.B  #$C0, D4
+        BRA     nextH
+hD      MOVE.B  #$D0, D4
+        BRA     nextH
+hE      MOVE.B  #$E0, D4
+        BRA     nextH
+hF      MOVE.B  #$F0, D4
+
+nextH   MOVE.B  (A1)+, D0
+        ADD     #1, D5
+        CMP.B   #2, D5
+        BEQ     subLOOP
+        BRA     bytLOOP
+        
+ADDinvalid  MOVE.B  #9,D0
+            TRAP    #15
+   
+endLOOP MOVEM.L  (SP)+, D3-D7/A2-A6
+        RTS
+
 printInvalid
 endPROG    
 
     SIMHALT                             ; halt simulator
+
+startingMessage DC.B    'Enter Starting Address (in hex): ', 0
+endingMessage   DC.B    'Enter Ending Address (in hex): ', 0
 
 newLine     DC.B    ' ', CR, LF, 0
 space       DC.B    '  ', 0
@@ -2464,6 +2640,8 @@ dispD6      DC.B    'D6', 0
 dispD7      DC.B    'D7', 0 
  
            END    START                ; last line of source
+
+
 
 
 

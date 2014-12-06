@@ -1,0 +1,85 @@
+00001000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.15.02
+Created On: 12/6/2014 1:12:12 PM
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      :
+00000000                             3  * Written by :
+00000000                             4  * Date       :
+00000000                             5  * Description:
+00000000                             6  *-----------------------------------------------------------
+00001000                             7      ORG    $1000
+00001000                             8  START:                  ; first instruction of program
+00001000                             9  
+00001000  223C 0056ABCD             10          MOVE.L      #$0056ABCD, D1
+00001006  103C 0008                 11          MOVE.B      #8, D0
+0000100A                            12      
+0000100A  4EB9 00001014             13          JSR         dispHexWrd
+00001010  6000 006C                 14          BRA         DONE
+00001014                            15      
+00001014  48E7 FF7E                 16  dispHexWrd  MOVEM.L D0-D7/A1-A6, -(SP)
+00001018  4243                      17              CLR     D3
+0000101A  4244                      18              CLR     D4
+0000101C  1800                      19              MOVE.B  D0, D4
+0000101E  2601                      20              MOVE.L  D1, D3
+00001020  B03C 0004                 21              CMP.B   #4, D0
+00001024  6700 0006                 22              BEQ     moveOver
+00001028  6000 0006                 23              BRA     dispLOOP
+0000102C                            24              
+0000102C  E19B                      25  moveOver    ROL.L   #8,D3
+0000102E  E19B                      26              ROL.L   #8,D3
+00001030                            27              
+00001030  B83C 0000                 28  dispLOOP    CMP.B   #0, D4
+00001034  6700 0042                 29              BEQ     endDispSub
+00001038  E99B                      30              ROL.L   #4, D3
+0000103A  4245                      31              CLR     D5
+0000103C  1A03                      32              MOVE.B  D3, D5 
+0000103E  CABC 0000000F             33              AND.L   #$0F, D5
+00001044  BA3C 000A                 34              CMP.B   #10, D5
+00001048  6D00 0006                 35              BLT     DLnine
+0000104C  6000 0016                 36              BRA     DLetters
+00001050                            37              
+00001050  0645 0030                 38  DLnine      ADD     #$30, D5
+00001054  4241                      39              CLR     D1
+00001056  1205                      40              MOVE.B  D5, D1
+00001058  4240                      41              CLR     D0
+0000105A  103C 0006                 42              MOVE.B  #6, D0
+0000105E  4E4F                      43              TRAP    #15
+00001060  5344                      44              SUB     #1, D4
+00001062  60CC                      45              BRA     dispLOOP  
+00001064                            46   
+00001064  0645 0037                 47  DLetters    ADD     #$37, D5
+00001068  4241                      48              CLR     D1
+0000106A  1205                      49              MOVE.B  D5, D1
+0000106C  4240                      50              CLR     D0
+0000106E  103C 0006                 51              MOVE.B  #6, D0
+00001072  4E4F                      52              TRAP    #15
+00001074  5344                      53              SUB     #1, D4
+00001076  60B8                      54              BRA     dispLOOP        
+00001078                            55  
+00001078  4CDF 7EFF                 56  endDispSub  MOVEM.L  (SP)+, D0-D7/A1-A6
+0000107C  4E75                      57              RTS
+0000107E                            58  
+0000107E                            59  DONE 
+0000107E                            60  
+0000107E  FFFF FFFF                 61      SIMHALT             ; halt simulator
+00001082                            62  
+00001082                            63  * Put variables and constants here
+00001082                            64  
+00001082                            65      END    START        ; last line of source
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+DISPHEXWRD          1014
+DISPLOOP            1030
+DLETTERS            1064
+DLNINE              1050
+DONE                107E
+ENDDISPSUB          1078
+MOVEOVER            102C
+START               1000
