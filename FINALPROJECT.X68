@@ -1079,6 +1079,11 @@ opMOVEM
 
 opLEA
 
+***********************************************************************************************************
+*
+*				SUBQ OPCODE
+*
+***********************************************************************************************************
 
 opSUBQ      
             LEA         SUBQmatch, A1       ; we know that the opcode will be SUBQ, so load A1 to print message
@@ -1129,10 +1134,33 @@ opBLT   LEA         BLTmatch, A1        ; we know that the opcode will be BLT, s
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
 
+***********************************************************************************************************
+*
+*				SUB OPCODE
+*
+***********************************************************************************************************
+
 opSUB   LEA         SUBmatch, A1        ; we know that the opcode will be SUB, so load A1 to print message
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
-
+		
+		LEA			space,A1
+		MOVE.B		#14,D0
+		TRAP		#15
+		
+		MOVE.B		(A0)+,D1
+		MOVE.B		D1,D2
+		ASR			#4,D2
+		
+		JSR			printEA
+		
+		LEA			newLine,A1
+		MOVE.B		#14,D0
+		TRAP		#15
+		
+		BRA			LOOP
+		
+		
 opMULS  LEA         MULSmatch, A1       ; we know that the opcode will be MULS, so load A1 to print message
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
@@ -1743,6 +1771,7 @@ dispD7      DC.B    'D7', 0
            
            
            
+
 
 
 
