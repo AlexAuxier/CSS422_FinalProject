@@ -1,0 +1,33 @@
+00003000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.15.02
+Created On: 2014-12-06 09:39:12
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      : SUBQ TEST
+00000000                             3  * Written by :
+00000000                             4  * Date       :
+00000000                             5  * Description:
+00000000                             6  *-----------------------------------------------------------
+00003000                             7      ORG    $3000
+00003000                             8  START:                  ; first instruction of program
+00003000                             9  
+00003000                            10  * Put program code here
+00003000                            11  
+00003000  143C 0005                 12      MOVE.B  #5,D2
+00003004                            13      
+00003004  5302                      14      SUBQ.B  #1,D2
+00003006                            15  
+00003006  FFFF FFFF                 16      SIMHALT             ; halt simulator
+0000300A                            17  
+0000300A                            18  * Put variables and constants here
+0000300A                            19  
+0000300A                            20      END    START        ; last line of source
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+START               3000
