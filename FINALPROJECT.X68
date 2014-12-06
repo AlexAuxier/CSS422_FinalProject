@@ -157,10 +157,11 @@ braEleven   							; there are two opCodes available EOR, or CMP
 			CLR 	D2
 			MOVE.B	D1,D2
 			AND.B	$0F,D2
+			ASR		#seven,D2
 			CMP.B	#three,D2
-			BLT		opCMP
+			BLT		opCMP				; If opmode bits are less than 3, we have CMP
 			CMP.B	#three,D2
-			BGT		opEOR
+			BRA		opEOR				; Else its EOR
 			
 
 braTwelve   BRA     opMULS              ; we know that there is only one opcode that is MULS    
@@ -224,9 +225,88 @@ opDIVS		LEA		DIVSmatch,A1
 *
 ***********************************************************************************************************
 
-opEOR		LEA 	EORmatch,A1
-			MOVE.B	#14,D0
-			TRAP	#15
+opEOR		LEA 		EORmatch,A1
+			MOVE.B		#14,D0
+			TRAP		#15
+			
+			CLR			D2
+			
+			MOVE.B		(A0)+,D1
+			MOVE.B		D1,D2
+			ASR			#seven,D2			; Move bits 7 places over to find opmode
+			CMP.B		#four,D2
+			BEQ			opEORB				; Byte in opmode
+			CMP.B		#five,D2
+			BEQ			opEORW				; Word in opmode
+			CMP.B		#six,D2
+			BEQ			opEORL				; Long in opmode
+			
+opEORB		LEA			dispByte,A1
+			MOVE.B		#14,D0
+			TRAP		#15
+			
+			LEA         space, A1           ; Display space
+			MOVE.B      #14, D0             ; command for trap call to display message
+			TRAP        #15                 ; trap call
+			
+			JSR			printEA			; Determines the "left" operand register
+			
+			LEA         comma, A1           ; Display space
+			MOVE.B      #14, D0             ; command for trap call to display message
+			TRAP        #15                 ; trap call
+			
+			JSR			findRege
+			
+			LEA			newLine,A1
+			MOVE.B		#14,D0
+			TRAP		#15                ; trap call
+			
+			BRA			LOOP
+			
+			
+opEORW		LEA			dispWord,A1
+			MOVE.B		#14,D0
+			TRAP		#15
+			
+			LEA         space, A1           ; Display space
+			MOVE.B      #14, D0             ; command for trap call to display message
+			TRAP        #15                 ; trap call
+			
+			JSR			printEA			; Determines the "left" operand register
+			
+			LEA         comma, A1           ; Display space
+			MOVE.B      #14, D0             ; command for trap call to display message
+			TRAP        #15                 ; trap call
+			
+			JSR			findRege
+			
+			LEA			newLine,A1
+			MOVE.B		#14,D0
+			TRAP		#15                ; trap call
+			
+			BRA			LOOP
+			
+opEORL		LEA			dispLong,A1
+			MOVE.B		#14,D0
+			TRAP		#15
+			
+			LEA         space, A1           ; Display space
+			MOVE.B      #14, D0             ; command for trap call to display message
+			TRAP        #15                 ; trap call
+			
+			JSR			printEA			; Determines the "left" operand register
+			
+			LEA         comma, A1           ; Display space
+			MOVE.B      #14, D0             ; command for trap call to display message
+			TRAP        #15                 ; trap call
+			
+			JSR			findRege
+			
+			LEA			newLine,A1
+			MOVE.B		#14,D0
+			TRAP		#15                ; trap call
+			
+			BRA			LOOP
 
 ***********************************************************************************************************
 *
@@ -260,20 +340,13 @@ opCMPB		LEA			dispByte,A1
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 			
-			CLR			D2
-			MOVE.B		(A0)+,D1
-			MOVE.B		D1,D2
-			JSR			findRege			; Determines the "left" operand register
+			JSR			printEA			; Determines the "left" operand register
 			
 			LEA         comma, A1           ; Display space
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 			
-			
-			MOVE.B		(A0)+,D1
-			MOVE.B		D1,D2
-			ASR			#seven,D2			; Move bits 7 places over to find opmode
-			JSR			printEA
+			JSR			findRege
 			
 			LEA			newLine,A1
 			MOVE.B		#14,D0
@@ -289,6 +362,18 @@ opCMPW		LEA			dispWord,A1
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 			
+			JSR			printEA			; Determines the "left" operand register
+			
+			LEA         comma, A1           ; Display space
+			MOVE.B      #14, D0             ; command for trap call to display message
+			TRAP        #15                 ; trap call
+			
+			JSR			findRege
+			
+			LEA			newLine,A1
+			MOVE.B		#14,D0
+			TRAP		#15                ; trap call
+			
 			BRA			LOOP
 
 opCMPL		LEA			dispLong,A1
@@ -298,6 +383,18 @@ opCMPL		LEA			dispLong,A1
 			LEA         space, A1           ; Display space
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
+			
+			JSR			printEA			; Determines the "left" operand register
+			
+			LEA         comma, A1           ; Display space
+			MOVE.B      #14, D0             ; command for trap call to display message
+			TRAP        #15                 ; trap call
+			
+			JSR			findRege
+			
+			LEA			newLine,A1
+			MOVE.B		#14,D0
+			TRAP		#15                 ; trap call
 			
 			BRA			LOOP
 			
@@ -1263,8 +1360,11 @@ opROR   LEA         RORmatch, A1        ; we know that the opcode will be ROR, s
 ***********************************************************************************************************
 findRege 	MOVEM.L  	D0-D7/A1-A6, -(SP)
 
+        	MOVE.B 		(A0)+,D1
 			MOVE.B		D1,D2
+			
 			ASR			#four,D2
+			
 			BRA			pDataReg
 		
 ***********************************************************************************************************
