@@ -1,6 +1,6 @@
-00002000 Starting Address
+00003000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 11/29/2014 9:21:05 PM
+Created On: 12/6/2014 8:23:18 PM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -8,16 +8,16 @@ Created On: 11/29/2014 9:21:05 PM
 00000000                             4  * Date       :
 00000000                             5  * Description:
 00000000                             6  *-----------------------------------------------------------
-00002000                             7      ORG    $2000
-00002000                             8  START:                  ; first instruction of program
-00002000                             9  
-00002000                            10  * Put program code here
-00002000  3442                      11      MOVE.W  D2,A2
-00002002  FFFF FFFF                 12      SIMHALT             ; halt simulator
-00002006                            13  
-00002006                            14  * Put variables and constants here
-00002006                            15  
-00002006                            16      END    START        ; last line of source
+00003000                             7      ORG    $3000
+00003000                             8  START:                  ; first instruction of program
+00003000                             9  
+00003000                            10  * Put program code here
+00003000  3442                      11      MOVE.W  D2,A2
+00003002  FFFF FFFF                 12      SIMHALT             ; halt simulator
+00003006                            13  
+00003006                            14  * Put variables and constants here
+00003006                            15  
+00003006                            16      END    START        ; last line of source
 
 No errors detected
 No warnings generated
@@ -26,4 +26,4 @@ No warnings generated
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
-START               2000
+START               3000

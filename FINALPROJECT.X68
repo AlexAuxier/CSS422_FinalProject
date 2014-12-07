@@ -7,8 +7,8 @@
 CR          EQU     $0D     
 LF          EQU     $0A
   
-test_start  EQU     $00002000   ; defined starting address
-test_end    EQU     $00002009   ; defined ending address
+test_start  EQU     $00003000   ; defined starting address
+test_end    EQU     $00003009   ; defined ending address
      
 zero        EQU     $00         ; defined hex value 0
 one         EQU     $01         ; defined hex value 1 
@@ -2288,6 +2288,7 @@ dispD7      DC.B    'D7', 0
            
            
            
+
 
 
 

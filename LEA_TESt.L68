@@ -1,6 +1,6 @@
-00002000 Starting Address
+00003000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 12/6/2014 6:19:08 PM
+Created On: 12/6/2014 9:19:41 PM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -8,18 +8,19 @@ Created On: 12/6/2014 6:19:08 PM
 00000000                             4  * Date       :
 00000000                             5  * Description:
 00000000                             6  *-----------------------------------------------------------
-00002000                             7      ORG    $2000
-00002000                             8  START:                  ; first instruction of program
-00002000                             9  
-00002000                            10  * Put program code here
-00002000                            11      
-00002000  43F9 00002006             12      LEA        meh,A1 
-00002006= 6D 65 68 00               13  meh     DC.B          'meh',0
-0000200A  FFFF FFFF                 14      SIMHALT             ; halt simulator
-0000200E                            15  
-0000200E                            16  * Put variables and constants here
-0000200E                            17  
-0000200E                            18      END    START        ; last line of source
+00003000                             7      ORG    $3000
+00003000                             8  START:                  ; first instruction of program
+00003000                             9  
+00003000                            10  * Put program code here
+00003000                            11      
+00003000  43F9 00003008             12      LEA        meh,A1 
+00003006  1401                      13      MOVE.B      D1,D2
+00003008                            14  meh  
+00003008  FFFF FFFF                 15      SIMHALT             ; halt simulator
+0000300C                            16  
+0000300C                            17  * Put variables and constants here
+0000300C                            18  
+0000300C                            19      END    START        ; last line of source
 
 No errors detected
 No warnings generated
@@ -28,5 +29,5 @@ No warnings generated
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
-MEH                 2006
-START               2000
+MEH                 3008
+START               3000
