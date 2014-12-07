@@ -1,6 +1,6 @@
 00003000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 12/6/2014 10:18:07 PM
+Created On: 12/6/2014 10:50:51 PM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -14,17 +14,19 @@ Created On: 12/6/2014 10:18:07 PM
 00003000                            10  * Put program code here
 00003000                            11  
 00003000                            12      
-00003000  4CDF 0E3C                 13      MOVEM.L (SP)+,D2-D5/A1-A3
-00003004  48E7 0420                 14      MOVEM.L D5/A2,-(SP)
-00003008  48F8 200E 5435            15      MOVEM.L D1-D3/A5,$5435
-0000300E  48B8 FFFF 5435            16      MOVEM.W D0-D7/A0-A7,$5435
-00003014  48E2 FFFF                 17      MOVEM.L D0-D7/A0-A7,-(A2)
-00003018                            18  
-00003018  FFFF FFFF                 19      SIMHALT             ; halt simulator
-0000301C                            20  
-0000301C                            21  * Put variables and constants here
+00003000                            13  
+00003000  48B8 FFFF 5435            14      MOVEM.W D0-D7/A0-A7,$5435
+00003006  48E2 FFFF                 15      MOVEM.L D0-D7/A0-A7,-(A2)
+0000300A                            16      
+0000300A  4CDF 0E3C                 17      MOVEM.L (SP)+,D2-D5/A1-A3
+0000300E  48E7 0420                 18      MOVEM.L D5/A2,-(SP)
+00003012  48F8 200E 5435            19      MOVEM.L D1-D3/A5,$5435
+00003018                            20  
+00003018  FFFF FFFF                 21      SIMHALT             ; halt simulator
 0000301C                            22  
-0000301C                            23      END    START        ; last line of source
+0000301C                            23  * Put variables and constants here
+0000301C                            24  
+0000301C                            25      END    START        ; last line of source
 
 No errors detected
 No warnings generated
