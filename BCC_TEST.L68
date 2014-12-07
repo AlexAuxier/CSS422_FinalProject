@@ -1,9 +1,9 @@
 00003000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 2014-12-07 15:27:39
+Created On: 2014-12-06 21:39:21
 
 00000000                             1  *-----------------------------------------------------------
-00000000                             2  * Title      :  DIVS TEST
+00000000                             2  * Title      : Bcc Test Stuff
 00000000                             3  * Written by :
 00000000                             4  * Date       :
 00000000                             5  * Description:
@@ -12,17 +12,14 @@ Created On: 2014-12-07 15:27:39
 00003000                             8  START:                  ; first instruction of program
 00003000                             9  
 00003000                            10  * Put program code here
-00003000                            11      
-00003000  123C 0001                 12      MOVE.B      #1,D1
-00003004  143C 0004                 13      MOVE.B      #4,D2
-00003008                            14      
-00003008  85C1                      15      DIVS.W      D1,D2
-0000300A                            16  
-0000300A  FFFF FFFF                 17      SIMHALT             ; halt simulator
-0000300E                            18  
-0000300E                            19  * Put variables and constants here
-0000300E                            20  
-0000300E                            21      END    START        ; last line of source
+00003000  B03C 0001                 11          cmp.b   #1, D0
+00003004  6500 0002                 12          Bcs     als
+00003008                            13  als
+00003008  FFFF FFFF                 14      SIMHALT             ; halt simulator
+0000300C                            15  
+0000300C                            16  * Put variables and constants here
+0000300C                            17  
+0000300C                            18      END    START        ; last line of source
 
 No errors detected
 No warnings generated
@@ -31,4 +28,5 @@ No warnings generated
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
+ALS                 3008
 START               3000

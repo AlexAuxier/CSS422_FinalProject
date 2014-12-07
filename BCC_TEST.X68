@@ -1,5 +1,5 @@
 *-----------------------------------------------------------
-* Title      : EOR TEST
+* Title      : Bcc Test Stuff
 * Written by :
 * Date       :
 * Description:
@@ -8,18 +8,14 @@
 START:                  ; first instruction of program
 
 * Put program code here
-
-	MOVE.B	#3,D1
-	MOVE.B	#3,D2
-	
-	EOR.B	D1,D2
-
+		cmp.b	#1, D0
+		Bcs		als
+als
     SIMHALT             ; halt simulator
 
 * Put variables and constants here
 
     END    START        ; last line of source
-
 
 *~Font name~Courier New~
 *~Font size~10~
