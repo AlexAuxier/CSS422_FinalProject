@@ -1,6 +1,6 @@
 00003000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 2014-12-06 11:59:19
+Created On: 2014-12-06 21:01:27
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      : CMP TEST
@@ -12,16 +12,13 @@ Created On: 2014-12-06 11:59:19
 00003000                             8  START:                  ; first instruction of program
 00003000                             9  
 00003000                            10  * Put program code here
-00003000  163C 0001                 11      MOVE.B      #1,D3
-00003004  143C 0002                 12      MOVE.B      #2,D2
-00003008                            13  
-00003008  B403                      14      CMP.B       D3,D2
-0000300A                            15          
-0000300A  FFFF FFFF                 16      SIMHALT             ; halt simulator
-0000300E                            17  
-0000300E                            18  * Put variables and constants here
-0000300E                            19  
-0000300E                            20      END    START        ; last line of source
+00003000  B403                      11      CMP.B       D3,D2
+00003002                            12          
+00003002  FFFF FFFF                 13      SIMHALT             ; halt simulator
+00003006                            14  
+00003006                            15  * Put variables and constants here
+00003006                            16  
+00003006                            17      END    START        ; last line of source
 
 No errors detected
 No warnings generated

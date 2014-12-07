@@ -8,9 +8,6 @@
 START:                  ; first instruction of program
 
 * Put program code here
-	MOVE.B		#1,D3
-	MOVE.B		#2,D2
-
 	CMP.B		D3,D2
 		
     SIMHALT             ; halt simulator
