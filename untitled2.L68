@@ -1,6 +1,6 @@
-00002000 Starting Address
+00001000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 12/1/2014 11:52:01 PM
+Created On: 12/6/2014 5:59:05 PM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -8,17 +8,18 @@ Created On: 12/1/2014 11:52:01 PM
 00000000                             4  * Date       :
 00000000                             5  * Description:
 00000000                             6  *-----------------------------------------------------------
-00002000                             7      ORG    $2000
-00002000                             8  START:                  ; first instruction of program
-00002000                             9  
-00002000                            10  * Put program code here
-00002000  48F8 0703 0035            11      MOVEM.L D0-D1/A0-A2,$35
-00002006                            12  
-00002006  FFFF FFFF                 13      SIMHALT             ; halt simulator
-0000200A                            14  
-0000200A                            15  * Put variables and constants here
-0000200A                            16  
-0000200A                            17      END    START        ; last line of source
+00001000                             7      ORG    $1000
+00001000                             8  START:                  ; first instruction of program
+00001000                             9  
+00001000                            10  * Put program code here
+00001000                            11      
+00001000  43F9 00001006             12      LEA        meh,A1 
+00001006= 6D 65 68 00               13  meh     DC.B          'meh',0
+0000100A  FFFF FFFF                 14      SIMHALT             ; halt simulator
+0000100E                            15  
+0000100E                            16  * Put variables and constants here
+0000100E                            17  
+0000100E                            18      END    START        ; last line of source
 
 No errors detected
 No warnings generated
@@ -27,4 +28,5 @@ No warnings generated
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
-START               2000
+MEH                 1006
+START               1000

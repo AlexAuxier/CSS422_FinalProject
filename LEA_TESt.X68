@@ -8,21 +8,14 @@
 START:                  ; first instruction of program
 
 * Put program code here
-
     
-    MOVEM.L (SP)+,D0-D7/A0-A6
-    MOVEM.L D0-D7/A0-A7,-(SP)
-    MOVEM.L D0-D7/A0-A7,$5435
-    MOVEM.W D0-D7/A0-A7,$5435
-    MOVEM.L D0-D7/A0-A7,-(A2)
-
+    LEA        meh,A1 
+meh     DC.B          'meh',0
     SIMHALT             ; halt simulator
 
 * Put variables and constants here
 
     END    START        ; last line of source
-
-
 
 *~Font name~Courier New~
 *~Font size~10~

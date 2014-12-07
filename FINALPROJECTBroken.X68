@@ -1029,7 +1029,7 @@ opMOVEM
             AND         #one,D5
             CMP         #one,D5             ; This bit should be one if this is MOVEM
             BNE         invalid             ; If this is not 1 then this is not moveM
-            CLR         D5
+            CLR         D6
             
             LEA         MOVEMMatch, A1        ; we know that the opcode will be MOVEM, so load A1 to print message
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -1049,15 +1049,12 @@ opMOVEM
             MOVE.B      D1,D3
             AND         #seven,D3
             
-            JSR         MOVEMBRA
             
-            CMP         #three,D2
-            BEQ         skipPrintEA
+            JSR         MOVEMLIST
             
             LEA         comma, A1           ; Display comma
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
-            
 
             JSR         printEA
             
@@ -1067,70 +1064,8 @@ opMOVEM
 
             BRA         loop            
 
-skipPrintEA 
-
-            LEA         newline, A1        
-            MOVE.B      #14, D0             ; command for trap call to display message
-            TRAP        #15                 ; trap call            
-
-            BRA         loop 
 opLEA
-            CLR         D4                  ; Clearing space for source register
-            MOVE.B      D1,D4               ; Moving byte to isolate register
-            ASR         #one,D4
-            AND         #seven,D4           ; Isolated register
-
-            CLR         D5                  ; Clearing D5 to check if bits match LEA static bits
-            MOVE.B      D1,D5
-            AND         #one,D5
-            ASL         #two,D5
             
-            MOVE.B      (A0)+, D1           ; Taking in next byte
-            
-            MOVE.B      D1,D6
-            ASR         #six,D6
-            ADD         D6,D5
-            CLR         D6
-
-            CMP         #seven,D5
-            BNE         invalid   
-            
-            LEA         LEAmatch, A1        ; we know that the opcode will be LEA, so load A1 to print message
-            MOVE.B      #14, D0             ; command for trap call to display message
-            TRAP        #15                 ; trap call            
-
-            LEA         space, A1         ; we know that the opcode will be MOVEM, so load A1 to print message
-            MOVE.B      #14, D0             ; command for trap call to display message
-            TRAP        #15                 ; trap call            
-            
-            CLR         D2
-            MOVE.B      D1,D2
-            ASR         #three,D2
-            AND         #seven,D2
-            
-            CLR         D3
-            MOVE.B      D1,D3
-            AND         #seven,D3
-            
-            JSR         printEA
-            
-            LEA         comma, A1        ; we know that the opcode will be MOVEM, so load A1 to print message
-            MOVE.B      #14, D0             ; command for trap call to display message
-            TRAP        #15                 ; trap call            
-            
-            
-            CLR         D3
-            MOVE.B      D4,D3
-            MOVE.B      #2,D2
-            
-            JSR         printEA             ; Prints out source address
-            
-            LEA         newline, A1         ; Prints new line
-            MOVE.B      #14, D0             ; command for trap call to display message
-            TRAP        #15                 ; trap call            
-            
-            
-           
 
 
 opSUBQ      
@@ -1195,7 +1130,7 @@ opROR
         TRAP        #15                 ; trap call
 
 
-MOVEMBRA    MOVEM.L  D0-D7/A1-A6, -(SP)     ; Branches off depending on size bit
+MOVEMLIST   MOVEM.L  D0-D7/A1-A6, -(SP) 
             CMP      #zero,D5
             BEQ      MOVEMW
             CMP      #one, D5
@@ -1224,32 +1159,14 @@ MOVEML
 
             BRA         CheckDR
 
-CheckDR     
-            
-              
+CheckDR           
             MOVE.W      (A0)+, D1           ; Taking in next word
             CMP         #zero,D6
             BEQ         printRegMem
             CMP         #one,D6
-            BEQ         printStack
+            BEQ         printMemNow
             BRA         invalid
             
-printStack 
-            LEA         stack,A1
-            MOVE.B      #14, D0             ; command for trap call to display message
-            TRAP        #15                 ; trap call
-
-            LEA         inc,A1
-            MOVE.B      #14, D0             ; command for trap call to display message
-            TRAP        #15                 ; trap call
-            
-            LEA         comma,A1
-            MOVE.B      #14, D0             ; command for trap call to display message
-            TRAP        #15                 ; trap call
-            
-            
-            BRA         printRegMem
-           
 printRegMem 
             CLR         D4                  ; Using D4 to store predecrement mode addresses
             MOVE.B      D1,D4               ; Stores bits for D0-D7
@@ -1537,7 +1454,7 @@ AddrReg0
             MOVE.B      D1,D5
             AND         #mask2,D5
             CMP         #mask2,D5
-            BEQ         Addr0Cont
+            BEQ         Reg0Cont
             BRA         endMOVE
 Addr0Cont        
             LEA         dec, A1             ; Output -
@@ -1702,6 +1619,7 @@ endMOVE
 endMove1                                    ; Used if MOVEM has DR is 1
             MOVEM.L  (SP)+, D0-D7/A1-A6
             RTS
+
 
 ***********************************************************************************************************
 *
@@ -2228,8 +2146,6 @@ dec         DC.B    '-', 0
 inc         DC.B    '+', 0
 slash       DC.B    '/', 0
 
-stack       DC.B    '(SP)', 0
-
 ORImatch    DC.B    'ORI', 0
 CMPImatch   DC.B    'CMPI', 0
 BCLRmatch   DC.B    'BCLR', 0
@@ -2265,7 +2181,6 @@ dispByte    DC.B    '.B', 0
 dispWord    DC.B    '.W', 0
 dispLong    DC.B    '.L', 0
 
-dispAn      DC.B    'An', 0
 dispA0      DC.B    'A0', 0
 dispA1      DC.B    'A1', 0
 dispA2      DC.B    'A2', 0
