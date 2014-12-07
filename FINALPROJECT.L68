@@ -1,6 +1,6 @@
 00001000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 12/6/2014 10:52:07 PM
+Created On: 12/6/2014 11:04:09 PM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -1018,7 +1018,7 @@ Created On: 12/6/2014 10:52:07 PM
 000018EA                          1014              
 000018EA  4245                    1015              CLR         D5
 000018EC  1A01                    1016              MOVE.B      D1,D5               ; Using D6 to check if this is indeed MOVEM
-000018EE  EC45                    1017              ASR         #six,D5
+000018EE  EE45                    1017              ASR         #seven,D5
 000018F0  CA7C 0001               1018              AND         #one,D5
 000018F4  BA7C 0001               1019              CMP         #one,D5             ; This bit should be one if this is MOVEM
 000018F8  6600 0D22               1020              BNE         invalid             ; If this is not 1 then this is not moveM
@@ -1030,7 +1030,7 @@ Created On: 12/6/2014 10:52:07 PM
 0000190A                          1026              
 0000190A  4245                    1027              CLR         D5                  ; Clearing D5 to store size
 0000190C  1A01                    1028              MOVE.B      D1,D5               ; Moving byte that contains bit for size
-0000190E  EA45                    1029              ASR         #five,D5            ; Moving size bit to the very right to read
+0000190E  EC45                    1029              ASR         #six,D5            ; Moving size bit to the very right to read
 00001910  CA7C 0001               1030              AND         #one,D5             ; Isolating the one bit for size
 00001914                          1031              
 00001914  4242                    1032              CLR         D2                  ; Storing EA mode in D2

@@ -1014,7 +1014,7 @@ opMOVEM
             
             CLR         D5
             MOVE.B      D1,D5               ; Using D6 to check if this is indeed MOVEM
-            ASR         #six,D5
+            ASR         #seven,D5
             AND         #one,D5
             CMP         #one,D5             ; This bit should be one if this is MOVEM
             BNE         invalid             ; If this is not 1 then this is not moveM
@@ -1026,7 +1026,7 @@ opMOVEM
             
             CLR         D5                  ; Clearing D5 to store size
             MOVE.B      D1,D5               ; Moving byte that contains bit for size
-            ASR         #five,D5            ; Moving size bit to the very right to read
+            ASR         #six,D5            ; Moving size bit to the very right to read
             AND         #one,D5             ; Isolating the one bit for size
             
             CLR         D2                  ; Storing EA mode in D2
@@ -2188,6 +2188,12 @@ DispImm     LEA         hashTag, A1         ; Display space
             BRA         endSub
 
 invalid
+
+            LEA         inv, A1         ; Display space
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+            
+            BRA         endProg
 
 endSUB
         
