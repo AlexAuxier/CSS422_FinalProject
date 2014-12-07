@@ -8,6 +8,7 @@
 START:                  ; first instruction of program
 
     ADDA        #$4AAA, A0
+    NOP
     ADDA.L      (A1)+, A3
     MULS        #55, D0
     MULS.W      $100, D0
@@ -26,6 +27,7 @@ START:                  ; first instruction of program
 * Put variables and constants here
 
     END    START        ; last line of source
+
 
 *~Font name~Courier New~
 *~Font size~10~

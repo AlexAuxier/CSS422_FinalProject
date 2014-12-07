@@ -1,6 +1,6 @@
 00003000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 12/6/2014 2:38:04 PM
+Created On: 12/6/2014 9:53:29 PM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -12,24 +12,25 @@ Created On: 12/6/2014 2:38:04 PM
 00003000                             8  START:                  ; first instruction of program
 00003000                             9  
 00003000  D0FC 4AAA                 10      ADDA        #$4AAA, A0
-00003004  D7D9                      11      ADDA.L      (A1)+, A3
-00003006  C1FC 0037                 12      MULS        #55, D0
-0000300A  C1F8 0100                 13      MULS.W      $100, D0
-0000300E  CBC2                      14      MULS        D2, D5
-00003010  D038 0044                 15      ADD.B       $44, D0
-00003014  E1D0                      16      ASL         (A0)
-00003016  E3F9 0000AAAA             17      LSL         ($AAAA).L
-0000301C  E6DA                      18      ROR         (A2)+
-0000301E  E803                      19      ASR.B       #4,D3
-00003020  EDAC                      20      LSL.L       D6,D4
-00003022  EF58                      21      ROL.W       #$7,D0
-00003024  D2B9 0400A314             22      ADD.L       $0400A314,D1
-0000302A                            23  
-0000302A  FFFF FFFF                 24      SIMHALT             ; halt simulator
-0000302E                            25  
-0000302E                            26  * Put variables and constants here
-0000302E                            27  
-0000302E                            28      END    START        ; last line of source
+00003004  4E71                      11      NOP
+00003006  D7D9                      12      ADDA.L      (A1)+, A3
+00003008  C1FC 0037                 13      MULS        #55, D0
+0000300C  C1F8 0100                 14      MULS.W      $100, D0
+00003010  CBC2                      15      MULS        D2, D5
+00003012  D038 0044                 16      ADD.B       $44, D0
+00003016  E1D0                      17      ASL         (A0)
+00003018  E3F9 0000AAAA             18      LSL         ($AAAA).L
+0000301E  E6DA                      19      ROR         (A2)+
+00003020  E803                      20      ASR.B       #4,D3
+00003022  EDAC                      21      LSL.L       D6,D4
+00003024  EF58                      22      ROL.W       #$7,D0
+00003026  D2B9 0400A314             23      ADD.L       $0400A314,D1
+0000302C                            24  
+0000302C  FFFF FFFF                 25      SIMHALT             ; halt simulator
+00003030                            26  
+00003030                            27  * Put variables and constants here
+00003030                            28  
+00003030                            29      END    START        ; last line of source
 
 No errors detected
 No warnings generated
