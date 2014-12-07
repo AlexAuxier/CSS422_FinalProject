@@ -12,6 +12,11 @@ START:                  ; first instruction of program
     ADDA.L      (A1)+, A3
     MULS        #55, D0
     MULS.W      $100, D0
+    MOVE.W      D2,A2
+    MOVEA.L     A3,A4
+    MOVE.B      #4,D3    
+    NEG.B       D1
+    NEG.L       D3
     MULS        D2, D5
     ADD.B       $44, D0
     ASL         (A0)
@@ -27,6 +32,7 @@ START:                  ; first instruction of program
 * Put variables and constants here
 
     END    START        ; last line of source
+
 
 
 *~Font name~Courier New~
