@@ -1,0 +1,68 @@
+00003000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.15.02
+Created On: 12/6/2014 10:25:56 PM
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      :
+00000000                             3  * Written by :
+00000000                             4  * Date       :
+00000000                             5  * Description:
+00000000                             6  *-----------------------------------------------------------
+00003000                             7      ORG    $3000
+00003000                             8  START:                  ; first instruction of program
+00003000                             9  
+00003000                            10  * Put program code here
+00003000                            11  
+00003000                            12      
+00003000  16BC 0037                 13      MOVE.B #55,(A3)
+00003004  26BC 000015B3             14      MOVE.L #5555,(A3)
+0000300A  2893                      15      MOVE.L (A3),(A4)
+0000300C  288B                      16      MOVE.L A3,(A4)
+0000300E  4401                      17      NEG.B D1
+00003010  4483                      18      NEG.L D3
+00003012  4454                      19      NEG.W (A4)
+00003014  4E71                      20      NOP
+00003016  4E71                      21      NOP
+00003018  4E71                      22      NOP
+0000301A  43F9 00003058             23      LEA  meh,A1   
+00003020  4CDF 7FFF                 24      MOVEM.L (SP)+,D0-D7/A0-A6
+00003024  48E7 FFFF                 25      MOVEM.L D0-D7/A0-A7,-(SP)
+00003028  48F8 FFFF 5435            26      MOVEM.L D0-D7/A0-A7,$5435
+0000302E  48B8 FFFF 5435            27      MOVEM.W D0-D7/A0-A7,$5435
+00003034  48E2 FFFF                 28      MOVEM.L D0-D7/A0-A7,-(A2)
+00003038                            29  
+00003038                            30      *First Nibble == 0000
+00003038  0041 0002                 31      ORI     #2,D1
+0000303C  0882 0004                 32      BCLR    #4,D2
+00003040  B07C 0003                 33      CMP     #3,D0
+00003044                            34      
+00003044                            35      *Move Test Instructions
+00003044  1401                      36      MOVE.B  D1,D2
+00003046  364A                      37      MOVEA   A2,A3
+00003048  7805                      38      MOVEQ   #5,D4
+0000304A                            39    
+0000304A                            40      *Add Test Instructions
+0000304A  D084                      41      ADD.L   D4,D0
+0000304C  D2C8                      42      ADDA    A0,A1
+0000304E  D800                      43      ADD.B   D0,D4 
+00003050  4EB9 00003056             44      JSR break   
+00003056                            45  break
+00003056  4E75                      46      RTS
+00003058                            47  meh   
+00003058                            48      
+00003058  FFFF FFFF                 49      SIMHALT             ; halt simulator
+0000305C                            50  
+0000305C                            51  * Put variables and constants here
+0000305C                            52  
+0000305C                            53      END    START        ; last line of source
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+BREAK               3056
+MEH                 3058
+START               3000

@@ -1,6 +1,6 @@
 00003000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 12/6/2014 8:25:50 PM
+Created On: 12/6/2014 10:18:07 PM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -14,9 +14,9 @@ Created On: 12/6/2014 8:25:50 PM
 00003000                            10  * Put program code here
 00003000                            11  
 00003000                            12      
-00003000  4CDF 7FFF                 13      MOVEM.L (SP)+,D0-D7/A0-A6
-00003004  48E7 FFFF                 14      MOVEM.L D0-D7/A0-A7,-(SP)
-00003008  48F8 FFFF 5435            15      MOVEM.L D0-D7/A0-A7,$5435
+00003000  4CDF 0E3C                 13      MOVEM.L (SP)+,D2-D5/A1-A3
+00003004  48E7 0420                 14      MOVEM.L D5/A2,-(SP)
+00003008  48F8 200E 5435            15      MOVEM.L D1-D3/A5,$5435
 0000300E  48B8 FFFF 5435            16      MOVEM.W D0-D7/A0-A7,$5435
 00003014  48E2 FFFF                 17      MOVEM.L D0-D7/A0-A7,-(A2)
 00003018                            18  

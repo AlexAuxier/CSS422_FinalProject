@@ -8,7 +8,7 @@ CR          EQU     $0D
 LF          EQU     $0A
   
 test_start  EQU     $00003000   ; defined starting address
-test_end    EQU     $00003009   ; defined ending address
+test_end    EQU     $00003100   ; defined ending address
      
 zero        EQU     $00         ; defined hex value 0
 one         EQU     $01         ; defined hex value 1 
@@ -29,7 +29,7 @@ fifteen     EQU     $0F         ; defined hex value 15
 s1B         EQU     %0000       ; byte size 1 
 s1W         EQU     %0001       ; word size 1
 s1L         EQU     %0010       ; long size 1
-
+            
 s2W         EQU     %0000       ; word size 2
 s2L         EQU     %0001       ; long size 2
 
@@ -44,14 +44,7 @@ addMatchPi  EQU     %0011       ; Address Mode with PostIncrement
 addMatchPd  EQU     %0100       ; Address Mode with PreDecrement
 addMatchDi  EQU     %0111       ; Address Mode for Word, Long, or Immediate 
 
-reg0        EQU     %0000       ; register 0
-reg1        EQU     %0001       ; register 1
-reg2        EQU     %0010       ; register 2
-reg3        EQU     %0011       ; register 3
-reg4        EQU     %0100       ; register 4
-reg5        EQU     %0101       ; register 5
-reg6        EQU     %0110       ; register 6
-reg7        EQU     %0111       ; register 7
+            
 
 mask0       EQU     %00000000
 mask1       EQU     %00000001
@@ -864,10 +857,10 @@ opNEG
             CMP         #zero,D2
             BEQ         opNEGB
             CMP         #one,D2
-            BEQ         opNEGL
-            CMP         #two,D2
             BEQ         opNEGW
-            BRA         INVALID
+            CMP         #two,D2
+            BEQ         opNEGL
+            BRA         invalid
 opNEGB
 
             LEA         dispByte, A1        ; we know that the opcode will be NEG, so load A1 to print message
@@ -1121,13 +1114,15 @@ opLEA
             
             CLR         D3
             MOVE.B      D4,D3
-            MOVE.B      #2,D2
+            MOVE.B      #one,D2
             
             JSR         printEA             ; Prints out source address
             
             LEA         newline, A1         ; Prints new line
             MOVE.B      #14, D0             ; command for trap call to display message
-            TRAP        #15                 ; trap call            
+            TRAP        #15                 ; trap call
+
+            BRA         loop            
             
             
            
@@ -1469,8 +1464,6 @@ DataReg7
             TRAP        #15                 ; trap call        
             BRA         printMem            
 printMem                                    ; Made this function in order to reuse if DR is 1
-            CMP         #one,D6
-            BEQ         endMOVE1
             BRA         printMemNow
 printMemNow               
             LEA         slash, A1           ; Display slash
@@ -1695,8 +1688,6 @@ AddrReg7
 
 
 endMOVE
-            CMP         #one,D6
-            BEQ         printRegMem
             MOVEM.L  (SP)+, D0-D7/A1-A6
             RTS
 endMove1                                    ; Used if MOVEM has DR is 1
@@ -1709,6 +1700,7 @@ endMove1                                    ; Used if MOVEM has DR is 1
 *
 ***********************************************************************************************************
 printEA 	MOVEM.L  D0-D7/A1-A6, -(SP)
+
 
         	CMP.B       #zero, D2
 	        BEQ         pDataReg
@@ -2284,6 +2276,9 @@ dispD4      DC.B    'D4', 0
 dispD5      DC.B    'D5', 0
 dispD6      DC.B    'D6', 0
 dispD7      DC.B    'D7', 0  
+
+
+inv      DC.B    'Invalid', 0  
            END    START                ; last line of source
            
            
