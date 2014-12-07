@@ -655,7 +655,6 @@ opMOVEL
             AND         #seven,D3
             
             CLR         D1                  ; Clear D1
-            MOVE.L      (A0)+, D1           ; Read in next word to find the immediate data
             
             JSR         printEA
             
@@ -705,7 +704,6 @@ opMOVEAL
             AND         #seven,D3
             
             CLR         D1                  ; Clear D1
-            MOVE.W      (A0)+, D1           ; Read in next word to find the immediate data
             
             
             JSR         printEA
@@ -772,7 +770,6 @@ opMOVEW
             AND         #seven,D3
             
             CLR         D1                  ; Clear D1
-            MOVE.W      (A0)+, D1           ; Read in next word to find the immediate data
             
             JSR         printEA
             
@@ -820,7 +817,6 @@ opMOVEAW
             AND         #seven,D3
             
             CLR         D1                  ; Clear D1
-            MOVE.W      (A0)+, D1           ; Read in next word to find the immediate data
             
             
             JSR         printEA
@@ -2283,6 +2279,7 @@ inv      DC.B    'Invalid', 0
            
            
            
+
 
 
 
