@@ -332,7 +332,7 @@ opORL		LEA			dispLong,A1
 			
 			BRA			LOOP			; trap call
 			
-			BRA			LOOP
+			BRA			LOOP			; DOUBLE CHECK THIS AGAIN AFTER MORE TESTING ALEX
 			
 ***********************************************************************************************************
 *
@@ -1519,29 +1519,127 @@ opBLT   LEA         BLTmatch, A1        ; we know that the opcode will be BLT, s
 *
 ***********************************************************************************************************
 
-opSUB   LEA         SUBmatch, A1        ; we know that the opcode will be SUB, so load A1 to print message
-        MOVE.B      #14, D0             ; command for trap call to display message
-        TRAP        #15                 ; trap call
+opSUB   	LEA         SUBmatch, A1        ; we know that the opcode will be SUB, so load A1 to print message
+			MOVE.B      #14, D0             ; command for trap call to display message
+			TRAP        #15                 ; trap call
 		
+			CLR			D2
+			; These are for EA to Dn direction
+			CMP.B		#zero,D2
+			BEQ			opSUBB				; Byte in opmode
+			CMP.B		#one,D2
+			BEQ			opSUBW				; Word in opmode
+			CMP.B		#two,D2
+			BEQ			opSUBL				; Long in opmode
+			
+			; These are for Dn to EA direction
+			CMP.B		#four,D2
+			BEQ			opSUBB				; Byte in opmode
+			CMP.B		#five,D2
+			BEQ			opSUBW				; Word in opmode
+			CMP.B		#six,D2
+			BEQ			opSUBL				; Long in opmode
+			
+opSUBB		LEA			dispByte,A1
+			MOVE.B		#14,D0
+			TRAP		#15
+			
+			LEA         space, A1           ; Display space
+			MOVE.B      #14, D0             ; command for trap call to display message
+			TRAP        #15                 ; trap call
+			
+
+			MOVE.B		D1,D2
+			ASR			#3,D2
+			AND			#$07,D2
+			MOVE.B		D1,D3
+			AND			#$07,D3
+			JSR			printEA			; Determines the "left" operand register
+			
+			LEA         comma, A1           ; Display space
+			MOVE.B      #14, D0             ; command for trap call to display message
+			TRAP        #15                 ; trap call
+			
+			CLR			D2
+			MOVE.W		D1,D3
+			ASR			#eight,D3
+			ASR			#one,D3
+			AND			#$07,D3
+			JSR			printEA
+			
+			LEA			newLine,A1
+			MOVE.B		#14,D0
+			TRAP		#15
+			
+			BRA			LOOP
+			
+			
+opSUBW		LEA			dispWord,A1
+			MOVE.B		#14,D0
+			TRAP		#15
+			
+			LEA         space, A1           ; Display space
+			MOVE.B      #14, D0             ; command for trap call to display message
+			TRAP        #15                 ; trap call
+			
+			CLR			D2
+			MOVE.B		D1,D2
+			ASR			#3,D2
+			AND			#$07,D2
+			MOVE.B		D1,D3
+			AND			#$07,D3
+			JSR			printEA			; Determines the "left" operand register
+			
+			LEA         comma, A1           ; Display space
+			MOVE.B      #14, D0             ; command for trap call to display message
+			TRAP        #15                 ; trap call
+			
+			CLR			D2
+			MOVE.W		D1,D3
+			ASR			#eight,D3
+			ASR			#one,D3
+			AND			#$07,D3
+			JSR			printEA
+			
+			LEA			newLine,A1
+			MOVE.B		#14,D0
+			TRAP		#15
+			
+			BRA			LOOP
+			
+opSUBL		LEA			dispLong,A1
+			MOVE.B		#14,D0
+			TRAP		#15
+			
+			LEA         space, A1           ; Display space
+			MOVE.B      #14, D0             ; command for trap call to display message
+			TRAP        #15                 ; trap call
+			
+			MOVE.B		D1,D2
+			ASR			#3,D2
+			AND			#$07,D2
+			MOVE.B		D1,D3
+			AND			#$07,D3
+			JSR			printEA			; Determines the "left" operand register
+			
+			LEA         comma, A1           ; Display space
+			MOVE.B      #14, D0             ; command for trap call to display message
+			TRAP        #15                 ; trap call
+			
+			CLR			D2
+			MOVE.W		D1,D3
+			ASR			#eight,D3
+			ASR			#one,D3
+			AND			#$07,D3
+			JSR			printEA
+			
+			LEA			newLine,A1
+			MOVE.B		#14,D0
+			TRAP		#15
+			
+			BRA			LOOP			; trap call
 		
-		
-		LEA			space,A1
-		MOVE.B		#14,D0
-		TRAP		#15
-		
-		MOVE.B		(A0)+,D1
-		MOVE.B		D1,D2
-		ASR			#4,D2
-		
-		JSR			printEA
-		
-		LEA			newLine,A1
-		MOVE.B		#14,D0
-		TRAP		#15
-		
-		BRA			LOOP
-		
-		
+			BRA			LOOP
 		
 opMULS  LEA         MULSmatch, A1       ; we know that the opcode will be MULS, so load A1 to print message
         MOVE.B      #14, D0             ; command for trap call to display message
@@ -2154,6 +2252,7 @@ dispD7      DC.B    'D7', 0
            
            
            
+
 
 
 
