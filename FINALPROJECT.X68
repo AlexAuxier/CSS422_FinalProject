@@ -343,6 +343,34 @@ opORL		LEA			dispLong,A1
 opDIVS		LEA		DIVSmatch,A1
 			MOVE.B	#14,D0
 			TRAP	#15
+			
+			LEA         space, A1           ; Display space
+			MOVE.B      #14, D0             ; command for trap call to display message
+			TRAP        #15                 ; trap call
+			
+			MOVE.B		D1,D2
+			ASR			#3,D2
+			AND			#$07,D2
+			MOVE.B		D1,D3
+			AND			#$07,D3
+			JSR			printEA
+			
+			LEA         comma, A1           ; Display space
+			MOVE.B      #14, D0             ; command for trap call to display message
+			TRAP        #15                 ; trap call
+			
+			CLR			D2
+			MOVE.W		D1,D3
+			ASR			#eight,D3
+			ASR			#one,D3
+			AND			#$07,D3
+			JSR			printEA
+			
+			LEA			newLine,A1
+			MOVE.B		#14,D0
+			TRAP		#15
+			
+			BRA			LOOP
 	
 			BRA		LOOP
 			
