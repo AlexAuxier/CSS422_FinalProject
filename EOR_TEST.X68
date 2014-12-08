@@ -9,8 +9,8 @@ START:                  ; first instruction of program
 
 * Put program code here
 
-	MOVE.B	#3,D1
-	MOVE.B	#3,D2
+*	MOVE.B	#3,D1
+*	MOVE.B	#3,D2
 	
 	EOR.B	D1,D2
 
@@ -19,6 +19,7 @@ START:                  ; first instruction of program
 * Put variables and constants here
 
     END    START        ; last line of source
+
 
 
 *~Font name~Courier New~

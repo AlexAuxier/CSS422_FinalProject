@@ -217,11 +217,6 @@ opOR		LEA			ORmatch,A1
 			TRAP		#15
 			
 			CLR			D2
-			
-			MOVE.B		(A0)+,D1
-			MOVE.B		D1,D2
-			ASR			#seven,D2			; Move bits 7 places over to find opmode
-			
 			; These are for EA to Dn direction
 			CMP.B		#zero,D2
 			BEQ			opORB				; Byte in opmode
@@ -246,6 +241,7 @@ opORB		LEA			dispByte,A1
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 			
+
 			MOVE.B		D1,D2
 			ASR			#3,D2
 			AND			#$07,D2
@@ -279,12 +275,13 @@ opORW		LEA			dispWord,A1
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 			
+			CLR			D2
 			MOVE.B		D1,D2
 			ASR			#3,D2
 			AND			#$07,D2
 			MOVE.B		D1,D3
 			AND			#$07,D3
-			JSR			printEA			; Determines the "right" operand register
+			JSR			printEA			; Determines the "left" operand register
 			
 			LEA         comma, A1           ; Display space
 			MOVE.B      #14, D0             ; command for trap call to display message
@@ -333,6 +330,8 @@ opORL		LEA			dispLong,A1
 			MOVE.B		#14,D0
 			TRAP		#15
 			
+			BRA			LOOP			; trap call
+			
 			BRA			LOOP
 			
 ***********************************************************************************************************
@@ -360,16 +359,14 @@ opEOR		LEA 		EORmatch,A1
 			CLR			D2
 			
 			MOVE.B		D1,D2
-			ASR			#six,D2			; Move bits 7 places over to find opmode
+			ASR			#seven,D2			; Move bits 7 places over to find opmode
 			AND			#$07,D2
-			CMP.B		#four,D2
-			BEQ			opEORB				; Byte in opmode
+			CMP.B		#five,D2
+			BLT			opEORB				; Byte in opmode
 			CMP.B		#five,D2
 			BEQ			opEORW				; Word in opmode
-			CMP.B		#six,D2
-			BEQ			opEORL				; Long in opmode
-			
-			BRA			printInvalid
+			CMP.B		#five,D2
+			BGT			opEORL				; Long in opmode
 			
 opEORB		LEA			dispByte,A1
 			MOVE.B		#14,D0

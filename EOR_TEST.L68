@@ -1,6 +1,6 @@
 00003000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 2014-12-07 15:49:48
+Created On: 2014-12-07 16:05:21
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      : EOR TEST
@@ -13,16 +13,16 @@ Created On: 2014-12-07 15:49:48
 00003000                             9  
 00003000                            10  * Put program code here
 00003000                            11  
-00003000  123C 0003                 12      MOVE.B  #3,D1
-00003004  143C 0003                 13      MOVE.B  #3,D2
-00003008                            14      
-00003008  B302                      15      EOR.B   D1,D2
-0000300A                            16  
-0000300A  FFFF FFFF                 17      SIMHALT             ; halt simulator
-0000300E                            18  
-0000300E                            19  * Put variables and constants here
-0000300E                            20  
-0000300E                            21      END    START        ; last line of source
+00003000                            12  *   MOVE.B  #3,D1
+00003000                            13  *   MOVE.B  #3,D2
+00003000                            14      
+00003000  B302                      15      EOR.B   D1,D2
+00003002                            16  
+00003002  FFFF FFFF                 17      SIMHALT             ; halt simulator
+00003006                            18  
+00003006                            19  * Put variables and constants here
+00003006                            20  
+00003006                            21      END    START        ; last line of source
 
 No errors detected
 No warnings generated
