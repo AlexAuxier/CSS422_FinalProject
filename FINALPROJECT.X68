@@ -654,9 +654,10 @@ opMOVEL
             MOVE.B      D1,D3
             AND         #seven,D3
             
-            CLR         D1                  ; Clear D1
-            
+            CLR         D6
+            MOVE.B      #1,D6
             JSR         printEA
+            CLR         D6
             
             LEA         comma, A1           ; Display comma
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -2285,6 +2286,7 @@ inv      DC.B    'Invalid', 0
            
            
            
+
 
 
 

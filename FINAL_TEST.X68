@@ -8,13 +8,7 @@
 START:                  ; first instruction of program
 
 * Put program code here
-    MOVE.W  D2,A2
-    MOVE.L #5555,(A3)
-    MOVE.L (A3),(A4)
-    MOVE.B  #4,D3    
-    NEG.B D1
-    NEG.L D3
-    NEG.W (A4)
+
     LEA  meh,A1   
     MOVEM.L (SP)+,D0-D7/A0-A6
     MOVEM.L D0-D7/A0-A7,-(SP)
@@ -46,6 +40,7 @@ meh
 * Put variables and constants here
 
     END    START        ; last line of source
+
 
 
 

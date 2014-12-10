@@ -1,0 +1,46 @@
+00003000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.15.02
+Created On: 12/9/2014 7:16:09 PM
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      :
+00000000                             3  * Written by :
+00000000                             4  * Date       :
+00000000                             5  * Description:
+00000000                             6  *-----------------------------------------------------------
+00003000                             7      ORG    $3000
+00003000                             8  START:                  ; first instruction of program
+00003000                             9  S9
+00003000                            10  * Put program code here
+00003000  3478 0352                 11      MOVEA.W  $352,A2
+00003004  3478 0352                 12      MOVEA  $352,A2
+00003008  2679 00064435             13      MOVEA.L $64435,A3
+0000300E  324A                      14      MOVEA.W  A2,A1
+00003010  324A                      15      MOVEA  A2,A1
+00003012  324A                      16      MOVEA  A2,A1
+00003014  3A51                      17      MOVEA  (A1),A5
+00003016                            18      
+00003016  244B                      19      MOVEA.L  A3,A2
+00003018  163C 0004                 20      MOVE.B  #4,D3
+0000301C  3442                      21      MOVE.W  D2,A2
+0000301E  347C 0600                 22      MOVE.W  #1536,A2
+00003022  4CDF 0E3C                 23      MOVEM.L (SP)+,D2-D5/A1-A3
+00003026  48E7 0420                 24      MOVEM.L D5/A2,-(SP)
+0000302A  48B8 FFFF 5435            25      MOVEM.W D0-D7/A0-A7,$5435
+00003030  48E2 FFFF                 26      MOVEM.L D0-D7/A0-A7,-(A2)
+00003034                            27      
+00003034  FFFF FFFF                 28      SIMHALT             ; halt simulator 
+00003038                            29  
+00003038                            30  * Put variables and constants here
+00003038                            31  
+00003038                            32      END    START        ; last line of source
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+S9                  3000
+START               3000
