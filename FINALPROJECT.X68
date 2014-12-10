@@ -1477,11 +1477,10 @@ opSUBQ
             TRAP        #15                 ; trap call
 			
 			MOVE.B		D1,D2
-			ASR			#seven,D2			; Move bits 7 places over to find opmode
+			ASR			#seven,D2			; Move bits 7 places over to find size
 			AND			#$07,D2
 			
-			CLR			D2
-			; These are for EA to Dn direction
+			; Find size bits
 			CMP.B		#zero,D2
 			BEQ			opSUBQB				; Byte in size
 			CMP.B		#one,D2
@@ -1492,64 +1491,18 @@ opSUBQ
 			
 opSUBQB		LEA			dispByte,A1
 			MOVE.B		#14,D0
-			TRAP		#15
+			TRAP		#15	
 			
-			LEA         space, A1           ; Display space
-			MOVE.B      #14, D0             ; command for trap call to display message
-			TRAP        #15                 ; trap call			
-			
-			MOVE.B		D1,D2
-			ASR			#3,D2
-			AND			#$07,D2
-			MOVE.W		D1,D3
-			AND			#$07,D3
-			JSR			printEA			; Determines the "left" operand register
-			
-			LEA         comma, A1           ; Display space
-			MOVE.B      #14, D0             ; command for trap call to display message
-			TRAP        #15                 ; trap call
-			
+			; Find Immediate Data
 			CLR			D2
-			MOVE.W		D1,D3
-			ASR			#eight,D3
-			ASR			#one,D3
-			AND			#$07,D3
-			JSR			printEA
-			
-			LEA			newLine,A1
-			MOVE.B		#14,D0
-			TRAP		#15
+			MOVE.B		D1,D2
+			ASR			#eight,D2
+			ASR			#one,D2
+			JSR			PrntImm
 			
 			BRA			LOOP
 			
-			
 opSUBQW		LEA			dispWord,A1
-			MOVE.B		#14,D0
-			TRAP		#15
-			
-			LEA         space, A1           ; Display space
-			MOVE.B      #14, D0             ; command for trap call to display message
-			TRAP        #15                 ; trap call			
-			
-			MOVE.B		D1,D2
-			ASR			#3,D2
-			AND			#$07,D2
-			MOVE.W		D1,D3
-			AND			#$07,D3
-			JSR			printEA			; Determines the "left" operand register
-			
-			LEA         comma, A1           ; Display space
-			MOVE.B      #14, D0             ; command for trap call to display message
-			TRAP        #15                 ; trap call
-			
-			CLR			D2
-			MOVE.W		D1,D3
-			ASR			#eight,D3
-			ASR			#one,D3
-			AND			#$07,D3
-			JSR			printEA
-			
-			LEA			newLine,A1
 			MOVE.B		#14,D0
 			TRAP		#15
 			
@@ -1559,34 +1512,10 @@ opSUBQL		LEA			dispLong,A1
 			MOVE.B		#14,D0
 			TRAP		#15
 			
-			LEA         space, A1           ; Display space
-			MOVE.B      #14, D0             ; command for trap call to display message
-			TRAP        #15                 ; trap call			
+			CLR			D6
+			MOVE.B		#1,D6
 			
-			MOVE.B		D1,D2
-			ASR			#3,D2
-			AND			#$07,D2
-			MOVE.W		D1,D3
-			AND			#$07,D3
-			JSR			printEA			; Determines the "left" operand register
-			
-			LEA         comma, A1           ; Display space
-			MOVE.B      #14, D0             ; command for trap call to display message
-			TRAP        #15                 ; trap call
-			
-			CLR			D2
-			MOVE.W		D1,D3
-			ASR			#eight,D3
-			ASR			#one,D3
-			AND			#$07,D3
-			JSR			printEA
-			
-			LEA			newLine,A1
-			MOVE.B		#14,D0
-			TRAP		#15
-			
-			BRA			LOOP
-			
+			JSR			PrntImm			
 			
 			BRA			LOOP			; trap call
 
@@ -2360,6 +2289,8 @@ endSUB
         MOVEM.L  (SP)+, D0-D7/A1-A6
         RTS
 		
+
+
 		
 PrntImm MOVEM.L D0-D7/A1-A6, -(SP)
         
