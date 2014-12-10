@@ -1,0 +1,46 @@
+00004000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.15.02
+Created On: 12/9/2014 9:38:31 PM
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      :
+00000000                             3  * Written by :
+00000000                             4  * Date       :
+00000000                             5  * Description:
+00000000                             6  *-----------------------------------------------------------
+00004000                             7      ORG    $4000
+00004000                             8  START:                  ; first instruction of program
+00004000                             9  
+00004000  3078 5550                 10      MOVEA       $5550,A0
+00004004  203C 12345678             11      MOVE.L      #$12345678, D0
+0000400A  D0FC 4AAA                 12      ADDA        #$4AAA, A0
+0000400E  D7D9                      13      ADDA.L      (A1)+, A3
+00004010  C1FC 0037                 14      MULS        #55, D0
+00004014  C1F8 0100                 15      MULS.W      $100, D0  
+00004018  4401                      16      NEG.B       D1
+0000401A  4483                      17      NEG.L       D3
+0000401C  CBC2                      18      MULS        D2, D5
+0000401E  D038 0044                 19      ADD.B       $44, D0
+00004022  E1D0                      20      ASL         (A0)
+00004024  E3F9 0000AAAA             21      LSL         ($AAAA).L
+0000402A  E6DA                      22      ROR         (A2)+
+0000402C  EE03                      23      ASR.B       #7,D3
+0000402E  EDAC                      24      LSL.L       D6,D4
+00004030  EF58                      25      ROL.W       #$7,D0
+00004032  D2B9 0400A314             26      ADD.L       $0400A314,D1
+00004038                            27       
+00004038                            28  
+00004038  FFFF FFFF                 29      SIMHALT             ; halt simulator
+0000403C                            30  
+0000403C                            31  * Put variables and constants here
+0000403C                            32  
+0000403C                            33      END    START        ; last line of source
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+START               4000
