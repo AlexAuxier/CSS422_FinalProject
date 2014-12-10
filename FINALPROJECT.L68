@@ -1,6 +1,6 @@
 00001000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 12/9/2014 7:15:38 PM
+Created On: 12/9/2014 8:40:56 PM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -215,27 +215,27 @@ Created On: 12/9/2014 7:15:38 PM
 00001194  103C 000E                211          MOVE.B      #14, D0             ; command for trap call to display message
 00001198  4E4F                     212          TRAP        #15                 ; trap call
 0000119A                           213          
-0000119A  4242                     214          CLR         D2
-0000119C  1401                     215          MOVE.B      D1,D2
-0000119E  E642                     216          ASR         #three,D2
-000011A0  C47C 0007                217          AND         #seven,D2
-000011A4  4243                     218          CLR         D3        
-000011A6  1601                     219          MOVE.B      D1,D3
-000011A8  C67C 0007                220          AND         #seven,D3
+0000119A  4244                     214          CLR         D4
+0000119C  1801                     215          MOVE.B      D1,D4
+0000119E  E644                     216          ASR         #three,D4
+000011A0  C87C 0007                217          AND         #seven,D4
+000011A4  4245                     218          CLR         D5        
+000011A6  1A01                     219          MOVE.B      D1,D5
+000011A8  CA7C 0007                220          AND         #seven,D5
 000011AC                           221          
-000011AC  4241                     222          CLR         D1
-000011AE  3218                     223          MOVE.W      (A0)+, D1
-000011B0                           224          
-000011B0  43F9 00002643            225          LEA         hashTag, A1           ; Display space
-000011B6  103C 000E                226          MOVE.B      #14, D0             ; command for trap call to display message
-000011BA  4E4F                     227          TRAP        #15                 ; trap call
-000011BC                           228          
-000011BC  103C 0003                229          MOVE.B      #3, D0
-000011C0  4E4F                     230          TRAP        #15
-000011C2                           231          
-000011C2  43F9 00002647            232          LEA         comma, A1           ; Display space
-000011C8  103C 000E                233          MOVE.B      #14, D0             ; command for trap call to display message
-000011CC  4E4F                     234          TRAP        #15                 ; trap call
+000011AC  163C 0004                222          MOVE.B      #four,D3
+000011B0  143C 0007                223          MOVE.B      #seven,D2
+000011B4                           224  
+000011B4  4EB9 00001FD8            225          JSR         printEA
+000011BA                           226          
+000011BA  43F9 00002647            227          LEA         comma, A1           ; Display space
+000011C0  103C 000E                228          MOVE.B      #14, D0             ; command for trap call to display message
+000011C4  4E4F                     229          TRAP        #15                 ; trap call
+000011C6                           230          
+000011C6  4242                     231          CLR         D2
+000011C8  4243                     232          CLR         D3
+000011CA  1404                     233          MOVE.B      D4,D2
+000011CC  1605                     234          MOVE.B      D5,D3
 000011CE                           235          
 000011CE  4EB9 00001FD8            236          JSR         printEA
 000011D4                           237          

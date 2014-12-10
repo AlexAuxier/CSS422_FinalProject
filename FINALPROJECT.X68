@@ -211,27 +211,27 @@ opORIB  LEA         dispByte, A1        ; Display byte
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
         
-        CLR         D2
-        MOVE.B      D1,D2
-        ASR         #three,D2
-        AND         #seven,D2
-        CLR         D3        
-        MOVE.B      D1,D3
-        AND         #seven,D3
+        CLR         D4
+        MOVE.B      D1,D4
+        ASR         #three,D4
+        AND         #seven,D4
+        CLR         D5        
+        MOVE.B      D1,D5
+        AND         #seven,D5
         
-        CLR         D1
-        MOVE.W      (A0)+, D1
-        
-        LEA         hashTag, A1           ; Display space
-        MOVE.B      #14, D0             ; command for trap call to display message
-        TRAP        #15                 ; trap call
-        
-        MOVE.B      #3, D0
-        TRAP        #15
+        MOVE.B      #four,D3
+        MOVE.B      #seven,D2
+
+        JSR         printEA
         
         LEA         comma, A1           ; Display space
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
+        
+        CLR         D2
+        CLR         D3
+        MOVE.B      D4,D2
+        MOVE.B      D5,D3
         
         JSR         printEA
         
@@ -2286,6 +2286,7 @@ inv      DC.B    'Invalid', 0
            
            
            
+
 
 
 

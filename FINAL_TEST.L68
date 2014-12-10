@@ -1,6 +1,6 @@
 00003000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 12/9/2014 7:21:22 PM
+Created On: 12/9/2014 7:23:40 PM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -25,7 +25,7 @@ Created On: 12/9/2014 7:21:22 PM
 00003022  0882 0004                 21      BCLR    #4,D2
 00003026  B07C 0003                 22      CMP     #3,D0
 0000302A                            23      
-0000302A                            24      *Move Test Instructions
+0000302A                            24      *Move Test Instructions9
 0000302A  1401                      25      MOVE.B  D1,D2
 0000302C  364A                      26      MOVEA   A2,A3
 0000302E  7805                      27      MOVEQ   #5,D4

@@ -8,42 +8,21 @@
 START:                  ; first instruction of program
 
 * Put program code here
+                ORI.B   #43,D2
+                ORI.B   #52,D2
+                ORI.B   #15,D2                
+                ORI     #2,(A2)
+                ORI.L   #99999996,(A2)
 
-    LEA  meh,A1   
-    MOVEM.L (SP)+,D0-D7/A0-A6
-    MOVEM.L D0-D7/A0-A7,-(SP)
-    MOVEM.L D0-D7/A0-A7,$5435
-    MOVEM.W D0-D7/A0-A7,$5435
-    MOVEM.L D0-D7/A0-A7,-(A2)
-
-    *First Nibble == 0000
-    ORI     #2,D1
-    BCLR    #4,D2
-    CMP     #3,D0
-    
-    *Move Test Instructions9
-    MOVE.B  D1,D2
-    MOVEA   A2,A3
-    MOVEQ   #5,D4
-  
-    *Add Test Instructions
-    ADD.L   D4,D0
-    ADDA    A0,A1
-    ADD.B   D0,D4 
-    JSR break   
-break
-    RTS
-meh   
+                ORI.W   #2638,D5
+                ORI.L   #64 ,D1
     
     SIMHALT             ; halt simulator
 
 * Put variables and constants here
-
+                
     END    START        ; last line of source
-
-
-
-
+                
 *~Font name~Courier New~
 *~Font size~10~
 *~Tab type~1~
