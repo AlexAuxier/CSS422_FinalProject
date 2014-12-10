@@ -1,6 +1,6 @@
 00003000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 12/9/2014 8:40:29 PM
+Created On: 12/9/2014 9:13:21 PM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -12,20 +12,26 @@ Created On: 12/9/2014 8:40:29 PM
 00003000                             8  START:                  ; first instruction of program
 00003000                             9  
 00003000                            10  * Put program code here
-00003000  0002 002B                 11                  ORI.B   #43,D2
-00003004  0002 0034                 12                  ORI.B   #52,D2
-00003008  0002 000F                 13                  ORI.B   #15,D2                
-0000300C  0052 0002                 14                  ORI     #2,(A2)
-00003010  0092 05F5E0FC             15                  ORI.L   #99999996,(A2)
-00003016                            16  
-00003016  0045 0A4E                 17                  ORI.W   #2638,D5
-0000301A  0081 00000040             18                  ORI.L   #64 ,D1
-00003020                            19      
-00003020  FFFF FFFF                 20      SIMHALT             ; halt simulator
-00003024                            21  
-00003024                            22  * Put variables and constants here
-00003024                            23                  
-00003024                            24      END    START        ; last line of source
+00003000  0C03 0005                 11      CMPI.B #5,D3
+00003004  0C43 0DC5                 12      CMPI.W #3525,D3
+00003008  0C83 0000FAF5             13      CMPI.L #64245,D3
+0000300E  0C83 00000037             14      CMPI.L #55,D3    
+00003014                            15                  ;ORI.L   #99999996,(A2)
+00003014  0045 0A4E                 16                  ORI.W   #2638,D5
+00003018  0081 00000040             17                  ORI.L   #64 ,D1
+0000301E                            18      
+0000301E  0002 002B                 19                  ORI.B   #43,D2
+00003022  0002 0034                 20                  ORI.B   #52,D2
+00003026  0002 000F                 21                  ORI.B   #15,D2                
+0000302A  0052 0002                 22                  ORI     #2,(A2)
+0000302E                            23                  ;ORI.L   #99999996,(A2)
+0000302E                            24  
+0000302E                            25  
+0000302E  FFFF FFFF                 26      SIMHALT             ; halt simulator
+00003032                            27  
+00003032                            28  * Put variables and constants here
+00003032                            29                  
+00003032                            30      END    START        ; last line of source
 
 No errors detected
 No warnings generated
