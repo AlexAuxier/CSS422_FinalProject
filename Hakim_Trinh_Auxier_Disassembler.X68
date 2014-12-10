@@ -1213,7 +1213,11 @@ opADDL  LEA         ADDmatch, A1       ; we know that the opcode will be MULS, s
         MOVE.B      D1, D3
         AND         #seven, D3
         
+        CLR         D6
+        MOVE.B      #1, D6
+        
         JSR         printEA
+        CLR         D6
         
         LEA         comma, A1           ; create comma
         MOVE.B      #14, D0             ; command for trap call to display message
@@ -2772,13 +2776,23 @@ DispImm     LEA         hashTag, A1         ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
+            CMP.B       #1,D6
+            BEQ         ImmLong
+            
             CLR         D1
             MOVE.W      (A0)+, D1
             CLR         D0
             MOVE.B      #4, D0
-            
             JSR         outHex
+            BRA         LongSkip
+            
+ImmLong     CLR         D1
+            MOVE.L      (A0)+, D1
+            CLR         D0
+            MOVE.B      #8, D0
+            JSR         outHex             
 
+LongSkip
             BRA         endSub
 invalid
 
@@ -3017,6 +3031,7 @@ dispD6      DC.B    'D6', 0
 dispD7      DC.B    'D7', 0 
  
            END    START                ; last line of source
+
 
 
 
