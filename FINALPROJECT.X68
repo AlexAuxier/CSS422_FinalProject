@@ -1496,13 +1496,12 @@ opSUBQB		LEA			dispByte,A1
 			
 			LEA         space, A1           ; Display space
 			MOVE.B      #14, D0             ; command for trap call to display message
-			TRAP        #15                 ; trap call
+			TRAP        #15                 ; trap call			
 			
-
 			MOVE.B		D1,D2
 			ASR			#3,D2
 			AND			#$07,D2
-			MOVE.B		D1,D3
+			MOVE.W		D1,D3
 			AND			#$07,D3
 			JSR			printEA			; Determines the "left" operand register
 			
@@ -1528,13 +1527,65 @@ opSUBQW		LEA			dispWord,A1
 			MOVE.B		#14,D0
 			TRAP		#15
 			
+			LEA         space, A1           ; Display space
+			MOVE.B      #14, D0             ; command for trap call to display message
+			TRAP        #15                 ; trap call			
 			
+			MOVE.B		D1,D2
+			ASR			#3,D2
+			AND			#$07,D2
+			MOVE.W		D1,D3
+			AND			#$07,D3
+			JSR			printEA			; Determines the "left" operand register
+			
+			LEA         comma, A1           ; Display space
+			MOVE.B      #14, D0             ; command for trap call to display message
+			TRAP        #15                 ; trap call
+			
+			CLR			D2
+			MOVE.W		D1,D3
+			ASR			#eight,D3
+			ASR			#one,D3
+			AND			#$07,D3
+			JSR			printEA
+			
+			LEA			newLine,A1
+			MOVE.B		#14,D0
+			TRAP		#15
 			
 			BRA			LOOP
 			
 opSUBQL		LEA			dispLong,A1
 			MOVE.B		#14,D0
 			TRAP		#15
+			
+			LEA         space, A1           ; Display space
+			MOVE.B      #14, D0             ; command for trap call to display message
+			TRAP        #15                 ; trap call			
+			
+			MOVE.B		D1,D2
+			ASR			#3,D2
+			AND			#$07,D2
+			MOVE.W		D1,D3
+			AND			#$07,D3
+			JSR			printEA			; Determines the "left" operand register
+			
+			LEA         comma, A1           ; Display space
+			MOVE.B      #14, D0             ; command for trap call to display message
+			TRAP        #15                 ; trap call
+			
+			CLR			D2
+			MOVE.W		D1,D3
+			ASR			#eight,D3
+			ASR			#one,D3
+			AND			#$07,D3
+			JSR			printEA
+			
+			LEA			newLine,A1
+			MOVE.B		#14,D0
+			TRAP		#15
+			
+			BRA			LOOP
 			
 			
 			BRA			LOOP			; trap call
@@ -1570,16 +1621,76 @@ opBRA   LEA         BRAmatch, A1        ; we know that the opcode will be BRA, s
 opBCS   LEA         BCSmatch, A1        ; we know that the opcode will be BCS, so load A1 to print message
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
+		
+		CLR			D2
+		CLR			D3		
+
+		LEA			space,A1
+		MOVE.B		#14,D0
+		TRAP		#15
+		
+		MOVE.B		#seven,D2
+		MOVE.B		(A0)+,D1
+		JSR			printEA
+		
+        LEA         newLine, A1           ; create new line
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
 
 opBVC   LEA         BVCmatch, A1        ; we know that the opcode will be BVC, so load A1 to print message
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+		
+		CLR			D2
+		CLR			D3		
+
+		LEA			space,A1
+		MOVE.B		#14,D0
+		TRAP		#15
+		
+		MOVE.B		#seven,D2
+		MOVE.B		(A0)+,D1
+		JSR			printEA
+		
+        LEA         newLine, A1           ; create new line
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
 
 opBGE   LEA         BGEmatch, A1        ; we know that the opcode will be BGE, so load A1 to print message
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
+		
+		CLR			D2
+		CLR			D3		
+
+		LEA			space,A1
+		MOVE.B		#14,D0
+		TRAP		#15
+		
+		MOVE.B		#seven,D2
+		MOVE.B		(A0)+,D1
+		JSR			printEA
+		
+        LEA         newLine, A1           ; create new line
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
 
 opBLT   LEA         BLTmatch, A1        ; we know that the opcode will be BLT, so load A1 to print message
+        MOVE.B      #14, D0             ; command for trap call to display message
+        TRAP        #15                 ; trap call
+		
+		CLR			D2
+		CLR			D3		
+
+		LEA			space,A1
+		MOVE.B		#14,D0
+		TRAP		#15
+		
+		MOVE.B		#seven,D2
+		MOVE.B		(A0)+,D1
+		JSR			printEA
+		
+        LEA         newLine, A1           ; create new line
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
 

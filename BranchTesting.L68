@@ -1,0 +1,49 @@
+00003000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.15.02
+Created On: 2014-12-09 20:40:19
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      :
+00000000                             3  * Written by :
+00000000                             4  * Date       :
+00000000                             5  * Description:
+00000000                             6  *-----------------------------------------------------------
+00003000                             7      ORG    $3000
+00003000                             8  START:                  ; first instruction of program
+00003000                             9  
+00003000                            10  * Put program code here
+00003000  103C 0000                 11              MOVE.B  #0,D0
+00003004                            12  
+00003004  6000 0002                 13              BRA         dispOne
+00003008                            14      
+00003008  123C 0004                 15  dispOne     MOVE.B      #4,D1
+0000300C  B23C 0001                 16              CMP.B       #1,D1
+00003010  6C00 0002                 17              BGE         banana
+00003014                            18              
+00003014  B23C 0005                 19  banana      CMP.B       #5,D1
+00003018  6D00 0002                 20              BLT         baconLettuceTomato
+0000301C                            21              
+0000301C                            22  baconLettuceTomato
+0000301C  6800 0002                 23              BVC         endPoint
+00003020                            24  
+00003020                            25  
+00003020                            26  endPoint
+00003020                            27  
+00003020  FFFF FFFF                 28      SIMHALT             ; halt simulator
+00003024                            29  
+00003024                            30  * Put variables and constants here
+00003024                            31  
+00003024                            32      END    START        ; last line of source
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+BACONLETTUCETOMATO  301C
+BANANA              3014
+DISPONE             3008
+ENDPOINT            3020
+START               3000
