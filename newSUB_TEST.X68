@@ -7,10 +7,7 @@
     ORG    $3000
 START:                  ; first instruction of program
 
-* Put program code here
-	MOVE.B		#1,D2
-	MOVE.B		#2,D1
-	
+* Put program code he
 	SUB.B		D1,D2
 	
     SIMHALT             ; halt simulator
@@ -18,6 +15,8 @@ START:                  ; first instruction of program
 * Put variables and constants here
 
     END    START        ; last line of source
+
+
 
 *~Font name~Courier New~
 *~Font size~10~
