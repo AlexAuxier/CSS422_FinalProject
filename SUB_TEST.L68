@@ -1,6 +1,6 @@
 00003000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 2014-12-07 18:47:54
+Created On: 2014-12-09 18:47:25
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      : SUB Test
@@ -13,7 +13,7 @@ Created On: 2014-12-07 18:47:54
 00003000                             9  
 00003000                            10  * Put program code here
 00003000                            11  
-00003000  9441                      12      SUB D1,D2
+00003000  9401                      12      SUB.B D1,D2
 00003002                            13  
 00003002  FFFF FFFF                 14      SIMHALT             ; halt simulator
 00003006                            15  

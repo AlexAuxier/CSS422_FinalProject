@@ -1,9 +1,9 @@
 00003000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 2014-12-09 18:29:24
+Created On: 2014-12-09 18:48:33
 
 00000000                             1  *-----------------------------------------------------------
-00000000                             2  * Title      : EOR TEST
+00000000                             2  * Title      :
 00000000                             3  * Written by :
 00000000                             4  * Date       :
 00000000                             5  * Description:
@@ -12,17 +12,16 @@ Created On: 2014-12-09 18:29:24
 00003000                             8  START:                  ; first instruction of program
 00003000                             9  
 00003000                            10  * Put program code here
-00003000                            11  
-00003000                            12  *   MOVE.B  #3,D1
-00003000                            13  *   MOVE.B  #5,D2
-00003000                            14      
-00003000  B302                      15      EOR.B   D1,D2
-00003002                            16  
-00003002  FFFF FFFF                 17      SIMHALT             ; halt simulator
-00003006                            18  
-00003006                            19  * Put variables and constants here
-00003006                            20  
-00003006                            21      END    START        ; last line of source
+00003000  143C 0001                 11      MOVE.B      #1,D2
+00003004  123C 0002                 12      MOVE.B      #2,D1
+00003008                            13      
+00003008  9401                      14      SUB.B       D1,D2
+0000300A                            15      
+0000300A  FFFF FFFF                 16      SIMHALT             ; halt simulator
+0000300E                            17  
+0000300E                            18  * Put variables and constants here
+0000300E                            19  
+0000300E                            20      END    START        ; last line of source
 
 No errors detected
 No warnings generated

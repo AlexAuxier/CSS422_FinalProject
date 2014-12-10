@@ -1,5 +1,5 @@
 *-----------------------------------------------------------
-* Title      : EOR TEST
+* Title      :
 * Written by :
 * Date       :
 * Description:
@@ -8,19 +8,16 @@
 START:                  ; first instruction of program
 
 * Put program code here
-
-*	MOVE.B	#3,D1
-*	MOVE.B	#5,D2
+	MOVE.B		#1,D2
+	MOVE.B		#2,D1
 	
-	EOR.B	D1,D2
-
+	SUB.B		D1,D2
+	
     SIMHALT             ; halt simulator
 
 * Put variables and constants here
 
     END    START        ; last line of source
-
-
 
 *~Font name~Courier New~
 *~Font size~10~

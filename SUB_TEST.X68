@@ -9,7 +9,7 @@ START:                  ; first instruction of program
 
 * Put program code here
 
-	SUB D1,D2
+	SUB.B D1,D2
 
     SIMHALT             ; halt simulator
 
