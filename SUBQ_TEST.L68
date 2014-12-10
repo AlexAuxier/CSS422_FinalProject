@@ -1,6 +1,6 @@
 00003000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 2014-12-09 21:13:59
+Created On: 2014-12-09 21:54:44
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      : SUBQ TEST
@@ -13,15 +13,15 @@ Created On: 2014-12-09 21:13:59
 00003000                             9  
 00003000                            10  * Put program code here
 00003000                            11  
-00003000  143C 0005                 12      MOVE.B  #5,D2
-00003004                            13      
-00003004  5702                      14      SUBQ.B  #3,D2
-00003006                            15  
-00003006  FFFF FFFF                 16      SIMHALT             ; halt simulator
-0000300A                            17  
-0000300A                            18  * Put variables and constants here
-0000300A                            19  
-0000300A                            20      END    START        ; last line of source
+00003000                            12      ;MOVE.B #5,D2
+00003000                            13      
+00003000  5302                      14      SUBQ.B  #1,D2
+00003002                            15  
+00003002  FFFF FFFF                 16      SIMHALT             ; halt simulator
+00003006                            17  
+00003006                            18  * Put variables and constants here
+00003006                            19  
+00003006                            20      END    START        ; last line of source
 
 No errors detected
 No warnings generated

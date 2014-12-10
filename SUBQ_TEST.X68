@@ -9,15 +9,16 @@ START:                  ; first instruction of program
 
 * Put program code here
 
-	MOVE.B	#5,D2
+	;MOVE.B	#5,D2
 	
-	SUBQ.B	#3,D2
+	SUBQ.B	#1,D2
 
     SIMHALT             ; halt simulator
 
 * Put variables and constants here
 
     END    START        ; last line of source
+
 
 
 

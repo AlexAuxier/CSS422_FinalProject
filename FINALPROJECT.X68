@@ -192,18 +192,6 @@ braFourteen CLR         D2                  ; first nibble is E, 5 opcodes are p
             BEQ         opROR               ; branch to ROR method
             BRA         opROL               ; otherwise, branch to ROL method
 			
-
-
-***********************************************************************************************************
-*
-*				BCC OPCODE
-*
-***********************************************************************************************************
-		
-opBCC		CLR		D2
-			; Determine Condition (4 bits)
-			; Determine Displacement AFTER condition (8 bits)
-			BRA 	LOOP
 			
 			
 ***********************************************************************************************************
@@ -1493,11 +1481,8 @@ opSUBQB		LEA			dispByte,A1
 			MOVE.B		#14,D0
 			TRAP		#15	
 			
-			; Find Immediate Data
-			CLR			D2
-			MOVE.B		D1,D2
-			ASR			#eight,D2
-			ASR			#one,D2
+			ASL			#eight,D1
+			MOVE.B		(A0)+,D1
 			JSR			PrntImm
 			
 			BRA			LOOP
@@ -1506,11 +1491,18 @@ opSUBQW		LEA			dispWord,A1
 			MOVE.B		#14,D0
 			TRAP		#15
 			
+			ASL			#eight,D1
+			MOVE.B		(A0)+,D1
+			JSR			PrntImm
+			
 			BRA			LOOP
 			
 opSUBQL		LEA			dispLong,A1
 			MOVE.B		#14,D0
 			TRAP		#15
+			
+			ASL			#eight,D1
+			MOVE.B		(A0)+,D1
 			
 			CLR			D6
 			MOVE.B		#1,D6
