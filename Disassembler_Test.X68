@@ -24,21 +24,24 @@ START:                  ; first instruction of program
     LSL.L       D6,D4
     ROL.W       #$7,D0
     ADD.L       $0400A314,D1
-	
+    
+    DIVS		D2,D1
+    SUB.L		D3,D6
+	CMP.B		#0,D1
+	OR.W		D4,D2
+	EOR			D2,D6
 	BRA			foo
 	
-foo			SUBQ.W		#1,D2
-			CMP.W		D3,D2
-			BLT			baconLT
-	
-	
-baconLT		DIVS		D2,D1
-			SUB.L		D3,D6
-			CMP.B		#0,D1
-			BGE			banana
+	SUBQ.W		#1,D2
+	CMP.W		D3,D2
+	BLT			baconLT
+	BGE			banana
 
-banana		OR.W		D4,D2
-			EOR			D2,D6
+foo	
+	
+baconLT		
+
+banana		
 	
 
     SIMHALT             ; halt simulator
@@ -46,6 +49,7 @@ banana		OR.W		D4,D2
 * Put variables and constants here
 
     END    START        ; last line of source
+
 
 
 

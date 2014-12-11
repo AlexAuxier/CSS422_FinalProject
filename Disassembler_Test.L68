@@ -1,6 +1,6 @@
 00004000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 2014-12-11 12:16:55
+Created On: 12/11/2014 1:30:17 PM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -29,27 +29,30 @@ Created On: 2014-12-11 12:16:55
 00004030  EF58                      25      ROL.W       #$7,D0
 00004032  D2B9 0400A314             26      ADD.L       $0400A314,D1
 00004038                            27      
-00004038  6000 0002                 28      BRA         foo
-0000403C                            29      
-0000403C  5342                      30  foo         SUBQ.W      #1,D2
-0000403E  B443                      31              CMP.W       D3,D2
-00004040  6D00 0002                 32              BLT         baconLT
-00004044                            33      
-00004044                            34      
-00004044  83C2                      35  baconLT     DIVS        D2,D1
-00004046  9C83                      36              SUB.L       D3,D6
-00004048  B23C 0000                 37              CMP.B       #0,D1
-0000404C  6C00 0002                 38              BGE         banana
-00004050                            39  
-00004050  8444                      40  banana      OR.W        D4,D2
-00004052  B546                      41              EOR         D2,D6
-00004054                            42      
+00004038  83C2                      28      DIVS        D2,D1
+0000403A  9C83                      29      SUB.L       D3,D6
+0000403C  B23C 0000                 30      CMP.B       #0,D1
+00004040  8444                      31      OR.W        D4,D2
+00004042  B546                      32      EOR         D2,D6
+00004044  6000 000E                 33      BRA         foo
+00004048                            34      
+00004048  5342                      35      SUBQ.W      #1,D2
+0000404A  B443                      36      CMP.W       D3,D2
+0000404C  6D00 0006                 37      BLT         baconLT
+00004050  6C00 0002                 38      BGE         banana
+00004054                            39  
+00004054                            40  foo 
+00004054                            41      
+00004054                            42  baconLT     
 00004054                            43  
-00004054  FFFF FFFF                 44      SIMHALT             ; halt simulator
-00004058                            45  
-00004058                            46  * Put variables and constants here
-00004058                            47  
-00004058                            48      END    START        ; last line of source
+00004054                            44  banana      
+00004054                            45      
+00004054                            46  
+00004054  FFFF FFFF                 47      SIMHALT             ; halt simulator
+00004058                            48  
+00004058                            49  * Put variables and constants here
+00004058                            50  
+00004058                            51      END    START        ; last line of source
 
 No errors detected
 No warnings generated
@@ -58,7 +61,7 @@ No warnings generated
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
-BACONLT             4044
-BANANA              4050
-FOO                 403C
+BACONLT             4054
+BANANA              4054
+FOO                 4054
 START               4000
