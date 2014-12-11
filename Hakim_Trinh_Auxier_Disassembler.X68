@@ -4179,11 +4179,18 @@ DLetters    ADD     #$37, D5
 endDispSub  MOVEM.L  (SP)+, D0-D7/A1-A6
             RTS
 
-*the following subroutine gets the string address from the user
-*and converts it to Hex for a starting/ending address. it is done 
-*by checking each byte at address A1, and converting it from ascii to 
-*hex number. If the user enters an invalid character string, the
-*program will have a simhalt.
+			
+***********************************************************************************
+*
+*						IO Subroutine
+*
+*
+*	the following subroutine gets the string address from the user
+*	and converts it to Hex for a starting/ending address. it is done 
+*	by checking each byte at address A1, and converting it from ascii to 
+*	hex number. If the user enters an invalid character string, the
+*	program will have a simhalt.
+*
 Address MOVEM.L D3-D7/A2-A6, -(SP)
 Retry   CLR     D2
         CLR     D3
