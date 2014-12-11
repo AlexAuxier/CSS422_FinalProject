@@ -1125,7 +1125,6 @@ opMOVEM
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-
             JSR         printEA
             
             LEA         newline, A1        ; we know that the opcode will be MOVEM, so load A1 to print message
@@ -3676,13 +3675,7 @@ CheckDR
             BRA         invalid
             
 printStack 
-            LEA         stack,A1
-            MOVE.B      #14, D0             ; command for trap call to display message
-            TRAP        #15                 ; trap call
-
-            LEA         inc,A1
-            MOVE.B      #14, D0             ; command for trap call to display message
-            TRAP        #15                 ; trap call
+            JSR         printEA
             
             LEA         comma,A1
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -4373,6 +4366,7 @@ dispD6      DC.B    'D6', 0
 dispD7      DC.B    'D7', 0 
  
            END    START                ; last line of source
+
 
 
 
