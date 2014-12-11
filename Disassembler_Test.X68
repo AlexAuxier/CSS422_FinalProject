@@ -27,7 +27,7 @@ START:                  ; first instruction of program
 	
 	BRA			foo
 	
-foo			SUBQ		D1,D2
+foo			SUBQ.W		#1,D2
 			CMP.W		D3,D2
 			BLT			baconLT
 	
@@ -46,6 +46,7 @@ banana		OR.W		D4,D2
 * Put variables and constants here
 
     END    START        ; last line of source
+
 
 
 
