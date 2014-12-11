@@ -1108,7 +1108,7 @@ opMOVEM
             AND         #one,D5             ; Isolating the one bit for size
             
             CLR         D2                  ; Storing EA mode in D2
-            MOVE.B      D1,D2
+            MOVE.B      D1,D2               
             ASR         #three,D2
             AND         #seven,D2
             
@@ -1118,8 +1118,8 @@ opMOVEM
             
             JSR         MOVEMBRA
             
-            CMP         #three,D2
-            BEQ         skipPrintEA
+            CMP         #three,D2           ; Checks if this is post increment
+            BEQ         skipPrintEA         ; If it is, skipping printing EA again, because it is printed already in JSR
             
             LEA         comma, A1           ; Display comma
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -1788,8 +1788,6 @@ opBCS   LEA         BCSmatch, A1        ; we know that the opcode will be BCS, s
         LEA         newLine, A1           ; create new line
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
-        
-        BRA         LOOP
 
 opBVC   LEA         BVCmatch, A1        ; we know that the opcode will be BVC, so load A1 to print message
         MOVE.B      #14, D0             ; command for trap call to display message
@@ -1809,8 +1807,6 @@ opBVC   LEA         BVCmatch, A1        ; we know that the opcode will be BVC, s
         LEA         newLine, A1           ; create new line
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
-        
-        BRA         LOOP
 
 opBGE   LEA         BGEmatch, A1        ; we know that the opcode will be BGE, so load A1 to print message
         MOVE.B      #14, D0             ; command for trap call to display message
@@ -1830,8 +1826,6 @@ opBGE   LEA         BGEmatch, A1        ; we know that the opcode will be BGE, s
         LEA         newLine, A1           ; create new line
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
-        
-        BRA         LOOP
 
 opBLT   LEA         BLTmatch, A1        ; we know that the opcode will be BLT, so load A1 to print message
         MOVE.B      #14, D0             ; command for trap call to display message
@@ -1852,10 +1846,8 @@ opBLT   LEA         BLTmatch, A1        ; we know that the opcode will be BLT, s
         MOVE.B      #14, D0             ; command for trap call to display message
         TRAP        #15                 ; trap call
         
-        BRA         LOOP
         
-        
-***********************************************************************************************************
+        ***********************************************************************************************************
 *
 *               SUBQ OPCODE
 *
@@ -1866,12 +1858,9 @@ opSUBQ
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            ASL         #eight,D1
-            MOVE.B      (A0)+,D1
-
             MOVE.B      D1,D2
-            ASR         #six,D2           ; Move bits 7 places over to find size
-            AND         #$03,D2
+            ASR         #seven,D2           ; Move bits 7 places over to find size
+            AND         #$07,D2
             
             ; Find size bits
             CMP.B       #zero,D2
@@ -1886,6 +1875,8 @@ opSUBQB     LEA         dispByte,A1
             MOVE.B      #14,D0
             TRAP        #15 
             
+            ASL         #eight,D1
+            MOVE.B      (A0)+,D1
             JSR         PrntImm
             
             BRA         LOOP
@@ -1894,6 +1885,8 @@ opSUBQW     LEA         dispWord,A1
             MOVE.B      #14,D0
             TRAP        #15
             
+            ASL         #eight,D1
+            MOVE.B      (A0)+,D1
             JSR         PrntImm
             
             BRA         LOOP
@@ -1901,6 +1894,9 @@ opSUBQW     LEA         dispWord,A1
 opSUBQL     LEA         dispLong,A1
             MOVE.B      #14,D0
             TRAP        #15
+            
+            ASL         #eight,D1
+            MOVE.B      (A0)+,D1
             
             CLR         D6
             MOVE.B      #1,D6
@@ -4292,6 +4288,9 @@ endLOOP MOVEM.L  (SP)+, D3-D7/A2-A6
         RTS
 
 printInvalid
+        MOVE.B  (A0)+,D1
+        BRA     LOOP
+
 endPROG    
 
     SIMHALT                             ; halt simulator
@@ -4370,7 +4369,6 @@ dispD6      DC.B    'D6', 0
 dispD7      DC.B    'D7', 0 
  
            END    START                ; last line of source
-
 
 
 
