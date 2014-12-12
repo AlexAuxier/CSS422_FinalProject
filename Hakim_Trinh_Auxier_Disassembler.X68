@@ -23,12 +23,46 @@
 			***********      *********    ****       ****
 			*********     **********      ****       ****
 		
-*-----------------------------------------------------------
-* Title      :	Motorola 68k Instruction Dissassembler (DSM)
+*----------------------------------------------------------------------
+* Title      :	Motorola 68k Instruction Disassembler (DSM)
 * Written by :  Abdul Hakim, David Trinh, Alexander Auxier
 * Date       :	2014-12-11
-* Description:	Disassemble Opcodes
-*-----------------------------------------------------------
+* Description:	The following code is for a partial M68k instruction
+*				disassembler. The opcodes that are supported are part
+*				of the base M68k processor.
+*				
+*				List of Supported Opcodes:
+*				* MOVE, MOVEA, MOVEM
+*				* ADD, ADDA
+*				* MULS, DIVS
+*				* LEA
+*				* OR, ORI, EOR
+*				* NEG
+*				* LSL, LSR
+*				* ASL, ASR
+*				* ROL, ROR
+*				* BCLR
+*				* BRA, JSR, RTS
+*				* Bcc with the following condition codes (cc)
+*					* CS, VS, GE, LT
+*
+*				Supported Effective Addressing Modes:
+*				* Data Register Direct: Dn
+*				* Address Register Direct: An
+*				* Address Register Indirect: (An)
+*				* Address Register Indirect w/ Post Increment: (A0)+
+*				* Address Register Indirect w/ Pre Decrement: -(SP)
+*				* Immediate Data: #
+*				* Absolute Long Address: (xxx).L
+*				* Absolute Word Address: (xxx).W
+*				
+*				Let it be known that our program makes assumptions in
+*				order to run. That being, our disassembler will not
+*				accept an of the unsupported opcodes/EA modes.
+*				We also assume that the user starts the disassembler
+*				at an address that is 4000 (in hex) or higher.
+*----------------------------------------------------------------------
+
 CR          EQU     $0D     
 LF          EQU     $0A
      
@@ -67,7 +101,7 @@ maskF       EQU     %10100000
 firstNib    EQU     $F0
 secNib      EQU     $0F
              
-            ORG    $1000
+            ORG    	$1000
 START: 
 ***********************************************************************************************************
 *
