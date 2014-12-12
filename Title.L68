@@ -1,6 +1,6 @@
 00001000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 12/12/2014 2:12:54 PM
+Created On: 12/12/2014 3:05:40 PM
 
 00000000                             1                                     
 00000000                             2      ****       ****  *******     ****    ***      ***
@@ -4758,7 +4758,7 @@ Created On: 12/12/2014 2:12:54 PM
 00003CA0  103C 000E               4754              MOVE.B      #14,D0
 00003CA4  4E4F                    4755              TRAP        #15
 00003CA6                          4756              
-00003CA6  4CDF 7CF8               4757              MOVEM.L     (SP)+, D3-D7/A2-A6
+00003CA6  4CDF FFFF               4757              MOVEM.L     (SP)+, D0-D7/A0-A7
 00003CAA  4E75                    4758              RTS
 00003CAC                          4759              
 00003CAC                          4760  Title       
