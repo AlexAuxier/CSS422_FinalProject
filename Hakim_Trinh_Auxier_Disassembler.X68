@@ -109,8 +109,11 @@ START:
 *
 ***********************************************************************************************************
 			; Dissassemble Start, obtain addr range
-			JSR         displayStart        ; Displays a title
-            			
+            
+            LEA     	Title, A1           ; load title message to A1
+			MOVE.B  	#14, D0             ; trap task to display message
+			TRAP    	#15                 ; trap call
+ 			
 RetrySAdd	
             LEA     	startingMessage, A1 ; load starting message to A1
 			MOVE.B  	#14, D0             ; trap task to display message
@@ -4598,50 +4601,7 @@ DLetters
 endDispSub  
 			MOVEM.L  	(SP)+, D0-D7/A1-A6	; pop registers from stack
             RTS								; return
-
-***********************************************************************************************************
-*
-*						Start Menu
-*			
-*		This section prints out in the beginning of the program.
-*
-***********************************************************************************************************
-displayStart
-			MOVEM.L 	D0-D7/A0-A7, -(SP)
 			
-            LEA         Title,A1
-            MOVE.B      #14,D0
-            TRAP        #15
-            
-            MOVEM.L  	(SP)+, D3-D7/A2-A6
-            RTS
-            
-Title    	
-            DC.B       '****       ****  *******     ****    ***      ***',CR,LF
-            DC.B       '****       **** *******    ********  ***     ***',CR,LF
-            DC.B       '*****     ***** ***       ***    *** ***    ***',CR,LF
-            DC.B       '******   ****** ***       ***    *** ***   ***',CR,LF
-            DC.B       '******* ******* ***        ********  ***  ***',CR,LF
-            DC.B       '*************** *******     ******   ********',CR,LF
-            DC.B       '****  ***  **** ********   ********  ***  ***',CR,LF
-            DC.B       '****   *   **** ***   *** ***    *** ***   ***',CR,LF 
-            DC.B       '****       **** ***   *** ***    *** ***    ***',CR,LF
-            DC.B       '****       **** ***   ***  ********  ***     ***',CR,LF
-            DC.B       '****       ****  *******     ****    ***      ***',CR,LF
-	
-            DC.B       			'    *********          ********** ****       ****',CR,LF
-            DC.B       			'    ***********      *********    ****       ****',CR,LF
-            DC.B       			'    ***    *****   *********      *****     *****',CR,LF
-            DC.B       			'    ***      **** ********        ******   ******',CR,LF
-            DC.B       			'    ***       *** ************    ******* *******',CR,LF
-            DC.B       			'    ***       *** *************** ***************',CR,LF
-            DC.B       			'    ***       ***    ************ ****  ***  ****',CR,LF
-            DC.B       			'    ***      ***         ******** ****   *   ****',CR,LF
-            DC.B       			'    ***    *****       ********   ****       ****',CR,LF
-            DC.B       			'    ***********      *********    ****       ****',CR,LF
-            DC.B   			    '    *********     **********      ****       ****',CR,LF,LF
-            DC.B        'Dissembler will only take addresses 4000 or higher',CR,LF
-            DC.B        '-----------------------------------------------------------------------------------------',CR,LF			
 ***********************************************************************************************************
 *
 *						IO Subroutine
@@ -4815,6 +4775,17 @@ endPROG
 *
 ***********************************************************************************************************
 
+Title    	
+            DC.B       			'    ***********      *********    ****       ****',CR,LF
+            DC.B       			'    ***    *****   *********      *****     *****',CR,LF
+            DC.B       			'    ***       *** ************    ******* *******',CR,LF
+            DC.B       			'    ***       *** *************** ***************',CR,LF
+            DC.B       			'    ***      ***         ******** ****   *   ****',CR,LF
+            DC.B       			'    ***    *****       ********   ****       ****',CR,LF
+            DC.B       			'    ***********      *********    ****       ****',CR,LF,LF
+            DC.B        'Dissembler will only take addresses 4000 or higher',CR,LF
+            DC.B        '-----------------------------------------------------------------------------------------',CR,LF,0
+
 startingMessage DC.B    'Enter Starting Address (in hex): ', 0
 endingMessage   DC.B    'Enter Ending Address (in hex): ', 0
 errorMessage    DC.B    'Incorrect Address, try again: ', 0
@@ -4889,6 +4860,7 @@ dispD6      	DC.B    'D6', 0
 dispD7      	DC.B    'D7', 0 
  
            END    START                ; last line of source
+
 
 
 
