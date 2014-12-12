@@ -1,6 +1,6 @@
-00002000 Starting Address
+00004000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 2014-11-26 16:49:13
+Created On: 12/12/2014 1:20:42 PM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      : ORI Test File
@@ -10,16 +10,16 @@ Created On: 2014-11-26 16:49:13
 00000000                             6  *-----------------------------------------------------------
 00000000  =0000000B                  7  testData        EQU     $B
 00000000                             8  
-00002000                             9                  ORG     $2000
-00002000                            10  START:
-00002000                            11  
-00002000  0052 0002                 12                  ORI     #2,(A2)
-00002004  0092 05F5E0FC             13                  ORI.L  #99999996,(A2)
-0000200A                            14  
-0000200A                            15  
-0000200A  FFFF FFFF                 16                  SIMHALT
-0000200E                            17  
-0000200E                            18                  END    START
+00004000                             9                  ORG     $4000
+00004000                            10  START:
+00004000                            11  
+00004000  0052 0002                 12                  ORI     #2,(A2)
+00004004  0092 05F5E0FC             13                  ORI.L  #99999996,(A2)
+0000400A                            14  
+0000400A                            15  
+0000400A  FFFF FFFF                 16                  SIMHALT
+0000400E                            17  
+0000400E                            18                  END    START
 
 No errors detected
 No warnings generated
@@ -28,5 +28,5 @@ No warnings generated
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
-START               2000
+START               4000
 TESTDATA            B

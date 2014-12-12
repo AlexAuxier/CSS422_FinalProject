@@ -6,7 +6,7 @@
 *-----------------------------------------------------------
 testData        EQU     $B
 
-                ORG     $2000
+                ORG     $4000
 START:
 
                 ORI     #2,(A2)
@@ -16,6 +16,7 @@ START:
                 SIMHALT
 
                 END    START
+
 
 
 
