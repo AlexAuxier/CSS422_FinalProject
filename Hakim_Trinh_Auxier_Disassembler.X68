@@ -2080,37 +2080,37 @@ opMULS
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			ASL         #eight, D1
-			MOVE.B      (A0)+, D1
+			ASL         #eight, D1 			; move D1 over by a byte
+			MOVE.B      (A0)+, D1 			; copy the next byte into D1
         
-			CLR         D2
-			CLR         D3
-			MOVE.B      D1, D2
-			ASR         #three, D2
-			AND         #seven, D2
-			MOVE.B      D1, D3
-			AND         #seven, D3
+			CLR         D2 					; clear D2
+			CLR         D3 					; clear D3
+			MOVE.B      D1, D2 				; copy the byte from D1 to D2
+			ASR         #three, D2 			; shift D2 by 3 bits to get source mode
+			AND         #seven, D2 			; and D2 to get only first 3 bits
+			MOVE.B      D1, D3 				; copy D1 byte to D3
+			AND         #seven, D3 			; and D3 to get first 3 bits also known as register
         
-			JSR         printEA
+			JSR         printEA 			; jump to printEA
         
 			LEA         comma, A1           ; create comma
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			CLR         D2
-			CLR         D3
-			MOVE.W      D1, D3
-			ASR         #eight, D3
-			ASR         #one, D3
-			AND         #seven, D3
+			CLR         D2 					; clear D2 since we know mode should be data register
+			CLR         D3 					; clear D3
+			MOVE.W      D1, D3 				; Move D1 word to D3
+			ASR         #eight, D3 			; shift D3 by 8 bits
+			ASR         #one, D3 			; shift D3 by 1 bit
+			AND         #seven, D3 			; and D3 to get first 3 bits which are the register
 
-			JSR         printEA
+			JSR         printEA 			; jump to printEA
         
-			LEA         newLine, A1           ; create new line
+			LEA         newLine, A1         ; create new line
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			BRA         LOOP
+			BRA         LOOP 				; branch back to LOOP
 
 ***********************************************************************************************************
 *
@@ -2119,7 +2119,7 @@ opMULS
 ***********************************************************************************************************	  
 
 opADDB  
-			LEA         ADDmatch, A1       ; we know that the opcode will be MULS, so load A1 to print message
+			LEA         ADDmatch, A1        ; we know that the opcode will be ADD, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
@@ -2130,37 +2130,37 @@ opADDB
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			CLR         D2
-			CLR         D3
-			MOVE.B      D1, D2
-			ASR         #three, D2
-			AND         #seven, D2
-			MOVE.B      D1, D3
-			AND         #seven, D3
+			CLR         D2 					; clear D2
+			CLR         D3 					; clear D3
+			MOVE.B      D1, D2 				; copy the byte from D1 to D2
+			ASR         #three, D2 			; shift D2 by 3 bits to get source mode
+			AND         #seven, D2 			; and D2 to get only first 3 bits
+			MOVE.B      D1, D3 				; copy D1 byte to D3
+			AND         #seven, D3 			; and D3 to get first 3 bits also known as register
         
-			JSR         printEA
+			JSR         printEA 			; jump to printEA
         
 			LEA         comma, A1           ; create comma
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			CLR         D2
-			CLR         D3
-			MOVE.W      D1, D3
-			ASR         #eight, D3
-			ASR         #one, D3
-			AND         #seven, D3
+			CLR         D2 					; clear D2 since we know mode should be data register
+			CLR         D3 					; clear D3
+			MOVE.W      D1, D3 				; Move D1 word to D3
+			ASR         #eight, D3 			; shift D3 by 8 bits
+			ASR         #one, D3 			; shift D3 by 1 bit
+			AND         #seven, D3 			; and D3 to get first 3 bits which are the register
 
-			JSR         printEA
+			JSR         printEA 			; jump to printEA
         
-			LEA         newLine, A1           ; create new line
+			LEA         newLine, A1         ; create new line
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			BRA         LOOP
+			BRA         LOOP 				; branch back to LOOP
         
 opADDW  
-			LEA         ADDmatch, A1       ; we know that the opcode will be MULS, so load A1 to print message
+			LEA         ADDmatch, A1        ; we know that the opcode will be ADD, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
@@ -2171,37 +2171,37 @@ opADDW
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			CLR         D2
-			CLR         D3
-			MOVE.B      D1, D2
-			ASR         #three, D2
-			AND         #seven, D2
-			MOVE.B      D1, D3
-			AND         #seven, D3
+			CLR         D2 					; clear D2
+			CLR         D3 					; clear D3
+			MOVE.B      D1, D2 				; copy the byte from D1 to D2
+			ASR         #three, D2 			; shift D2 by 3 bits to get source mode
+			AND         #seven, D2 			; and D2 to get only first 3 bits
+			MOVE.B      D1, D3 				; copy D1 byte to D3
+			AND         #seven, D3 			; and D3 to get first 3 bits also known as register
         
-			JSR         printEA
+			JSR         printEA 			; jump to printEA
         
 			LEA         comma, A1           ; create comma
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			CLR         D2
-			CLR         D3
-			MOVE.W      D1, D3
-			ASR         #eight, D3
-			ASR         #one, D3
-			AND         #seven, D3
+			CLR         D2 					; clear D2 since we know mode should be data register
+			CLR         D3 					; clear D3
+			MOVE.W      D1, D3 				; Move D1 word to D3
+			ASR         #eight, D3 			; shift D3 by 8 bits
+			ASR         #one, D3 			; shift D3 by 1 bit
+			AND         #seven, D3 			; and D3 to get first 3 bits which are the register
 
-			JSR         printEA
+			JSR         printEA 			; jump to printEA
         
-			LEA         newLine, A1           ; create new line
+			LEA         newLine, A1         ; create new line
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			BRA         LOOP
+			BRA         LOOP 				; branch back to LOOP
         
 opADDL  
-			LEA         ADDmatch, A1       ; we know that the opcode will be MULS, so load A1 to print message
+			LEA         ADDmatch, A1        ; we know that the opcode will be ADD, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
@@ -2212,41 +2212,47 @@ opADDL
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			CLR         D2
-			CLR         D3
-			MOVE.B      D1, D2
-			ASR         #three, D2
-			AND         #seven, D2
-			MOVE.B      D1, D3
-			AND         #seven, D3
+			CLR         D2 					; clear D2
+			CLR         D3 					; clear D3
+			MOVE.B      D1, D2 				; copy the byte from D1 to D2
+			ASR         #three, D2 			; shift D2 by 3 bits to get source mode
+			AND         #seven, D2 			; and D2 to get only first 3 bits
+			MOVE.B      D1, D3 				; copy D1 byte to D3
+			AND         #seven, D3 			; and D3 to get first 3 bits also known as register
         
-			CLR         D6
-			MOVE.B      #1, D6
+			CLR         D6					; Clear D6
+			MOVE.B      #1, D6				; move 1 to D6 in case source is printing immediate
         
-			JSR         printEA
-			CLR         D6
+			JSR         printEA				; jump to printEA
+			CLR         D6					; clear D6
         
 			LEA         comma, A1           ; create comma
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			CLR         D2
-			CLR         D3
-			MOVE.W      D1, D3
-			ASR         #eight, D3
-			ASR         #one, D3
-			AND         #seven, D3
+			CLR         D2 					; clear D2 since we know mode should be data register
+			CLR         D3 					; clear D3
+			MOVE.W      D1, D3 				; Move D1 word to D3
+			ASR         #eight, D3 			; shift D3 by 8 bits
+			ASR         #one, D3 			; shift D3 by 1 bit
+			AND         #seven, D3 			; and D3 to get first 3 bits which are the register
 
-			JSR         printEA
+			JSR         printEA 			; jump to printEA
         
-			LEA         newLine, A1           ; create new line
+			LEA         newLine, A1         ; create new line
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			BRA         LOOP
+			BRA         LOOP 				; branch back to LOOP
+
+***********************************************************************************************************
+*
+*					ADDA OPCODE
+*
+***********************************************************************************************************	
 
 opADDAW 
-			LEA         ADDAmatch, A1       ; we know that the opcode will be MULS, so load A1 to print message
+			LEA         ADDAmatch, A1       ; we know that the opcode will be ADDA, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
@@ -2257,38 +2263,38 @@ opADDAW
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			CLR         D2
-			CLR         D3
-			MOVE.B      D1, D2
-			ASR         #three, D2
-			AND         #seven, D2
-			MOVE.B      D1, D3
-			AND         #seven, D3
+			CLR         D2 					; clear D2
+			CLR         D3 					; clear D3
+			MOVE.B      D1, D2 				; copy the byte from D1 to D2
+			ASR         #three, D2 			; shift D2 by 3 bits to get source mode
+			AND         #seven, D2 			; and D2 to get only first 3 bits
+			MOVE.B      D1, D3 				; copy D1 byte to D3
+			AND         #seven, D3 			; and D3 to get first 3 bits also known as register
         
-			JSR         printEA
+			JSR         printEA 			; jump to printEA 
         
 			LEA         comma, A1           ; create comma
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			CLR         D2
-			CLR         D3
-			MOVE.B      #one, D2
-			MOVE.W      D1, D3
-			ASR         #eight, D3
-			ASR         #one, D3
-			AND         #seven, D3
-	
-			JSR         printEA
+			CLR         D2 					; clear D2 since we know mode should be data register
+			CLR         D3 					; clear D3
+			MOVE.B      #one, D2			; move 1 to D2 since mode should be address
+			MOVE.W      D1, D3 				; Move D1 word to D3
+			ASR         #eight, D3 			; shift D3 by 8 bits
+			ASR         #one, D3 			; shift D3 by 1 bit
+			AND         #seven, D3 			; and D3 to get first 3 bits which are the register
+
+			JSR         printEA 			; jump to printEA
         
-			LEA         newLine, A1           ; create new line
+			LEA         newLine, A1         ; create new line
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			BRA         LOOP
+			BRA         LOOP 				; branch back to LOOP
 
 opADDAL 
-			LEA         ADDAmatch, A1       ; we know that the opcode will be MULS, so load A1 to print message
+			LEA         ADDAmatch, A1       ; we know that the opcode will be ADDA, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
@@ -2299,35 +2305,35 @@ opADDAL
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			CLR         D2
-			CLR         D3
-			MOVE.B      D1, D2
-			ASR         #three, D2
-			AND         #seven, D2
-			MOVE.B      D1, D3
-			AND         #seven, D3
+			CLR         D2 					; clear D2
+			CLR         D3 					; clear D3
+			MOVE.B      D1, D2 				; copy the byte from D1 to D2
+			ASR         #three, D2 			; shift D2 by 3 bits to get source mode
+			AND         #seven, D2 			; and D2 to get only first 3 bits
+			MOVE.B      D1, D3 				; copy D1 byte to D3
+			AND         #seven, D3 			; and D3 to get first 3 bits also known as register
         
-			JSR         printEA
+			JSR         printEA 			; jump to printEA 
         
 			LEA         comma, A1           ; create comma
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			CLR         D2
-			CLR         D3
-			MOVE.B      #one, D2
-			MOVE.W      D1, D3
-			ASR         #eight, D3
-			ASR         #one, D3
-			AND         #seven, D3
+			CLR         D2 					; clear D2 since we know mode should be data register
+			CLR         D3 					; clear D3
+			MOVE.B      #one, D2			; move 1 to D2 since mode should be address
+			MOVE.W      D1, D3 				; Move D1 word to D3
+			ASR         #eight, D3 			; shift D3 by 8 bits
+			ASR         #one, D3 			; shift D3 by 1 bit
+			AND         #seven, D3 			; and D3 to get first 3 bits which are the register
 
-			JSR         printEA
-		
-			LEA         newLine, A1           ; create new line
+			JSR         printEA 			; jump to printEA
+        
+			LEA         newLine, A1         ; create new line
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			BRA         LOOP
+			BRA         LOOP 				; branch back to LOOP
         
 ***********************************************************************************************************
 *
@@ -2340,929 +2346,929 @@ opASL
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			LEA         dispWord, A1        ; we know that the opcode will be ASL, so load A1 to print message
+			LEA         dispWord, A1        ; display word
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			LEA         space, A1        ; we know that the opcode will be ASL, so load A1 to print message
+			LEA         space, A1           ; display space 
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			CLR         D2
-			CLR         D3
-			MOVE.B      D1,D2
-			MOVE.B      D1,D3
+			CLR         D2					; clear D2
+			CLR         D3					; clear D3
+			MOVE.B      D1,D2				; move byte from D1 to D2
+			MOVE.B      D1,D3				; move byte from D1 to D3
         
-			ASR.B       #three, D2
-			AND         #seven, D2
-			AND         #seven, D3        
+			ASR.B       #three, D2 			; shift D2 by 3 bits to get mode
+			AND         #seven, D2			; and D2 by 3 bits to get first 3 bits
+			AND         #seven, D3        	; and D3 by 3 bits to get first 3 bits for register
         
-			JSR         printEA
+			JSR         printEA				; jump to printEA
         
-			LEA        	newLine, A1           ; Display space
+			LEA        	newLine, A1         ; Display newLine
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			BRA         LOOP
+			BRA         LOOP				; branch back to LOOP
 
 opASR   
 			LEA         ASRmatch, A1        ; we know that the opcode will be ASR, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			LEA         dispWord, A1        ; we know that the opcode will be ASL, so load A1 to print message
+			LEA         dispWord, A1        ; display word
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			LEA         space, A1        ; we know that the opcode will be ASL, so load A1 to print message
-			MOVE.B      #14, D0             ; command for trap call to display message
-			TRAP        #15                 ; trap call
-			
-			CLR         D2
-			CLR         D3
-			MOVE.B      D1,D2
-			MOVE.B      D1,D3
-		
-			ASR.B       #three, D2
-			AND         #seven, D2
-			AND         #seven, D3        
-        
-			JSR         printEA
-			
-			LEA        	newLine, A1           ; Display space
+			LEA         space, A1           ; display space 
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			BRA         LOOP
+			CLR         D2					; clear D2
+			CLR         D3					; clear D3
+			MOVE.B      D1,D2				; move byte from D1 to D2
+			MOVE.B      D1,D3				; move byte from D1 to D3
+        
+			ASR.B       #three, D2 			; shift D2 by 3 bits to get mode
+			AND         #seven, D2			; and D2 by 3 bits to get first 3 bits
+			AND         #seven, D3        	; and D3 by 3 bits to get first 3 bits for register
+        
+			JSR         printEA				; jump to printEA
+        
+			LEA        	newLine, A1         ; Display newLine
+			MOVE.B      #14, D0             ; command for trap call to display message
+			TRAP        #15                 ; trap call
+        
+			BRA         LOOP				; branch back to LOOP
 
 opLSL   	
 			LEA         LSLmatch, A1        ; we know that the opcode will be LSL, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 			
-			LEA         dispWord, A1        ; we know that the opcode will be ASL, so load A1 to print message
-			MOVE.B      #14, D0             ; command for trap call to display message
-			TRAP        #15                 ; trap call
-			
-			LEA         space, A1        ; we know that the opcode will be ASL, so load A1 to print message
-			MOVE.B      #14, D0             ; command for trap call to display message
-			TRAP        #15                 ; trap call
-			
-			CLR         D2
-			CLR         D3
-			MOVE.B      D1,D2
-			MOVE.B      D1,D3
-        
-			ASR.B       #three, D2
-			AND         #seven, D2
-			AND         #seven, D3        
-			
-			JSR         printEA
-        
-			LEA        	newLine, A1           ; Display space
+			LEA         dispWord, A1        ; display word
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			BRA         LOOP
+			LEA         space, A1           ; display space 
+			MOVE.B      #14, D0             ; command for trap call to display message
+			TRAP        #15                 ; trap call
+        
+			CLR         D2					; clear D2
+			CLR         D3					; clear D3
+			MOVE.B      D1,D2				; move byte from D1 to D2
+			MOVE.B      D1,D3				; move byte from D1 to D3
+        
+			ASR.B       #three, D2 			; shift D2 by 3 bits to get mode
+			AND         #seven, D2			; and D2 by 3 bits to get first 3 bits
+			AND         #seven, D3        	; and D3 by 3 bits to get first 3 bits for register
+        
+			JSR         printEA				; jump to printEA
+        
+			LEA        	newLine, A1         ; Display newLine
+			MOVE.B      #14, D0             ; command for trap call to display message
+			TRAP        #15                 ; trap call
+        
+			BRA         LOOP				; branch back to LOOP
 
 opLSR   
 			LEA         LSRmatch, A1        ; we know that the opcode will be LSR, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			LEA         dispWord, A1        ; we know that the opcode will be ASL, so load A1 to print message
+			LEA         dispWord, A1        ; display word
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			LEA         space, A1        ; we know that the opcode will be ASL, so load A1 to print message
+			LEA         space, A1           ; display space 
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			CLR         D2
-			CLR         D3
-			MOVE.B      D1,D2
-			MOVE.B      D1,D3
+			CLR         D2					; clear D2
+			CLR         D3					; clear D3
+			MOVE.B      D1,D2				; move byte from D1 to D2
+			MOVE.B      D1,D3				; move byte from D1 to D3
         
-			ASR.B       #three, D2
-			AND         #seven, D2
-			AND         #seven, D3        
+			ASR.B       #three, D2 			; shift D2 by 3 bits to get mode
+			AND         #seven, D2			; and D2 by 3 bits to get first 3 bits
+			AND         #seven, D3        	; and D3 by 3 bits to get first 3 bits for register
         
-			JSR         printEA
+			JSR         printEA				; jump to printEA
         
-			LEA        	newLine, A1           ; Display space
+			LEA        	newLine, A1         ; Display newLine
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			BRA         LOOP
+			BRA         LOOP				; branch back to LOOP
 
 opROL   
 			LEA         ROLmatch, A1        ; we know that the opcode will be ROL, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			LEA         dispWord, A1        ; we know that the opcode will be ASL, so load A1 to print message
+			LEA         dispWord, A1        ; display word
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			LEA         space, A1        ; we know that the opcode will be ASL, so load A1 to print message
+			LEA         space, A1           ; display space 
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			CLR         D2
-			CLR         D3
-			MOVE.B      D1,D2
-			MOVE.B      D1,D3
-		
-			ASR.B       #three, D2
-			AND         #seven, D2
-			AND         #seven, D3        
+			CLR         D2					; clear D2
+			CLR         D3					; clear D3
+			MOVE.B      D1,D2				; move byte from D1 to D2
+			MOVE.B      D1,D3				; move byte from D1 to D3
         
-			JSR         printEA
+			ASR.B       #three, D2 			; shift D2 by 3 bits to get mode
+			AND         #seven, D2			; and D2 by 3 bits to get first 3 bits
+			AND         #seven, D3        	; and D3 by 3 bits to get first 3 bits for register
         
-			LEA        	newLine, A1           ; Display space
+			JSR         printEA				; jump to printEA
+        
+			LEA        	newLine, A1         ; Display newLine
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			BRA         LOOP
+			BRA         LOOP				; branch back to LOOP
 
 opROR   
 			LEA         RORmatch, A1        ; we know that the opcode will be ROR, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			LEA         dispWord, A1        ; we know that the opcode will be ASL, so load A1 to print message
+			LEA         dispWord, A1        ; display word
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			LEA         space, A1        ; we know that the opcode will be ASL, so load A1 to print message
+			LEA         space, A1           ; display space 
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			CLR         D2
-			CLR         D3
-			MOVE.B      D1,D2
-			MOVE.B      D1,D3
+			CLR         D2					; clear D2
+			CLR         D3					; clear D3
+			MOVE.B      D1,D2				; move byte from D1 to D2
+			MOVE.B      D1,D3				; move byte from D1 to D3
         
-			ASR.B       #three, D2
-			AND         #seven, D2
-			AND         #seven, D3        
+			ASR.B       #three, D2 			; shift D2 by 3 bits to get mode
+			AND         #seven, D2			; and D2 by 3 bits to get first 3 bits
+			AND         #seven, D3        	; and D3 by 3 bits to get first 3 bits for register
         
-			JSR         printEA
+			JSR         printEA				; jump to printEA
         
-			LEA        	newLine, A1           ; Display space
+			LEA        	newLine, A1         ; Display newLine
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
-			
-			BRA         LOOP
+        
+			BRA         LOOP				; branch back to LOOP
         
 memSB   	
-			CLR         D2
-			MOVE.B      D1,D2
-			ASR         #three, D2
+			CLR         D2					; clear D2
+			MOVE.B      D1,D2				; move D1 to D2
+			ASR         #three, D2			; shift D2 by 3 bits to get i/r
 			
-			AND         #$07, D2
+			AND         #$07, D2			; and D2 by 3 bits 
         
-			CMP.B       #zero, D2
-			BEQ         opASBI
-			CMP.B       #four, D2
-			BEQ         opASBR
-			CMP.B       #one, D2
-			BEQ         opLSBI
-			CMP.B       #five, D2
-			BEQ         opLSBR
-			CMP.B       #three, D2
-			BEQ         opROBI
-			CMP.B       #seven, D2
-			BEQ         opROBR
-			BRA         printInvalid
+			CMP.B       #zero, D2			; compare 0 to D2
+			BEQ         opASBI				; if true, branch to ASBI for immediate
+			CMP.B       #four, D2			; compare 4 to D2 
+			BEQ         opASBR				; if true, branch to ASBR for register
+			CMP.B       #one, D2			; compare 1 to D2
+			BEQ         opLSBI				; if true, branch to LSBI for immediate
+			CMP.B       #five, D2			; compare 5 to D2
+			BEQ         opLSBR				; if true, branch to LSBR for register
+			CMP.B       #three, D2			; compare 3 to D2
+			BEQ         opROBI				; if true, branch to ROBI for immediate
+			CMP.B       #seven, D2			; compare 7 to D2
+			BEQ         opROBR				; if true, branch to ROBR for register
+			BRA         printInvalid		; otherwise invalid
         
 opASBI  
-			CLR         D2
-			MOVE.W      D1, D2
-			ASR         #eight, D2
-			AND         #$01, D2
+			CLR         D2					; clear D2
+			MOVE.W      D1, D2				; move word from D1 to D2
+			ASR         #eight, D2			; shift D2 over by 8 bits 
+			AND         #$01, D2			; and D2 by 1 bit to get direction
     
-			CMP.B       #zero, D2
-			BEQ         opASRBI
-			CMP.B       #one, D2
-			BEQ         opASLBI
-			BRA         printInvalid
+			CMP.B       #zero, D2			; compare 0 to D2
+			BEQ         opASRBI				; if true, branch to ASRBI for right
+			CMP.B       #one, D2			; compare 1 to D2
+			BEQ         opASLBI				; if true, branch to ASLBI for left
+			BRA         printInvalid		; otherwise invalid
         
 opASRBI 
 			LEA         ASRmatch, A1        ; we know that the opcode will be ASR, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispByte, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispByte, A1        ; display byte
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntImm
+			JSR         PrntImm				; jump to PrntImm
 		
-			BRA         LOOP
+			BRA         LOOP				; branch back to LOOP
 
 opASLBI 
 			LEA         ASLmatch, A1        ; we know that the opcode will be ASL, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispByte, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispByte, A1        ; display byte
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntImm
-        
-			BRA         LOOP
+			JSR         PrntImm				; jump to PrntImm
+		
+			BRA         LOOP				; branch back to LOOP
 
 opASBR  
-			CLR         D2
-			MOVE.W      D1, D2
-			ASR         #eight, D2
-			AND         #$01, D2
+			CLR         D2					; clear D2
+			MOVE.W      D1, D2				; move word from D1 to D2
+			ASR         #eight, D2			; shift D2 over by 8 bits 
+			AND         #$01, D2			; and D2 by 1 bit to get direction
     
-			CMP.B       #zero, D2
-			BEQ         opASRBR
-			CMP.B       #one, D2
-			BEQ         opASLBR
-			BRA         printInvalid 
+			CMP.B       #zero, D2			; compare 0 to D2 
+			BEQ         opASRBR				; if true, branch to ASRBR for right
+			CMP.B       #one, D2			; compare 1 to D2
+			BEQ         opASLBR				; if true, branch to ASLBR for left
+			BRA         printInvalid 		; otherwise invalid
         
 opASRBR 
-			LEA         ASRmatch, A1        ; we know that the opcode will be ASL, so load A1 to print message
+			LEA         ASRmatch, A1        ; we know that the opcode will be ASR, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispByte, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispByte, A1        ; display byte
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntReg
+			JSR         PrntReg				; jump to PrntReg
         
-			BRA         LOOP
+			BRA         LOOP				; branch back to LOOP
 
 opASLBR 
 			LEA         ASLmatch, A1        ; we know that the opcode will be ASL, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispByte, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispByte, A1        ; display byte
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntReg
+			JSR         PrntReg				; jump to PrntReg
         
-			BRA         LOOP
+			BRA         LOOP				; branch back to LOOP
 
 opLSBI  	
-			CLR         D2
-			MOVE.W      D1, D2
-			ASR         #eight, D2
-			AND         #$01, D2
+			CLR         D2					; clear D2
+			MOVE.W      D1, D2				; move word from D1 to D2
+			ASR         #eight, D2			; shift D2 over by 8 bits 
+			AND         #$01, D2			; and D2 by 1 bit to get direction
     
-			CMP.B       #zero, D2
-			BEQ         opLSRBI
-			CMP.B       #one, D2
-			BEQ         opLSLBI
-			BRA         printInvalid 
+			CMP.B       #zero, D2			; compare 0 to D2 
+			BEQ         opLSRBI				; if true, branch to LSRBI for right
+			CMP.B       #one, D2			; compare 1 to D2
+			BEQ         opLSLBI				; if true, branch to LSLBI for left
+			BRA         printInvalid 		; otherwise invalid
         
 opLSRBI 
 			LEA         LSRmatch, A1        ; we know that the opcode will be ASR, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispByte, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispByte, A1        ; display byte
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntImm
-        
-			BRA         LOOP
+			JSR         PrntImm				; jump to PrntImm
+		
+			BRA         LOOP				; branch back to LOOP
 			
 opLSLBI 	
 			LEA         LSLmatch, A1        ; we know that the opcode will be ASR, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispByte, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispByte, A1        ; display byte
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntImm
-        
-			BRA         LOOP
+			JSR         PrntImm				; jump to PrntImm
+		
+			BRA         LOOP				; branch back to LOOP
 
 opLSBR  
-			CLR         D2
-			MOVE.W      D1, D2
-			ASR         #eight, D2
-			AND         #$01, D2
+			CLR         D2					; clear D2
+			MOVE.W      D1, D2				; move word from D1 to D2
+			ASR         #eight, D2			; shift D2 over by 8 bits 
+			AND         #$01, D2			; and D2 by 1 bit to get direction
     
-			CMP.B       #zero, D2
-			BEQ         opLSRBR
-			CMP.B       #one, D2
-			BEQ         opLSLBR
-			BRA         printInvalid 
+			CMP.B       #zero, D2			; compare 0 to D2 
+			BEQ         opLSRBR				; if true, branch to LSRBR for right
+			CMP.B       #one, D2			; compare 1 to D2
+			BEQ         opLSLBR				; if true, branch to LSLBR for left
+			BRA         printInvalid 		; otherwise invalid
         
 opLSRBR 
-			LEA         LSRmatch, A1        ; we know that the opcode will be ASL, so load A1 to print message
+			LEA         LSRmatch, A1        ; we know that the opcode will be LSR, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispByte, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispByte, A1        ; display byte
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntReg
+			JSR         PrntReg				; jump to PrntReg
         
-			BRA         LOOP
+			BRA         LOOP				; branch back to LOOP
         
 opLSLBR 	
-			LEA         LSLmatch, A1        ; we know that the opcode will be ASL, so load A1 to print message
+			LEA         LSLmatch, A1        ; we know that the opcode will be LSL, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispByte, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispByte, A1        ; display byte
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntReg
+			JSR         PrntReg				; jump to PrntReg
         
-			BRA         LOOP
+			BRA         LOOP				; branch back to LOOP
 			
 opROBI  
-			CLR         D2
-			MOVE.W      D1, D2
-			ASR         #eight, D2
-			AND         #$01, D2
+			CLR         D2					; clear D2
+			MOVE.W      D1, D2				; move word from D1 to D2
+			ASR         #eight, D2			; shift D2 over by 8 bits 
+			AND         #$01, D2			; and D2 by 1 bit to get direction
     
-			CMP.B       #zero, D2
-			BEQ         opRORBI
-			CMP.B       #one, D2
-			BEQ         opROLBI
-			BRA         printInvalid 
+			CMP.B       #zero, D2			; compare 0 to D2
+			BEQ         opRORBI				; if true, branch to RORBI for right
+			CMP.B       #one, D2			; compare 1 to D2
+			BEQ         opROLBI				; if true, branch to ROLBI for left
+			BRA         printInvalid		; otherwise invalid
         
 opRORBI 
-			LEA         RORmatch, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         RORmatch, A1        ; we know that the opcode will be ROR, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispByte, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispByte, A1        ; display byte
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntImm
-        
-			BRA         LOOP
+			JSR         PrntImm				; jump to PrntImm
+		
+			BRA         LOOP				; branch back to LOOP
 
 opROLBI 
-			LEA         ROLmatch, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         ROLmatch, A1        ; we know that the opcode will be ROL, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispByte, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispByte, A1        ; display byte
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntImm
-        
-			BRA         LOOP
+			JSR         PrntImm				; jump to PrntImm
+		
+			BRA         LOOP				; branch back to LOOP
 
 opROBR  
-			CLR         D2
-			MOVE.W      D1, D2
-			ASR         #eight, D2
-			AND         #$01, D2
+			CLR         D2					; clear D2
+			MOVE.W      D1, D2				; move word from D1 to D2
+			ASR         #eight, D2			; shift D2 over by 8 bits 
+			AND         #$01, D2			; and D2 by 1 bit to get direction
     
-			CMP.B       #zero, D2
-			BEQ         opRORBR
-			CMP.B       #one, D2
-			BEQ         opROLBR
-			BRA         printInvalid     
+			CMP.B       #zero, D2			; compare 0 to D2 
+			BEQ         opRORBR				; if true, branch to RORBR for right
+			CMP.B       #one, D2			; compare 1 to D2
+			BEQ         opROLBR				; if true, branch to ROLBR for left
+			BRA         printInvalid 		; otherwise invalid    
         
 opRORBR 
 			LEA         RORmatch, A1        ; we know that the opcode will be ASR, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispByte, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispByte, A1        ; display byte
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntReg
+			JSR         PrntReg				; jump to PrntReg
         
-			BRA         LOOP
+			BRA         LOOP				; branch back to LOOP
 
 opROLBR 
 			LEA         ROLmatch, A1        ; we know that the opcode will be ASR, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispByte, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispByte, A1        ; display byte
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntReg
+			JSR         PrntReg				; jump to PrntReg
         
-			BRA         LOOP       
+			BRA         LOOP				; branch back to LOOP       
 
 memSW   
-			CLR         D2
-			MOVE.B      D1,D2
-			ASR         #three, D2
+			CLR         D2					; clear D2
+			MOVE.B      D1,D2				; move D1 to D2
+			ASR         #three, D2			; shift D2 by 3 bits to get i/r
+			
+			AND         #$07, D2			; and D2 by 3 bits 
         
-			AND         #$07, D2
-        
-			CMP.B       #zero, D2
-			BEQ         opASWI
-			CMP.B       #four, D2
-			BEQ         opASWR
-			CMP.B       #one, D2
-			BEQ         opLSWI
-			CMP.B       #five, D2
-			BEQ         opLSWR
-			CMP.B       #three, D2
-			BEQ         opROWI
-			CMP.B       #seven, D2
-			BEQ         opROWR
-			BRA         printInvalid
+			CMP.B       #zero, D2			; compare 0 to D2
+			BEQ         opASWI				; if true, branch to ASWI for immediate
+			CMP.B       #four, D2			; compare 4 to D2 
+			BEQ         opASWR				; if true, branch to ASWR for register
+			CMP.B       #one, D2			; compare 1 to D2
+			BEQ         opLSWI				; if true, branch to LSWI for immediate
+			CMP.B       #five, D2			; compare 5 to D2
+			BEQ         opLSWR				; if true, branch to LSWR for register
+			CMP.B       #three, D2			; compare 3 to D2
+			BEQ         opROWI				; if true, branch to ROWI for immediate
+			CMP.B       #seven, D2			; compare 7 to D2
+			BEQ         opROWR				; if true, branch to ROWR for register
+			BRA         printInvalid		; otherwise invalid
         
 opASWI  
-			CLR         D2
-			MOVE.W      D1, D2
-			ASR         #eight, D2
-			AND         #$01, D2
+			CLR         D2					; clear D2
+			MOVE.W      D1, D2				; move word from D1 to D2
+			ASR         #eight, D2			; shift D2 over by 8 bits 
+			AND         #$01, D2			; and D2 by 1 bit to get direction
     
-			CMP.B       #zero, D2
-			BEQ         opASRWI
-			CMP.B       #one, D2
-			BEQ         opASLWI
-			BRA         printInvalid
+			CMP.B       #zero, D2			; compare 0 to D2
+			BEQ         opASRWI				; if true, branch to ASRWI for right
+			CMP.B       #one, D2			; compare 1 to D2
+			BEQ         opASLWI				; if true, branch to ASLWI for left
+			BRA         printInvalid		; otherwise invalid
         
 opASRWI 
 			LEA         ASRmatch, A1        ; we know that the opcode will be ASR, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispWord, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispWord, A1        ; display word
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntImm
+			JSR         PrntImm				; jump to PrntImm
         
-			BRA         LOOP
+			BRA         LOOP				; branch back to LOOP
 
 opASLWI 
 			LEA         ASLmatch, A1        ; we know that the opcode will be ASL, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispWord, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispWord, A1        ; display word
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
-			
-			JSR         PrntImm
-			
-			BRA         LOOP
+        
+			JSR         PrntImm				; jump to PrntImm
+        
+			BRA         LOOP				; branch back to LOOP
 
 opASWR  
-			CLR         D2
-			MOVE.W      D1, D2
-			ASR         #eight, D2
-			AND         #$01, D2
+			CLR         D2					; clear D2
+			MOVE.W      D1, D2				; move word from D1 to D2
+			ASR         #eight, D2			; shift D2 over by 8 bits 
+			AND         #$01, D2			; and D2 by 1 bit to get direction
     
-			CMP.B       #zero, D2
-			BEQ         opASRWR
-			CMP.B       #one, D2
-			BEQ         opASLWR
-			BRA         printInvalid 
+			CMP.B       #zero, D2			; compare 0 to D2 
+			BEQ         opASRWR				; if true, branch to ASRWR for right
+			CMP.B       #one, D2			; compare 1 to D2
+			BEQ         opASLWR				; if true, branch to ASLWR for left
+			BRA         printInvalid 		; otherwise invalid
         
 opASRWR 	
-			LEA         ASRmatch, A1        ; we know that the opcode will be ASL, so load A1 to print message
+			LEA         ASRmatch, A1        ; we know that the opcode will be ASR, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispWord, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispWord, A1        ; display word
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntReg
+			JSR         PrntReg				; jump to PrntReg
         
-			BRA         LOOP
+			BRA         LOOP				; branch back to LOOP
 
 opASLWR 	
 			LEA         ASLmatch, A1        ; we know that the opcode will be ASL, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispWord, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispWord, A1        ; display word
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntReg
+			JSR         PrntReg				; jump to PrntReg
         
-			BRA         LOOP
+			BRA         LOOP				; branch back to LOOP
 
 opLSWI  	
-			CLR         D2
-			MOVE.W      D1, D2
-			ASR         #eight, D2
-			AND         #$01, D2
+			CLR         D2					; clear D2
+			MOVE.W      D1, D2				; move word from D1 to D2
+			ASR         #eight, D2			; shift D2 over by 8 bits 
+			AND         #$01, D2			; and D2 by 1 bit to get direction
     
-			CMP.B       #zero, D2
-			BEQ         opLSRWI
-			CMP.B       #one, D2
-			BEQ         opLSLWI
-			BRA         printInvalid 
+			CMP.B       #zero, D2			; compare 0 to D2 
+			BEQ         opLSRWI				; if true, branch to LSRWI for right
+			CMP.B       #one, D2			; compare 1 to D2
+			BEQ         opLSLWI				; if true, branch to LSLWI for left
+			BRA         printInvalid 		; otherwise invalid 
         
 opLSRWI 
-			LEA         LSRmatch, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         LSRmatch, A1        ; we know that the opcode will be LSR, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 	
-			LEA         dispWord, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispWord, A1        ; display word
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntImm
+			JSR         PrntImm				; jump to PrntImm
         
-			BRA         LOOP
+			BRA         LOOP				; branch back to LOOP
 			
 opLSLWI 
-			LEA         LSLmatch, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         LSLmatch, A1        ; we know that the opcode will be LSL, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispWord, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispWord, A1        ; display word
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntImm
+			JSR         PrntImm				; jump to PrntImm
         
-			BRA         LOOP
+			BRA         LOOP				; branch back to LOOP
 			
 opLSWR  
-			CLR         D2
-			MOVE.W      D1, D2
-			ASR         #eight, D2
-			AND         #$01, D2
+			CLR         D2					; clear D2
+			MOVE.W      D1, D2				; move word from D1 to D2
+			ASR         #eight, D2			; shift D2 over by 8 bits 
+			AND         #$01, D2			; and D2 by 1 bit to get direction
     
-			CMP.B       #zero, D2
-			BEQ         opLSRWR
-			CMP.B       #one, D2
-			BEQ         opLSLWR
-			BRA         printInvalid 
+			CMP.B       #zero, D2			; compare 0 to D2 
+			BEQ         opLSRWR				; if true, branch to LSRWR for right
+			CMP.B       #one, D2			; compare 1 to D2
+			BEQ         opLSLWR				; if true, branch to LSLWR for left
+			BRA         printInvalid 		; otherwise invalid
         
 opLSRWR 
-			LEA         LSRmatch, A1        ; we know that the opcode will be ASL, so load A1 to print message
+			LEA         LSRmatch, A1        ; we know that the opcode will be LSR, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispWord, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispWord, A1        ; display word
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntReg
+			JSR         PrntReg				; jump to PrntReg
         
-			BRA         LOOP
+			BRA         LOOP				; branch back to LOOP
         
 opLSLWR 
-			LEA         LSLmatch, A1        ; we know that the opcode will be ASL, so load A1 to print message
+			LEA         LSLmatch, A1        ; we know that the opcode will be LSL, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispWord, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispWord, A1        ; display word
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntReg
+			JSR         PrntReg				; jump to PrntReg
         
-			BRA         LOOP
+			BRA         LOOP				; branch back to LOOP
 
 opROWI  
-			CLR         D2
-			MOVE.W      D1, D2
-			ASR         #eight, D2
-			AND         #$01, D2
+			CLR         D2					; clear D2
+			MOVE.W      D1, D2				; move word from D1 to D2
+			ASR         #eight, D2			; shift D2 over by 8 bits 
+			AND         #$01, D2			; and D2 by 1 bit to get direction
     
-			CMP.B       #zero, D2
-			BEQ         opRORWI
-			CMP.B       #one, D2
-			BEQ         opROLWI
-			BRA         printInvalid 
+			CMP.B       #zero, D2			; compare 0 to D2
+			BEQ         opRORWI				; if true, branch to RORWI for right
+			CMP.B       #one, D2			; compare 1 to D2
+			BEQ         opROLWI				; if true, branch to ROLWI for left
+			BRA         printInvalid		; otherwise invalid
         
 opRORWI 
-			LEA         RORmatch, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         RORmatch, A1        ; we know that the opcode will be ROR, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispWord, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispWord, A1        ; display word
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntImm
+			JSR         PrntImm				; jump to PrntImm
         
-			BRA         LOOP
+			BRA         LOOP				; branch back to LOOP
 
 opROLWI 	
-			LEA         ROLmatch, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         ROLmatch, A1        ; we know that the opcode will be ROL, so load A1 to print message
         
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispWord, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispWord, A1        ; display word
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntImm
+			JSR         PrntImm				; jump to PrntImm
         
-			BRA         LOOP
+			BRA         LOOP				; branch back to LOOP
 
 opROWR  	
-			CLR         D2
-			MOVE.W      D1, D2
-			ASR         #eight, D2
-			AND         #$01, D2
+			CLR         D2					; clear D2
+			MOVE.W      D1, D2				; move word from D1 to D2
+			ASR         #eight, D2			; shift D2 over by 8 bits 
+			AND         #$01, D2			; and D2 by 1 bit to get direction
     
-			CMP.B       #zero, D2
-			BEQ         opRORWR
-			CMP.B       #one, D2
-			BEQ         opROLWR
-			BRA         printInvalid     
+			CMP.B       #zero, D2			; compare 0 to D2 
+			BEQ         opRORWR				; if true, branch to RORWR for right
+			CMP.B       #one, D2			; compare 1 to D2
+			BEQ         opROLWR				; if true, branch to ROLWR for left
+			BRA         printInvalid 		; otherwise invalid     
         
 opRORWR 
-			LEA         RORmatch, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         RORmatch, A1        ; we know that the opcode will be ROR, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 	
-			LEA         dispWord, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispWord, A1        ; display word
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntReg
+			JSR         PrntReg				; jump to PrntReg
         
-			BRA         LOOP
+			BRA         LOOP				; branch back to LOOP
 
 opROLWR 
-			LEA         ROLmatch, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         ROLmatch, A1        ; we know that the opcode will be ROL, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispWord, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispWord, A1        ; display word
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntReg
+			JSR         PrntReg				; jump to PrntReg
         
-			BRA         LOOP
+			BRA         LOOP				; branch back to LOOP
 
 memSL   
-			CLR         D2
-			MOVE.B      D1,D2
-			ASR         #three, D2
+			CLR         D2					; clear D2
+			MOVE.B      D1,D2				; move D1 to D2
+			ASR         #three, D2			; shift D2 by 3 bits to get i/r
+			
+			AND         #$07, D2			; and D2 by 3 bits 
         
-			AND         #$07, D2
-        
-			CMP.B       #zero, D2
-			BEQ         opASLI
-			CMP.B       #four, D2
-			BEQ         opASLR
-			CMP.B       #one, D2
-			BEQ         opLSLI
-			CMP.B       #five, D2
-			BEQ         opLSLR
-			CMP.B       #three, D2
-			BEQ         opROLI
-			CMP.B       #seven, D2
-			BEQ         opROLR
-			BRA         printInvalid
+			CMP.B       #zero, D2			; compare 0 to D2
+			BEQ         opASLI				; if true, branch to ASLI for immediate
+			CMP.B       #four, D2			; compare 4 to D2 
+			BEQ         opASLR				; if true, branch to ASLR for register
+			CMP.B       #one, D2			; compare 1 to D2
+			BEQ         opLSLI				; if true, branch to LSLI for immediate
+			CMP.B       #five, D2			; compare 5 to D2
+			BEQ         opLSLR				; if true, branch to LSLR for register
+			CMP.B       #three, D2			; compare 3 to D2
+			BEQ         opROLI				; if true, branch to ROLI for immediate
+			CMP.B       #seven, D2			; compare 7 to D2
+			BEQ         opROLR				; if true, branch to ROLR for register
+			BRA         printInvalid		; otherwise invalid
         
 opASLI  
-			CLR         D2
-			MOVE.W      D1, D2
-			ASR         #eight, D2
-			AND         #$01, D2
+			CLR         D2					; clear D2
+			MOVE.W      D1, D2				; move word from D1 to D2
+			ASR         #eight, D2			; shift D2 over by 8 bits 
+			AND         #$01, D2			; and D2 by 1 bit to get direction
     
-			CMP.B       #zero, D2
-			BEQ         opASRLI
-			CMP.B       #one, D2
-			BEQ         opASLLI
-			BRA         printInvalid
+			CMP.B       #zero, D2			; compare 0 to D2
+			BEQ         opASRLI				; if true, branch to ASRLI for right
+			CMP.B       #one, D2			; compare 1 to D2
+			BEQ         opASLLI				; if true, branch to ASLLI for left
+			BRA         printInvalid		; otherwise invalid
         
 opASRLI 
 			LEA         ASRmatch, A1        ; we know that the opcode will be ASR, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispLong, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispLong, A1        ; display long
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntImm
+			JSR         PrntImm				; jump to PrntImm
         
-			BRA         LOOP
+			BRA         LOOP				; branch back to LOOP
 
 opASLLI 
 			LEA         ASLmatch, A1        ; we know that the opcode will be ASL, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispLong, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispLong, A1        ; display long
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntImm
+			JSR         PrntImm				; jump to PrntImm
         
-			BRA         LOOP
+			BRA         LOOP				; branch back to LOOP
 
 opASLR  
-			CLR         D2
-			MOVE.W      D1, D2
-			ASR         #eight, D2
-			AND         #$01, D2
-		
-			CMP.B       #zero, D2
-			BEQ         opASRLR
-			CMP.B       #one, D2
-			BEQ         opASLLR
-			BRA         printInvalid 
+			CLR         D2					; clear D2
+			MOVE.W      D1, D2				; move word from D1 to D2
+			ASR         #eight, D2			; shift D2 over by 8 bits 
+			AND         #$01, D2			; and D2 by 1 bit to get direction
+    
+			CMP.B       #zero, D2			; compare 0 to D2 
+			BEQ         opASRLR				; if true, branch to ASRLR for right
+			CMP.B       #one, D2			; compare 1 to D2
+			BEQ         opASLLR				; if true, branch to ASLLR for left
+			BRA         printInvalid 		; otherwise invalid 
         
 opASRLR 
-			LEA         ASRmatch, A1        ; we know that the opcode will be ASL, so load A1 to print message
+			LEA         ASRmatch, A1        ; we know that the opcode will be ASR, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispLong, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispLong, A1        ; display long
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntReg
+			JSR         PrntReg				; jump to PrntReg
         
-			BRA         LOOP
+			BRA         LOOP				; branch back to LOOP
 
 opASLLR 
 			LEA         ASLmatch, A1        ; we know that the opcode will be ASL, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispLong, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispLong, A1        ; display long
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
-		
-			JSR         PrntReg
         
-			BRA         LOOP
+			JSR         PrntReg				; jump to PrntReg
+        
+			BRA         LOOP				; branch back to LOOP
 
 opLSLI  
-			CLR         D2
-			MOVE.W      D1, D2
-			ASR         #eight, D2
-			AND         #$01, D2
+			CLR         D2					; clear D2
+			MOVE.W      D1, D2				; move word from D1 to D2
+			ASR         #eight, D2			; shift D2 over by 8 bits 
+			AND         #$01, D2			; and D2 by 1 bit to get direction
     
-			CMP.B       #zero, D2
-			BEQ         opLSRLI
-			CMP.B       #one, D2
-			BEQ         opLSLLI
-			BRA         printInvalid 
+			CMP.B       #zero, D2			; compare 0 to D2 
+			BEQ         opLSRLI				; if true, branch to LSRLI for right
+			CMP.B       #one, D2			; compare 1 to D2
+			BEQ         opLSLLI				; if true, branch to LSLLI for left
+			BRA         printInvalid 		; otherwise invalid  
         
 opLSRLI 
-			LEA         LSRmatch, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         LSRmatch, A1        ; we know that the opcode will be LSR, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispLong, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispLong, A1        ; display long
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntImm
+			JSR         PrntImm				; jump to PrntImm
         
-			BRA         LOOP
+			BRA         LOOP				; branch back to LOOP
 
 
 opLSLLI 
-			LEA         LSLmatch, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         LSLmatch, A1        ; we know that the opcode will be LSL, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispLong, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispLong, A1        ; display long
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
-			
-			JSR         PrntImm
         
-			BRA         LOOP
+			JSR         PrntImm				; jump to PrntImm
+        
+			BRA         LOOP				; branch back to LOOP
 
 opLSLR  
-			CLR         D2
-			MOVE.W      D1, D2
-			ASR         #eight, D2
-			AND         #$01, D2
+			CLR         D2					; clear D2
+			MOVE.W      D1, D2				; move word from D1 to D2
+			ASR         #eight, D2			; shift D2 over by 8 bits 
+			AND         #$01, D2			; and D2 by 1 bit to get direction
     
-			CMP.B       #zero, D2
-			BEQ         opLSRLR
-			CMP.B       #one, D2
-			BEQ         opLSLLR
-			BRA         printInvalid 
+			CMP.B       #zero, D2			; compare 0 to D2 
+			BEQ         opLSRLR				; if true, branch to LSRLR for right
+			CMP.B       #one, D2			; compare 1 to D2
+			BEQ         opLSLLR				; if true, branch to LSLLR for left
+			BRA         printInvalid 		; otherwise invalid
         
 opLSRLR 
-			LEA         LSRmatch, A1        ; we know that the opcode will be ASL, so load A1 to print message
+			LEA         LSRmatch, A1        ; we know that the opcode will be LSR, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispLong, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispLong, A1        ; display long
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntReg
+			JSR         PrntReg				; jump to PrntReg
         
-			BRA         LOOP
+			BRA         LOOP				; branch back to LOOP
         
 opLSLLR 
-			LEA         LSLmatch, A1        ; we know that the opcode will be ASL, so load A1 to print message
+			LEA         LSLmatch, A1        ; we know that the opcode will be LSL, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispLong, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispLong, A1        ; display long
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntReg
+			JSR         PrntReg				; jump to PrntReg
         
-			BRA         LOOP
+			BRA         LOOP				; branch back to LOOP
 			
 opROLI  
-			CLR         D2
-			MOVE.W      D1, D2
-			ASR         #eight, D2
-			AND         #$01, D2
-		
-			CMP.B       #zero, D2
-			BEQ         opRORLI
-			CMP.B       #one, D2
-			BEQ         opROLLI
-			BRA         printInvalid 
+			CLR         D2					; clear D2
+			MOVE.W      D1, D2				; move word from D1 to D2
+			ASR         #eight, D2			; shift D2 over by 8 bits 
+			AND         #$01, D2			; and D2 by 1 bit to get direction
+    
+			CMP.B       #zero, D2			; compare 0 to D2
+			BEQ         opRORLI				; if true, branch to RORLI for right
+			CMP.B       #one, D2			; compare 1 to D2
+			BEQ         opROLLI				; if true, branch to ROLLI for left
+			BRA         printInvalid		; otherwise invalid
         
 opRORLI 
-			LEA         RORmatch, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         RORmatch, A1        ; we know that the opcode will be ROR, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispLong, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispLong, A1        ; display long
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntImm
+			JSR         PrntImm				; jump to PrntImm
         
-			BRA         LOOP
+			BRA         LOOP				; branch back to LOOP
 
 opROLLI 
-			LEA         ROLmatch, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         ROLmatch, A1        ; we know that the opcode will be ROL, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispLong, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispLong, A1        ; display long
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntImm
+			JSR         PrntImm				; jump to PrntImm
         
-			BRA	        LOOP
+			BRA         LOOP				; branch back to LOOP
 
 opROLR  
-			CLR         D2
-			MOVE.W      D1, D2
-			ASR         #eight, D2
-			AND         #$01, D2
+			CLR         D2					; clear D2
+			MOVE.W      D1, D2				; move word from D1 to D2
+			ASR         #eight, D2			; shift D2 over by 8 bits 
+			AND         #$01, D2			; and D2 by 1 bit to get direction
     
-			CMP.B       #zero, D2
-			BEQ         opRORLR
-			CMP.B       #one, D2
-			BEQ         opROLLR
-			BRA         printInvalid     
+			CMP.B       #zero, D2			; compare 0 to D2 
+			BEQ         opRORLR				; if true, branch to RORLR for right
+			CMP.B       #one, D2			; compare 1 to D2
+			BEQ         opROLLR				; if true, branch to ROLLR for left
+			BRA         printInvalid 		; otherwise invalid     
         
 opRORLR 
-			LEA         RORmatch, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         RORmatch, A1        ; we know that the opcode will be ROR, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			LEA         dispLong, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispLong, A1        ; display long
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntReg
-			
-			BRA         LOOP
+			JSR         PrntReg				; jump to PrntReg
+        
+			BRA         LOOP				; branch back to LOOP
 
 opROLLR 	
-			LEA         ROLmatch, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         ROLmatch, A1        ; we know that the opcode will be ROL, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 	
-			LEA         dispLong, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         dispLong, A1        ; display long
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         PrntReg
+			JSR         PrntReg				; jump to PrntReg
         
-			BRA         LOOP
+			BRA         LOOP				; branch back to LOOP
 		
 ***********************************************************************************************************
 *						Immediate Data Subroutine Part 1
@@ -3273,41 +3279,41 @@ opROLLR
 ***********************************************************************************************************
 
 PrntImm 
-			MOVEM.L 	D0-D7/A1-A6, -(SP)
+			MOVEM.L 	D0-D7/A1-A6, -(SP)	; callee saved registers
 			
-			LEA         space, A1        ; we know that the opcode will be ASR, so load A1 to print message
-			MOVE.B      #14, D0             ; command for trap call to display message
-			TRAP        #15                 ; trap call
-			
-			LEA         hashTag, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         space, A1        	; display space
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 			
-			CLR         D2
-			MOVE.W      D1, D2
-			ASR         #eight, D2
-			ASR         #one, D2
-			AND         #$07, D2
+			LEA         hashTag, A1        	; display #
+			MOVE.B      #14, D0             ; command for trap call to display message
+			TRAP        #15                 ; trap call
+			
+			CLR         D2					; clear D2
+			MOVE.W      D1, D2				; move word from D1 to D2
+			ASR         #eight, D2			; shift D2 by 8 bits
+			ASR         #one, D2			; shift D2 by one bit
+			AND         #$07, D2			; and D2 to get just first 3 bits
         
-			JSR         MemShiftImm
+			JSR         MemShiftImm			; jump to MemShiftImm
         
-			LEA         comma, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         comma, A1        	; display comma
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			CLR         D2
-			CLR         D3
-			MOVE.B      D1,D3
-			AND         #$07, D3
+			CLR         D2					; clear D2 since destination mode must be data register
+			CLR         D3					; clear D3 to get register
+			MOVE.B      D1,D3				; move byte from D1 to D3
+			AND         #$07, D3			; and D3 to get first 3 bits only
         
-			JSR         printEA
+			JSR         printEA				; jump to printEA
         
-			LEA         newLine, A1        ; we know that the opcode will be ASR, so load A1 to print message
+			LEA         newLine, A1        	; create new line
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			MOVEM.L  	(SP)+, D0-D7/A1-A6
-			RTS
+			MOVEM.L  	(SP)+, D0-D7/A1-A6	; pop saved registers from stack
+			RTS								; return
 			
 ***********************************************************************************************************
 *
@@ -3320,18 +3326,18 @@ PrntImm
 ***********************************************************************************************************
 
 PrntReg 	
-			MOVEM.L 	D0-D7/A1-A6, -(SP)
+			MOVEM.L 	D0-D7/A1-A6, -(SP)	; callee saved
         
 			LEA         space, A1           ; display space
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			CLR         D2
-			CLR         D3
-			MOVE.W      D1, D3
-			ASR         #eight, D3
-			ASR         #one, D3
-			AND         #$07, D3
+			CLR         D2					; clear D2
+			CLR         D3					; clear D3
+			MOVE.W      D1, D3				; move word from D1 to D3
+			ASR         #eight, D3			; shift D3 by 8 bits
+			ASR         #one, D3			; shift D3 by 1 bit
+			AND         #$07, D3			; and D3 to get first 3 bits only
         
 			JSR         printEA
         
@@ -3339,19 +3345,19 @@ PrntReg
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			CLR        D2
-			CLR         D3
-			MOVE.B      D1,D3
-			AND         #$07, D3
+			CLR        	D2					; clear D2
+			CLR         D3					; clear D3
+			MOVE.B      D1,D3				; move byte from D1 to D3
+			AND         #$07, D3			; and D3 to get first 3 bits only
         
-			JSR         printEA
+			JSR         printEA				; jump to printEA
         
 			LEA         newLine, A1         ; newline
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			MOVEM.L  	(SP)+, D0-D7/A1-A6
-			RTS
+			MOVEM.L  	(SP)+, D0-D7/A1-A6	; pop saved registers from stack
+			RTS								; return
 
 ***********************************************************************************************************
 *
@@ -3363,25 +3369,25 @@ PrntReg
 ***********************************************************************************************************
 
 MemShiftImm		
-			MOVEM.L 	D0-D7/A1-A6, -(SP)      ;caller saved data
-            CLR     	D1
+			MOVEM.L 	D0-D7/A1-A6, -(SP)	; caller saved data
+            CLR     	D1					; clear D1
                
-            MOVE.B  	D2, D1
-            CMP.B   	#zero, D1
-            BEQ     	displayEight
+            MOVE.B  	D2, D1				; move byte from D2 to D1
+            CMP.B   	#zero, D1			; compare 0 to D1
+            BEQ     	displayEight		; if true, branch to displayEight
                 
-            MOVE.B  	#3, D0
-            TRAP    	#15
-            BRA     	endSubroutine
+            MOVE.B  	#3, D0				; trap task command to display decimal
+            TRAP    	#15					; trap call
+            BRA     	endSubroutine		; branch to endSubroutine
                 
 displayEight    
-			MOVE.B  	#$08, D1
-            MOVE.B  	#3, D0
-            TRAP    	#15                
+			MOVE.B  	#$08, D1			; move 8 to D1
+            MOVE.B  	#3, D0				; trap task command to display decimal
+            TRAP    	#15                	; trap call
 			
 endSubroutine
-            MOVEM.L  	(SP)+, D0-D7/A1-A6     ; recall data
-            RTS                             ; Return to main routine
+            MOVEM.L  	(SP)+, D0-D7/A1-A6  ; pop saved registers from stack
+            RTS                             ; return
         
 ***********************************************************************************************************
 *
