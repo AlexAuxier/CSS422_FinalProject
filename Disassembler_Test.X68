@@ -28,8 +28,8 @@ START:                  ; first instruction of program
     DIVS		D2,D1
     SUB.L		D3,D6
 	CMP.B		#0,D1
-	OR.W		D4,D2
-	EOR			D2,D6
+	OR.B		D4,D2
+	EOR.W		D2,D6
 	BRA			foo
 	
 	SUBQ.W		#1,D2
@@ -49,6 +49,7 @@ banana
 * Put variables and constants here
 
     END    START        ; last line of source
+
 
 
 
