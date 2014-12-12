@@ -3235,7 +3235,7 @@ opROLLR
 ***********************************************************************************************************
 
 PrntImm 
-			MOVEM.L D0-D7/A1-A6, -(SP)
+			MOVEM.L 	D0-D7/A1-A6, -(SP)
 			
 			LEA         space, A1        ; we know that the opcode will be ASR, so load A1 to print message
 			MOVE.B      #14, D0             ; command for trap call to display message
@@ -3268,7 +3268,7 @@ PrntImm
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			MOVEM.L  (SP)+, D0-D7/A1-A6
+			MOVEM.L  	(SP)+, D0-D7/A1-A6
 			RTS
 			
 ***********************************************************************************************************
@@ -3280,7 +3280,9 @@ PrntImm
 * after setting the values, it calls another subroutine to actually display the data register.        
 *
 ***********************************************************************************************************
-PrntReg 	MOVEM.L D0-D7/A1-A6, -(SP)
+
+PrntReg 	
+			MOVEM.L 	D0-D7/A1-A6, -(SP)
         
 			LEA         space, A1           ; display space
 			MOVE.B      #14, D0             ; command for trap call to display message
@@ -3310,7 +3312,7 @@ PrntReg 	MOVEM.L D0-D7/A1-A6, -(SP)
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			MOVEM.L  (SP)+, D0-D7/A1-A6
+			MOVEM.L  	(SP)+, D0-D7/A1-A6
 			RTS
 
 ***********************************************************************************************************
@@ -3322,32 +3324,35 @@ PrntReg 	MOVEM.L D0-D7/A1-A6, -(SP)
 *
 ***********************************************************************************************************
 
-MemShiftImm		MOVEM.L D0-D7/A1-A6, -(SP)      ;caller saved data
-                CLR     D1
+MemShiftImm		
+			MOVEM.L 	D0-D7/A1-A6, -(SP)      ;caller saved data
+            CLR     	D1
+               
+            MOVE.B  	D2, D1
+            CMP.B   	#zero, D1
+            BEQ     	displayEight
                 
-                MOVE.B  D2, D1
-                CMP.B   #zero, D1
-                BEQ     displayEight
+            MOVE.B  	#3, D0
+            TRAP    	#15
+            BRA     	endSubroutine
                 
-                MOVE.B  #3, D0
-                TRAP    #15
-                BRA     endSubroutine
-                
-displayEight    MOVE.B  #$08, D1
-                MOVE.B  #3, D0
-                TRAP    #15                
+displayEight    
+			MOVE.B  	#$08, D1
+            MOVE.B  	#3, D0
+            TRAP    	#15                
+			
 endSubroutine
-                MOVEM.L  (SP)+, D0-D7/A1-A6     ; recall data
-                RTS                             ; Return to main routine
+            MOVEM.L  	(SP)+, D0-D7/A1-A6     ; recall data
+            RTS                             ; Return to main routine
         
-
 ***********************************************************************************************************
 *
 * 						EA Print Subroutine
 *
 ***********************************************************************************************************
 
-printEA 	MOVEM.L  D0-D7/A1-A6, -(SP)
+printEA 	
+			MOVEM.L  D0-D7/A1-A6, -(SP)
 
         	CMP.B       #zero, D2
 	        BEQ         pDataReg
@@ -3365,22 +3370,23 @@ printEA 	MOVEM.L  D0-D7/A1-A6, -(SP)
 
 ***********************************************************************************************************
 * Data Register        
-pDataReg    CMP.B   #zero,D3
-            BEQ     displayD0
-            CMP.B   #one,D3
-            BEQ     displayD1
-            CMP.B   #two,D3
-            BEQ     displayD2
-            CMP.B   #three,D3
-            BEQ     displayD3
-            CMP.B   #four,D3
-            BEQ     displayD4
-            CMP.B   #five,D3
-            BEQ     displayD5
-            CMP.B   #six,D3
-            BEQ     displayD6
-            CMP.B   #seven,D3
-            BEQ     displayD7
+pDataReg    
+			CMP.B   	#zero,D3
+            BEQ     	displayD0
+            CMP.B   	#one,D3
+            BEQ     	displayD1
+            CMP.B   	#two,D3
+            BEQ     	displayD2
+            CMP.B   	#three,D3
+            BEQ     	displayD3
+            CMP.B   	#four,D3
+            BEQ     	displayD4
+            CMP.B   	#five,D3
+            BEQ     	displayD5
+            CMP.B   	#six,D3
+            BEQ     	displayD6
+            CMP.B   	#seven,D3
+            BEQ     	displayD7
             
 displayD0   LEA         dispD0, A1          ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -3425,22 +3431,22 @@ displayD7   LEA         dispD7, A1          ; Display space
 ***********************************************************************************************************
 * Address Register
 
-pAddrReg    CMP.B   #zero,D3
-            BEQ     displayA0
-            CMP.B   #one,D3
-            BEQ     displayA1
-            CMP.B   #two,D3
-            BEQ     displayA2
-            CMP.B   #three,D3
-            BEQ     displayA3
-            CMP.B   #four,D3
-            BEQ     displayA4
-            CMP.B   #five,D3
-            BEQ     displayA5
-            CMP.B   #six,D3
-            BEQ     displayA6
-            CMP.B   #seven,D3
-            BEQ     displayA7
+pAddrReg    CMP.B   	#zero,D3
+            BEQ     	displayA0
+            CMP.B   	#one,D3
+            BEQ     	displayA1
+            CMP.B   	#two,D3
+            BEQ     	displayA2
+            CMP.B   	#three,D3
+            BEQ     	displayA3
+            CMP.B   	#four,D3
+            BEQ     	displayA4
+            CMP.B   	#five,D3
+            BEQ     	displayA5
+            CMP.B   	#six,D3
+            BEQ    		displayA6
+            CMP.B   	#seven,D3
+            BEQ     	displayA7
             
 displayA0   LEA         dispA0, A1          ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -3489,22 +3495,22 @@ pAddrDir    LEA         opPer, A1           ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            CMP.B   #zero,D3
-            BEQ     displayA0A
-            CMP.B   #one,D3
-            BEQ     displayA1A
-            CMP.B   #two,D3
-            BEQ     displayA2A
-            CMP.B   #three,D3
-            BEQ     displayA3A
-            CMP.B   #four,D3
-            BEQ     displayA4A
-            CMP.B   #five,D3
-            BEQ     displayA5A
-            CMP.B   #six,D3
-            BEQ     displayA6A
-            CMP.B   #seven,D3
-            BEQ     displayA7A
+            CMP.B   	#zero,D3
+            BEQ     	displayA0A
+            CMP.B   	#one,D3
+            BEQ     	displayA1A
+            CMP.B   	#two,D3
+            BEQ     	displayA2A
+            CMP.B   	#three,D3
+            BEQ     	displayA3A
+            CMP.B   	#four,D3
+            BEQ     	displayA4A
+            CMP.B   	#five,D3
+            BEQ     	displayA5A
+            CMP.B   	#six,D3
+            BEQ     	displayA6A
+            CMP.B   	#seven,D3
+            BEQ     	displayA7A
             
 displayA0A  LEA         dispA0, A1          ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -3577,22 +3583,22 @@ pAddrPost	LEA         opPer, A1           ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            CMP.B   #zero,D3
-            BEQ     displayA0P
-            CMP.B   #one,D3
-            BEQ     displayA1P
-            CMP.B   #two,D3
-            BEQ     displayA2P
-            CMP.B   #three,D3
-            BEQ     displayA3P
-            CMP.B   #four,D3
-            BEQ     displayA4P
-            CMP.B   #five,D3
-            BEQ     displayA5P
-            CMP.B   #six,D3
-            BEQ     displayA6P
-            CMP.B   #seven,D3
-            BEQ     displayA7P
+            CMP.B   	#zero,D3
+            BEQ     	displayA0P
+            CMP.B   	#one,D3
+            BEQ     	displayA1P
+            CMP.B   	#two,D3
+            BEQ     	displayA2P
+            CMP.B   	#three,D3
+            BEQ     	displayA3P
+            CMP.B   	#four,D3
+            BEQ     	displayA4P
+            CMP.B   	#five,D3
+            BEQ     	displayA5P
+            CMP.B   	#six,D3
+            BEQ     	displayA6P
+            CMP.B   	#seven,D3
+            BEQ     	displayA7P
             
 displayA0P  LEA         dispA0, A1          ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -3685,7 +3691,8 @@ displayA7P  LEA         dispA7, A1          ; Display space
 ***********************************************************************************************************
 * Addr Postdecrement
 
-pAddrDec	LEA         dec, A1             ; Display space
+pAddrDec	
+			LEA         dec, A1             ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
@@ -3693,24 +3700,25 @@ pAddrDec	LEA         dec, A1             ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            CMP.B   #zero,D3
-            BEQ     displayA0D
-            CMP.B   #one,D3
-            BEQ     displayA1D
-            CMP.B   #two,D3
-            BEQ     displayA2D
-            CMP.B   #three,D3
-            BEQ     displayA3D
-            CMP.B   #four,D3
-            BEQ     displayA4D
-            CMP.B   #five,D3
-            BEQ     displayA5D
-            CMP.B   #six,D3
-            BEQ     displayA6D
-            CMP.B   #seven,D3
-            BEQ     displayA7D
+            CMP.B   	#zero,D3
+            BEQ     	displayA0D
+            CMP.B   	#one,D3
+            BEQ     	displayA1D
+            CMP.B   	#two,D3
+            BEQ     	displayA2D
+            CMP.B   	#three,D3
+            BEQ     	displayA3D
+            CMP.B   	#four,D3
+            BEQ     	displayA4D
+            CMP.B   	#five,D3
+            BEQ     	displayA5D
+            CMP.B  		#six,D3
+            BEQ     	displayA6D
+            CMP.B   	#seven,D3
+            BEQ     	displayA7D
             
-displayA0D  LEA         dispA0, A1          ; Display space
+displayA0D  
+			LEA         dispA0, A1          ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             LEA         clPer, A1           ; Display space
@@ -3718,7 +3726,8 @@ displayA0D  LEA         dispA0, A1          ; Display space
             TRAP        #15                 ; trap call
             BRA         endSUB              ; go to the end of the subroutine
             
-displayA1D  LEA         dispA1, A1          ; Display space
+displayA1D  
+			LEA         dispA1, A1          ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             LEA         clPer, A1           ; Display space
@@ -3726,7 +3735,8 @@ displayA1D  LEA         dispA1, A1          ; Display space
             TRAP        #15                 ; trap call
             BRA         endSUB              ; go to the end of the subroutine
 
-displayA2D  LEA         dispA2, A1          ; Display space
+displayA2D  
+			LEA         dispA2, A1          ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             LEA         clPer, A1           ; Display space
@@ -3734,7 +3744,8 @@ displayA2D  LEA         dispA2, A1          ; Display space
             TRAP        #15                 ; trap call
             BRA         endSUB              ; go to the end of the subroutine
 
-displayA3D  LEA         dispA3, A1          ; Display space
+displayA3D  
+			LEA         dispA3, A1          ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             LEA         clPer, A1           ; Display space
@@ -3742,7 +3753,8 @@ displayA3D  LEA         dispA3, A1          ; Display space
             TRAP        #15                 ; trap call
             BRA         endSUB              ; go to the end of the subroutine
 
-displayA4D  LEA         dispA4, A1          ; Display space
+displayA4D  
+			LEA         dispA4, A1          ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             LEA         clPer, A1           ; Display space
@@ -3750,7 +3762,8 @@ displayA4D  LEA         dispA4, A1          ; Display space
             TRAP        #15                 ; trap call
             BRA         endSUB              ; go to the end of the subroutine
 
-displayA5D  LEA         dispA5, A1          ; Display space
+displayA5D  
+			LEA         dispA5, A1          ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             LEA         clPer, A1           ; Display space
@@ -3758,7 +3771,8 @@ displayA5D  LEA         dispA5, A1          ; Display space
             TRAP        #15                 ; trap call
             BRA         endSUB              ; go to the end of the subroutine
 
-displayA6D  LEA         dispA6, A1          ; Display space
+displayA6D  
+			LEA         dispA6, A1          ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             LEA         clPer, A1           ; Display space
@@ -3766,24 +3780,28 @@ displayA6D  LEA         dispA6, A1          ; Display space
             TRAP        #15                 ; trap call
             BRA         endSUB              ; go to the end of the subroutine
 
-displayA7D  LEA         dispA7, A1          ; Display space
+displayA7D  
+			LEA         dispA7, A1          ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             LEA         clPer, A1           ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             BRA         endSUB              ; go to the end of the subroutine
+
 ***********************************************************************************************************
 * Display Hex
 
-pHex        CMP.B       #zero, D3
+pHex        
+			CMP.B       #zero, D3
             BEQ         AbsShort
             CMP.B       #one, D3
             BEQ         AbsLong
             CMP.B       #four, D3
             BEQ         DispImm
             
-AbsShort    LEA         opPer, A1           ; Display space
+AbsShort    
+			LEA         opPer, A1           ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
@@ -3804,7 +3822,8 @@ AbsShort    LEA         opPer, A1           ; Display space
             
             BRA         endSub
             
-AbsLong     LEA         opPer, A1           ; Display space
+AbsLong     
+			LEA         opPer, A1           ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
@@ -3825,7 +3844,8 @@ AbsLong     LEA         opPer, A1           ; Display space
             
             BRA         endSub
 
-DispImm     LEA         hashTag, A1         ; Display space
+DispImm     
+			LEA         hashTag, A1         ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
 
@@ -3843,7 +3863,8 @@ DispImm     LEA         hashTag, A1         ; Display space
             JSR         outHex
             BRA         LongSkip
             
-ImmLong     CLR         D1
+ImmLong     
+			CLR         D1
             MOVE.L      (A0)+, D1
             CLR         D0
             MOVE.B      #8, D0
@@ -3851,11 +3872,12 @@ ImmLong     CLR         D1
 
 LongSkip
             BRA         endSub
-invalid
 
-endSUB
-        
-            MOVEM.L  (SP)+, D0-D7/A1-A6
+invalid
+			BRA			printInvalid
+
+endSUB        
+            MOVEM.L  	(SP)+, D0-D7/A1-A6
             RTS
 
 ***********************************************************************************************************
@@ -3864,7 +3886,8 @@ endSUB
 *
 ***********************************************************************************************************
 
-MOVEMBRA    MOVEM.L 	D0-D7/A1-A6, -(SP)     ; Branches off depending on size bit
+MOVEMBRA    
+			MOVEM.L 	D0-D7/A1-A6, -(SP)     ; Branches off depending on size bit
             CMP     	#zero,D5
             BEQ      	MOVEMW
             CMP      	#one, D5
@@ -3894,8 +3917,6 @@ MOVEML
             BRA         CheckDR
 
 CheckDR     
-            
-              
             MOVE.W      (A0)+, D1           ; Taking in next word
             CMP         #zero,D6
             BEQ         printRegMem
@@ -3979,6 +4000,7 @@ DataReg0
             CMP         #mask2,D5
             BEQ         Reg0Cont
             BRA         printMem
+			
 Reg0Cont        
             LEA         dec, A1             ; Output -
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -4002,12 +4024,12 @@ DataReg1
             CMP         #mask3,D5
             BEQ         Reg1Cont
             BRA         printMem
+			
 Reg1Cont        
             LEA         dec, A1             ; Output -
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call        
             BRA         DataReg2
-
 
 DataReg2
             CLR         D5
@@ -4027,6 +4049,7 @@ DataReg2
             CMP         #mask4,D5
             BEQ         Reg2Cont
             BRA         printMem
+			
 Reg2Cont        
             LEA         dec, A1             ; Output -
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -4050,12 +4073,12 @@ DataReg3
             CMP         #mask5,D5
             BEQ         Reg3Cont
             BRA         printMem
+			
 Reg3Cont        
             LEA         dec, A1             ; Output -
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call        
             BRA         DataReg4
-
 
 DataReg4
             CLR         D5
@@ -4074,6 +4097,7 @@ DataReg4
             CMP         #mask6,D5
             BEQ         Reg4Cont
             BRA         printMem
+			
 Reg4Cont        
             LEA         dec, A1             ; Output -
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -4097,6 +4121,7 @@ DataReg5
             CMP         #mask7,D5
             BEQ         Reg5Cont
             BRA         printMem
+			
 Reg5Cont        
             LEA         dec, A1             ; Output -
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -4120,6 +4145,7 @@ DataReg6
             CMP         #mask8,D5
             BEQ         Reg6Cont
             BRA         printMem
+			
 Reg6Cont        
             LEA         dec, A1             ; Output -
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -4131,8 +4157,10 @@ DataReg7
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call        
             BRA         printMem            
+			
 printMem                                    ; Made this function in order to reuse if DR is 1
             BRA         printMemNow
+			
 printMemNow               
             LEA         slash, A1           ; Display slash
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -4189,6 +4217,7 @@ printMemNow
             AND         #mask8,D5
             CMP         #mask8,D5
             BEQ         AddrReg7
+			
 AddrReg0
             LEA         dispA0, A1          ; Output string D0
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -4200,6 +4229,7 @@ AddrReg0
             CMP         #mask2,D5
             BEQ         Addr0Cont
             BRA         endMOVE
+			
 Addr0Cont        
             LEA         dec, A1             ; Output -
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -4223,12 +4253,12 @@ AddrReg1
             CMP         #mask3,D5
             BEQ         Addr1Cont
             BRA         endMOVE
+			
 Addr1Cont        
             LEA         dec, A1             ; Output -
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call        
             BRA         AddrReg2
-
 
 AddrReg2
             CLR         D5
@@ -4236,7 +4266,6 @@ AddrReg2
             AND         #maskB,D5
             CMP         #maskB,D5
             BEQ         AddrReg3
-            
             
             LEA         dispA2, A1          ; Output string D0
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -4248,6 +4277,7 @@ AddrReg2
             CMP         #mask4,D5
             BEQ         Addr2Cont
             BRA         endMOVE
+			
 Addr2Cont        
             LEA         dec, A1             ; Output -
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -4271,12 +4301,12 @@ AddrReg3
             CMP         #mask5,D5
             BEQ         Addr3Cont
             BRA         endMOVE
+			
 Addr3Cont        
             LEA         dec, A1             ; Output -
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call        
             BRA         AddrReg4
-
 
 AddrReg4
             CLR         D5
@@ -4295,6 +4325,7 @@ AddrReg4
             CMP         #mask6,D5
             BEQ         Addr4Cont
             BRA         endMOVE
+			
 Addr4Cont        
             LEA         dec, A1             ; Output -
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -4317,6 +4348,7 @@ AddrReg5
             CMP         #mask7,D5
             BEQ         Addr5Cont
             BRA         endMOVE
+			
 Addr5Cont        
             LEA         dec, A1             ; Output -
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -4340,6 +4372,7 @@ AddrReg6
             CMP         #mask8,D5
             BEQ         Addr6Cont
             BRA         endMOVE
+			
 Addr6Cont        
             LEA         dec, A1             ; Output -
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -4371,47 +4404,53 @@ endMove1                                    ; Used if MOVEM has DR is 1
 *
 ***********************************************************************************************************
 
-outHex      MOVEM.L D0-D7/A1-A6, -(SP)
-            CLR     D3
-            CLR     D4
-            MOVE.B  D0, D4
-            MOVE.L  D1, D3
-            CMP.B   #4, D0
-            BEQ     moveOver
-            BRA     dispLOOP
+outHex      
+			MOVEM.L 	D0-D7/A1-A6, -(SP)
+            CLR     	D3
+            CLR     	D4
+            MOVE.B  	D0, D4
+            MOVE.L  	D1, D3
+            CMP.B   	#4, D0
+            BEQ     	moveOver
+            BRA     	dispLOOP
             
-moveOver    ROL.L   #8,D3
-            ROL.L   #8,D3
+moveOver    
+			ROL.L   	#8,D3
+            ROL.L   	#8,D3
             
-dispLOOP    CMP.B   #0, D4
-            BEQ     endDispSub
-            ROL.L   #4, D3
-            CLR     D5
-            MOVE.B  D3, D5 
-            AND.L   #$0F, D5
-            CMP.B   #10, D5
-            BLT     DLnine
-            BRA     DLetters
+dispLOOP    
+			CMP.B   	#0, D4
+            BEQ     	endDispSub
+            ROL.L   	#4, D3
+            CLR     	D5
+            MOVE.B  	D3, D5 
+            AND.L   	#$0F, D5
+            CMP.B   	#10, D5
+            BLT     	DLnine
+            BRA     	DLetters
             
-DLnine      ADD     #$30, D5
-            CLR     D1
-            MOVE.B  D5, D1
-            CLR     D0
-            MOVE.B  #6, D0
-            TRAP    #15
-            SUB     #1, D4
-            BRA     dispLOOP  
+DLnine      
+			ADD     	#$30, D5
+            CLR     	D1
+            MOVE.B  	D5, D1
+            CLR     	D0
+            MOVE.B  	#6, D0
+            TRAP    	#15
+            SUB     	#1, D4
+            BRA     	dispLOOP  
  
-DLetters    ADD     #$37, D5
-            CLR     D1
-            MOVE.B  D5, D1
-            CLR     D0
-            MOVE.B  #6, D0
-            TRAP    #15
-            SUB     #1, D4
-            BRA     dispLOOP        
+DLetters    
+			ADD     	#$37, D5
+            CLR     	D1
+            MOVE.B  	D5, D1
+            CLR     	D0
+            MOVE.B  	#6, D0
+            TRAP    	#15
+            SUB     	#1, D4
+            BRA     	dispLOOP        
 
-endDispSub  MOVEM.L  (SP)+, D0-D7/A1-A6
+endDispSub  
+			MOVEM.L  	(SP)+, D0-D7/A1-A6
             RTS
 
 			
@@ -4428,113 +4467,152 @@ endDispSub  MOVEM.L  (SP)+, D0-D7/A1-A6
 *
 ***********************************************************************************************************
 
-Address 	MOVEM.L D3-D7/A2-A6, -(SP)
+Address 	
+			MOVEM.L 	D3-D7/A2-A6, -(SP)
 
-Retry   	CLR     D2
-			CLR     D3
-			CMP.B   #4, D1
-			BEQ     subLOOP
-			CMP.B   #8, D1
-			BEQ     subLOOP
-			BRA     ADDinvalid        
+Retry   	
+			CLR     	D2
+			CLR     	D3
+			CMP.B  		#4, D1
+			BEQ     	subLOOP
+			CMP.B  		#8, D1
+			BEQ     	subLOOP
+			BRA     	ADDinvalid        
         
-subLOOP 	ROR     #4, D4
-			MOVE.B  D4, D2
-			CLR     D4
-			CLR     D5
-			CMP.B   D1, D3
-			BEQ     endLOOP
-			ADD.W   #2, D3
-			ROL.L   #8, D2
+subLOOP 	
+			ROR     	#4, D4
+			MOVE.B  	D4, D2
+			CLR     	D4
+			CLR     	D5
+			CMP.B   	D1, D3
+			BEQ     	endLOOP
+			ADD.W   	#2, D3
+			ROL.L   	#8, D2
         
-bytLOOP 	ROL     #4, D4
+bytLOOP 	
+			ROL     	#4, D4
         
-			CMP.B   #$30, (A1)
-			BEQ     hZero 
-			CMP.B   #$31, (A1)
-			BEQ     hOne
-			CMP.B   #$32, (A1)
-			BEQ     hTwo
-			CMP.B   #$33, (A1)
-			BEQ     hThree
-			CMP.B   #$34, (A1)
-			BEQ     hFour
-			CMP.B   #$35, (A1)
-			BEQ     hFive
-			CMP.B   #$36, (A1)
-			BEQ     hSix
-			CMP.B   #$37, (A1)
-			BEQ     hSeven
-			CMP.B   #$38, (A1)
-			BEQ     hEight
-			CMP.B   #$39, (A1)
-			BEQ     hNine
-			CMP.B   #$41, (A1)
-			BEQ     hA
-			CMP.B   #$42, (A1)
-			BEQ     hB
-			CMP.B   #$43, (A1)
-			BEQ     hC
-			CMP.B   #$44, (A1)
-			BEQ     hD
-			CMP.B   #$45, (A1)
-			BEQ     hE
-			CMP.B   #$46, (A1)
-			BEQ     hF 
-			BRA     invalid      
-hZero   	MOVE.B  #$00, D4
-			BRA     nextH
-hOne    	MOVE.B  #$10, D4
-			BRA     nextH
-hTwo    	MOVE.B  #$20, D4
-			BRA     nextH
-hThree  	MOVE.B  #$30, D4
-			BRA     nextH
-hFour   	MOVE.B  #$40, D4
-			BRA     nextH
-hFive   	MOVE.B  #$50, D4
-			BRA     nextH
-hSix    	MOVE.B  #$60, D4
-			BRA     nextH
-hSeven  	MOVE.B  #$70, D4
-			BRA     nextH
-hEight  	MOVE.B  #$80, D4
-			BRA     nextH
-hNine   	MOVE.B  #$90, D4
-			BRA     nextH
-hA      	MOVE.B  #$A0, D4
-			BRA     nextH
-hB      	MOVE.B  #$B0, D4
-			BRA     nextH
-hC      	MOVE.B  #$C0, D4
-			BRA     nextH
-hD      	MOVE.B  #$D0, D4
-			BRA     nextH
-hE      	MOVE.B  #$E0, D4
-			BRA     nextH
-hF      	MOVE.B  #$F0, D4
+			CMP.B   	#$30, (A1)
+			BEQ     	hZero 
+			CMP.B   	#$31, (A1)
+			BEQ    		hOne
+			CMP.B   	#$32, (A1)
+			BEQ     	hTwo
+			CMP.B   	#$33, (A1)
+			BEQ     	hThree
+			CMP.B   	#$34, (A1)
+			BEQ     	hFour
+			CMP.B   	#$35, (A1)
+			BEQ     	hFive
+			CMP.B   	#$36, (A1)
+			BEQ     	hSix
+			CMP.B   	#$37, (A1)
+			BEQ     	hSeven
+			CMP.B   	#$38, (A1)
+			BEQ     	hEight
+			CMP.B   	#$39, (A1)
+			BEQ    		hNine
+			CMP.B   	#$41, (A1)
+			BEQ     	hA
+			CMP.B   	#$42, (A1)
+			BEQ     	hB
+			CMP.B   	#$43, (A1)
+			BEQ     	hC
+			CMP.B   	#$44, (A1)
+			BEQ     	hD
+			CMP.B   	#$45, (A1)
+			BEQ     	hE
+			CMP.B   	#$46, (A1)
+			BEQ     	hF 
+			
+			BRA     	invalid 
+			
+hZero   	
+			MOVE.B  	#$00, D4
+			BRA     	nextH
+			
+hOne    	
+			MOVE.B  	#$10, D4
+			BRA     	nextH
+hTwo    	
+			MOVE.B  	#$20, D4
+			BRA     	nextH
+			
+hThree  	
+			MOVE.B 		#$30, D4
+			BRA     	nextH
+			
+hFour   	MOVE.B  	#$40, D4
+			BRA     	nextH
+			
+hFive   	
+			MOVE.B  	#$50, D4
+			BRA     	nextH
+			
+hSix    	
+			MOVE.B  	#$60, D4
+			BRA     	nextH
+			
+hSeven  	
+			MOVE.B  	#$70, D4
+			BRA     	nextH
+			
+hEight  	
+			MOVE.B  	#$80, D4
+			BRA     	nextH
+			
+hNine   	
+			MOVE.B  	#$90, D4
+			BRA     	nextH
+		
+hA      	
+			MOVE.B  	#$A0, D4
+			BRA     	nextH
+			
+hB      	
+			MOVE.B  	#$B0, D4
+			BRA    		nextH
+			
+hC      	
+			MOVE.B  	#$C0, D4
+			BRA     	nextH
+			
+hD      	
+			MOVE.B  	#$D0, D4
+			BRA     	nextH
+			
+hE      	
+			MOVE.B  	#$E0, D4
+			BRA     	nextH
+			
+hF      	
+			MOVE.B  	#$F0, D4
+			BRA			nextH
 
-nextH   	MOVE.B  (A1)+, D0
-			ADD     #1, D5
-			CMP.B   #2, D5
-			BEQ     subLOOP
-			BRA     bytLOOP
+nextH   	
+			MOVE.B  	(A1)+, D0
+			ADD     	#1, D5
+			CMP.B   	#2, D5
+			BEQ     	subLOOP
+			BRA     	bytLOOP
         
-ADDinvalid  LEA     errorMessage, A1
-            MOVE.B  #14, D0
-            TRAP    #15    
+ADDinvalid  
+			LEA     	errorMessage, A1
+            MOVE.B  	#14, D0
+            TRAP    	#15    
     
-            MOVE.B  #2, D0
-            TRAP    #15
+            MOVE.B  	#2, D0
+            TRAP    	#15
 
-            BRA     Retry
+            BRA     	Retry
    
-endLOOP 	MOVEM.L  (SP)+, D3-D7/A2-A6
+endLOOP 	
+			MOVEM.L  	(SP)+, D3-D7/A2-A6
 			RTS
 
 printInvalid
-			MOVE.B  (A0)+,D1
-			BRA     LOOP
+			MOVE.B  	(A0)+,D1
+			BRA     	LOOP
 
 endPROG    
 
