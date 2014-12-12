@@ -182,13 +182,13 @@ braSix
 			BRA			printInvalid		; found an un-supported opcode
 
 braEight                                	; there are two opCodes available DIVS, or OR
-            CLR     	D2
-            ASL     	#8,D1
-            MOVE.B  	(A0)+,D1
-            MOVE.W  	D1,D2
-            ASR     	#six,D2
-            AND     	#$07,D2
-            CMP.B   	#seven,D2
+            CLR     	D2					; clear D2 for use
+            ASL     	#8,D1				; Shift by eight 
+            MOVE.B  	(A0)+,D1			; Move the instruction byte into D1
+            MOVE.W  	D1,D2				; Load D2 with the word from D1
+            ASR     	#six,D2				; Shift by 6 to find second nibble
+            AND     	#$07,D2				; AND by 7 to remove unwanted bits
+            CMP.B   	#seven,D2			; Compare second nibble to 7
             BEQ     	opDIVS              ; If bits 8 - 6 are equal to 7, we have DIVS
             BRA     	opOR                ; else opcode is OR
 
@@ -196,13 +196,13 @@ braNine
 			BRA			opSUB               ; we know that there is only one opcode that is SUB
 
 braEleven                               	; there are two opCodes available EOR, or CMP
-            CLR     	D2
-            ASL     	#8,D1
-            MOVE.B  	(A0)+,D1
-            MOVE.W  	D1,D2
-            ASR     	#six,D2
-            AND     	#$07,D2
-            CMP.B   	#three,D2
+            CLR     	D2					; clear D2 for use
+            ASL     	#8,D1				; Shift by eight for
+            MOVE.B  	(A0)+,D1			; Re-load the instruction byte into D1
+            MOVE.W  	D1,D2				; Move the word into D2 for the comparison
+            ASR     	#six,D2				; Shift by 6 to find second nibble
+            AND     	#$07,D2				; AND by 7 to remove unwanted bits
+            CMP.B   	#three,D2			; Compare second nibble to 3
             BLT     	opCMP               ; If opmode bits are less than 3, we have CMP
             BGT     	opEOR               ; Else its EOR
 
@@ -1273,302 +1273,318 @@ opLEA
 *
 *               	OR OPCODE
 *
+*		This section is dedicated to the OR opcode. This is determined that the first nibble is 8, and the
+*		second nibble is not 7 (or we would have DIVS), we must have OR.
+*		OR is varied by the operand direction. We have and EA to Dn, and DN to EA operation.
+*		These operand directions determine our opmode, which we use to disassemble.
+*
 ***********************************************************************************************************
 			
-opOR       
-			LEA         ORmatch,A1
-            MOVE.B      #14,D0
-            TRAP        #15
+opOR       									; Assumed we found OR, begin disassemble
+			LEA         ORmatch,A1			; Output OR to the IO console
+            MOVE.B      #14,D0				; Use trap 14
+            TRAP        #15					; Halt for IO
 			
-			ASL			#eight,D1
-			MOVE.B		D1,D2
+			ASL			#eight,D1			; Shift D1 by eight to find opmode
+			MOVE.B		D1,D2				; Load D2 with the resulting byte
             
-            CLR         D2
             ; These are for EA to Dn direction
-            CMP.B       #zero,D2
+            CMP.B       #zero,D2			; Check for a byte
             BEQ         opORB               ; Byte in opmode
-            CMP.B       #one,D2
+            CMP.B       #one,D2				; Check for a word
             BEQ         opORW               ; Word in opmode
-            CMP.B       #two,D2
+            CMP.B       #two,D2				; Check for a long
             BEQ         opORL               ; Long in opmode
             
             ; These are for Dn to EA direction
-            CMP.B       #four,D2
+            CMP.B       #four,D2			; Check for a byte
             BEQ         opORB               ; Byte in opmode
-            CMP.B       #five,D2
+            CMP.B       #five,D2			; Check for a word
             BEQ         opORW               ; Word in opmode
-            CMP.B       #six,D2
+            CMP.B       #six,D2				; Check for a long
             BEQ         opORL               ; Long in opmode
             
-opORB       LEA         dispByte,A1
-            MOVE.B      #14,D0
-            TRAP        #15
+opORB       								; Byte determined, find operands from here
+			LEA         dispByte,A1			; Display our byte info
+            MOVE.B      #14,D0				; Trap #14 for our IO
+            TRAP        #15					; Halt for IO
             
             LEA         space, A1           ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
 
-            MOVE.B      D1,D2
-            ASR         #3,D2
-            AND         #$07,D2
-            MOVE.B      D1,D3
-            AND         #$07,D3
+            MOVE.B      D1,D2				; Load D2 again with the byte in D1
+            ASR         #3,D2				; Shift by 3 for finding 1 operand
+            AND         #$07,D2				; AND by 7 to remove extras
+            MOVE.B      D1,D3				; Load D3 with more necessary EA info
+            AND         #$07,D3				; AND by 7 to remove extra bits
             JSR         printEA         	; Determines the "left" operand register
             
             LEA         comma, A1           ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            CLR         D2
-            MOVE.W      D1,D3
-            ASR         #eight,D3
-            ASR         #one,D3
-            AND         #$07,D3
-            JSR         printEA
+            CLR         D2					; Clear D2 for use
+			MOVE.W      D1,D3				; Move our word into D3 for EA use
+            ASR         #eight,D3			; Shift by 8 to isolate EA info
+            ASR         #one,D3				; We need additional shift, so total shifts is by 9
+            AND         #$07,D3				; AND to remove extra data
+            JSR         printEA				; Redirect to EA subroutine to find EA operand info
             
-            LEA         newLine,A1
-            MOVE.B      #14,D0
-            TRAP        #15
+            LEA         newLine,A1			; Prime a new line for the next instruction
+            MOVE.B      #14,D0				; Send it to the console
+            TRAP        #15					; IO halt here
             
-            BRA         LOOP
+            BRA         LOOP				; Return to control loop to find additional instructions
             
             
-opORW       LEA         dispWord,A1
-            MOVE.B      #14,D0
-            TRAP        #15
-            
-            LEA         space, A1           ; Display space
-            MOVE.B      #14, D0             ; command for trap call to display message
-            TRAP        #15                 ; trap call
-            
-            CLR         D2
-            MOVE.B      D1,D2
-            ASR         #3,D2
-            AND         #$07,D2
-            MOVE.B      D1,D3
-            AND         #$07,D3
-            JSR         printEA         ; Determines the "left" operand register
-            
-            LEA         comma, A1           ; Display space
-            MOVE.B      #14, D0             ; command for trap call to display message
-            TRAP        #15                 ; trap call
-            
-            CLR         D2
-            MOVE.W      D1,D3
-            ASR         #eight,D3
-            ASR         #one,D3
-            AND         #$07,D3
-            JSR         printEA
-            
-            LEA         newLine,A1
-            MOVE.B      #14,D0
-            TRAP        #15
-            
-            BRA         LOOP
-            
-opORL       LEA         dispLong,A1
-            MOVE.B      #14,D0
-            TRAP        #15
+opORW       								; Word opmode has been found
+			LEA         dispWord,A1			; Display our word info
+            MOVE.B      #14,D0				; Trap #14 for our IO
+            TRAP        #15					; Halt for IO
             
             LEA         space, A1           ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            MOVE.B      D1,D2
-            ASR         #3,D2
-            AND         #$07,D2
-            MOVE.B      D1,D3
-            AND         #$07,D3
+
+            MOVE.B      D1,D2				; Load D2 again with the byte in D1
+            ASR         #3,D2				; Shift by 3 for finding 1 operand
+            AND         #$07,D2				; AND by 7 to remove extras
+            MOVE.B      D1,D3				; Load D3 with more necessary EA info
+            AND         #$07,D3				; AND by 7 to remove extra bits
             JSR         printEA         	; Determines the "left" operand register
             
             LEA         comma, A1           ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            CLR         D2
-            MOVE.W      D1,D3
-            ASR         #eight,D3
-            ASR         #one,D3
-            AND         #$07,D3
-            JSR         printEA
+            CLR         D2					; Clear D2 for use
+			MOVE.W      D1,D3				; Move our word into D3 for EA use
+            ASR         #eight,D3			; Shift by 8 to isolate EA info
+            ASR         #one,D3				; We need additional shift, so total shifts is by 9
+            AND         #$07,D3				; AND to remove extra data
+            JSR         printEA				; Redirect to EA subroutine to find EA operand info
             
-            LEA         newLine,A1
-            MOVE.B      #14,D0
-            TRAP        #15
+            LEA         newLine,A1			; Prime a new line for the next instruction
+            MOVE.B      #14,D0				; Send it to the console
+            TRAP        #15					; IO halt here
             
-            BRA         LOOP            	; trap call
+            BRA         LOOP				; Return to control loop to find additional instructions
+            
+opORL       								; Long value has been found for OR
+			LEA         dispLong,A1			; Display our long info
+            MOVE.B      #14,D0				; Trap #14 for our IO
+            TRAP        #15					; Halt for IO
+            
+            LEA         space, A1           ; Display space
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+            
+
+            MOVE.B      D1,D2				; Load D2 again with the byte in D1
+            ASR         #3,D2				; Shift by 3 for finding 1 operand
+            AND         #$07,D2				; AND by 7 to remove extras
+            MOVE.B      D1,D3				; Load D3 with more necessary EA info
+            AND         #$07,D3				; AND by 7 to remove extra bits
+            JSR         printEA         	; Determines the "left" operand register
+            
+            LEA         comma, A1           ; Display space
+            MOVE.B      #14, D0             ; command for trap call to display message
+            TRAP        #15                 ; trap call
+            
+            CLR         D2					; Clear D2 for use
+			MOVE.W      D1,D3				; Move our word into D3 for EA use
+            ASR         #eight,D3			; Shift by 8 to isolate EA info
+            ASR         #one,D3				; We need additional shift, so total shifts is by 9
+            AND         #$07,D3				; AND to remove extra data
+            JSR         printEA				; Redirect to EA subroutine to find EA operand info
+            
+            LEA         newLine,A1			; Prime a new line for the next instruction
+            MOVE.B      #14,D0				; Send it to the console
+            TRAP        #15					; IO halt here
+            
+            BRA         LOOP				; Return to control loop to find additional instructions
 			
 ***********************************************************************************************************
 *
 *               	DIVS OPCODE
 *
+*		This section is dedicate to the DIVS instruction, which is determined by a 8 in the first nibble
+*		and a 7 in the second nibble of the instruction.
+*		DIVSL is not supported, so the following code only accounts for the case of DIVS, which is short
+*		instead of a long
+*
 ***********************************************************************************************************
 
-opDIVS      
-			LEA     	DIVSmatch,A1
-            MOVE.B  	#14,D0
-            TRAP    	#15
+opDIVS      								; Second nibble determined that the instruction was DIVS
+			LEA     	DIVSmatch,A1		; Load DIVS into A1 for output console
+            MOVE.B  	#14,D0				; Get trap task #14 for IO
+            TRAP    	#15					; Trap call to halt
             
             LEA         space, A1           ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
-            TRAP        #15                 ; trap call
+            TRAP        #15                 ; trap to halt
             
-            MOVE.B      D1,D2
-            ASR         #3,D2
-            AND         #$07,D2
-            MOVE.B      D1,D3
-            AND         #$07,D3
-            JSR         printEA
+            MOVE.B      D1,D2				; Move our byte from D1 to D2 to manipulate
+            ASR         #3,D2				; Shift by 3 to find register
+            AND         #$07,D2				; AND by 7 to clear unnecessary bits
+            MOVE.B      D1,D3				; Load the byte into D3 for EA comparison
+            AND         #$07,D3				; AND by 7 to clear unnecessary bits
+            JSR         printEA				; Call our EA subroutine to obtain EA bits from instruction
             
             LEA         comma, A1           ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
-            TRAP        #15                 ; trap call
+            TRAP        #15                 ; trap to halt call
             
-            CLR         D2
-            MOVE.W      D1,D3
-            ASR         #eight,D3
-            ASR         #one,D3
-            AND         #$07,D3
-            JSR         printEA
+            CLR         D2					; Clear old data from D2 to avoid errors
+            MOVE.W      D1,D3				; Move word into D3 for EA subroutine
+            ASR         #eight,D3			; Shift by 8 to find to find the remaining EA components
+            ASR         #one,D3				; Additional shift by 1 to get proper bits
+            AND         #$07,D3				; AND to clear unwanted bits
+            JSR         printEA				; Obtain other operand info
             
-            LEA         newLine,A1
-            MOVE.B      #14,D0
-            TRAP        #15
+            LEA         newLine,A1			; Prepare new line for next instruction
+            MOVE.B      #14,D0				; Utilize trap task 14
+            TRAP        #15					; Halt for IO
             
-            BRA         LOOP
-    
-            BRA     LOOP
+            BRA         LOOP				; Return to control loop
             
 **********************************************************************************************************
 *
 *               	EOR OPCODE
 *
+*		This sectioon is dedicated to the EOR opcode. We determine this with an 11 in the first nibble, and
+*		a value higher than 3 in the second nibble.
+*		The opmode fields is used to differ this instruction from CMP.
+*		Dissassembly acquires opmode field info, which is similar to size, and to different EA related
+*		operands.
+*
 ***********************************************************************************************************
 
-opEOR       
-			LEA         EORmatch,A1
-            MOVE.B      #14,D0
-            TRAP        #15
+opEOR       								; We found EOR, begin disassembly
+			LEA         EORmatch,A1			; Load A1 with our EOR output
+            MOVE.B      #14,D0				; Prime trap task #14
+            TRAP        #15					; Halt for IO
             
-            CLR         D2
+            CLR         D2					; Clear D2 for use again
             
-            MOVE.B      D1,D2
+            MOVE.B      D1,D2				; Move byte used in D1 to D2 for opmode check
             ASR         #seven,D2           ; Move bits 7 places over to find opmode
-            AND         #$07,D2
-            CMP.B       #five,D2
+            AND         #$07,D2				; AND by 7 to clear extra bits
+            CMP.B       #five,D2			; Check for a byte in opmode
             BLT         opEORB              ; Byte in opmode
-            CMP.B       #five,D2
+            CMP.B       #five,D2			; Check for a word in opmode
             BEQ         opEORW              ; Word in opmode
-            CMP.B       #five,D2
+            CMP.B       #five,D2			; Check for a long in opmode
             BGT         opEORL              ; Long in opmode
             
-opEORB      
-			LEA         dispByte,A1
-            MOVE.B      #14,D0
-            TRAP        #15
+opEORB      								; Determine instruction is a byte operation
+			LEA         dispByte,A1			; Send out the byte info for the instruction
+            MOVE.B      #14,D0				; Utilize trap task 14
+            TRAP        #15					; Halt for IO
             
             LEA         space, A1           ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
-            TRAP        #15                 ; trap call
+            TRAP        #15                 ; trap call to halt
             
-            CLR         D2
-            CLR         D3
-            MOVE.W      D1,D3
-            ASR         #eight,D3
-            ASR         #one,D3
-            AND         #$07,D3
-            JSR         printEA
+            CLR         D2					; Clear D2 again for use
+            CLR         D3					; Remove anything from D3
+            MOVE.W      D1,D3				; Move word to D3 to find an operand
+            ASR         #eight,D3			; Shift by eight to ensure correct portion of instruction
+            ASR         #one,D3				; Needs to be shifted by an additional 1
+            AND         #$07,D3				; Clear extra bits 
+            JSR         printEA				; Use EA subroutine to print operand
             
             LEA         comma, A1           ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            CLR         D2
-            CLR         D3
-            MOVE.B      D1,D2
-            ASR         #three,D2
-            AND         #seven,D2
-            MOVE.B      D1,D3
-            AND         #$07,D3
-            JSR         printEA         	; Determines the "left" operand register
+            CLR         D2					; Clear D2 again
+            CLR         D3					; Clear D3 again
+            MOVE.B      D1,D2				; Move the byte value in D1 to D2 for EA use
+            ASR         #three,D2			; Shift by 3 to find EA info
+			AND         #seven,D2			; AND by 7 to remove extra bits
+            MOVE.B      D1,D3				; Move byte value from D1 into D3
+            AND         #$07,D3				; AND by 7 for EA subroutine
+            JSR         printEA         	; Determines remained operand EA info to print
             
-            LEA         newLine,A1
-            MOVE.B      #14,D0
-            TRAP        #15
+            LEA         newLine,A1			; Print new line for next instruction
+            MOVE.B      #14,D0				; Use trap 14 to output to console
+            TRAP        #15					; Halt for IO
             
-            BRA         LOOP
-            
-            
-opEORW      
-			LEA         dispWord,A1
-            MOVE.B      #14,D0
-            TRAP        #15
+            BRA         LOOP				; Return to control loop
+             
+opEORW      								; Word opmode has been determined
+			LEA         dispWord,A1			; Send out the word info for the instruction
+            MOVE.B      #14,D0				; Utilize trap task 14
+            TRAP        #15					; Halt for IO
             
             LEA         space, A1           ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
-            TRAP        #15                 ; trap call
+            TRAP        #15                 ; trap call to halt
             
-            CLR         D2
-            CLR         D3
-            MOVE.W      D1,D3
-            ASR         #eight,D3
-            ASR         #one,D3
-            AND         #$07,D3
-            JSR         printEA
+            CLR         D2					; Clear D2 again for use
+            CLR         D3					; Remove anything from D3
+            MOVE.W      D1,D3				; Move word to D3 to find an operand
+            ASR         #eight,D3			; Shift by eight to ensure correct portion of instruction
+            ASR         #one,D3				; Needs to be shifted by an additional 1
+            AND         #$07,D3				; Clear extra bits 
+            JSR         printEA				; Use EA subroutine to print operand
             
             LEA         comma, A1           ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            CLR         D2
-            CLR         D3
-            MOVE.B      D1,D2
-            ASR         #three,D2
-            AND         #seven,D2
-            MOVE.B      D1,D3
-            AND         #$07,D3
-            JSR         printEA         	; Determines the "left" operand register
+            CLR         D2					; Clear D2 again
+            CLR         D3					; Clear D3 again
+            MOVE.B      D1,D2				; Move the byte value in D1 to D2 for EA use
+            ASR         #three,D2			; Shift by 3 to find EA info
+			AND         #seven,D2			; AND by 7 to remove extra bits
+            MOVE.B      D1,D3				; Move byte value from D1 into D3
+            AND         #$07,D3				; AND by 7 for EA subroutine
+            JSR         printEA         	; Determines remained operand EA info to print
             
-            LEA         newLine,A1
-            MOVE.B      #14,D0
-            TRAP        #15
+            LEA         newLine,A1			; Print new line for next instruction
+            MOVE.B      #14,D0				; Use trap 14 to output to console
+            TRAP        #15					; Halt for IO
             
-            BRA         LOOP
+            BRA         LOOP				; Return to control loop
             
-opEORL     
-			LEA         dispLong,A1
-            MOVE.B      #14,D0
-            TRAP        #15
+opEORL     									; Long has been determined
+			LEA         dispLong,A1			; Send out the long word info for the instruction
+            MOVE.B      #14,D0				; Utilize trap task 14
+            TRAP        #15					; Halt for IO
             
             LEA         space, A1           ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
-            TRAP        #15                 ; trap call
+            TRAP        #15                 ; trap call to halt
             
-            CLR         D2
-            CLR         D3
-            MOVE.W      D1,D3
-            ASR         #eight,D3
-            ASR         #one,D3
-            AND         #$07,D3
-            JSR         printEA
+            CLR         D2					; Clear D2 again for use
+            CLR         D3					; Remove anything from D3
+            MOVE.W      D1,D3				; Move word to D3 to find an operand
+            ASR         #eight,D3			; Shift by eight to ensure correct portion of instruction
+            ASR         #one,D3				; Needs to be shifted by an additional 1
+            AND         #$07,D3				; Clear extra bits 
+            JSR         printEA				; Use EA subroutine to print operand
             
             LEA         comma, A1           ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            CLR         D2
-            CLR         D3
-            MOVE.B      D1,D2
-            ASR         #three,D2
-            AND         #seven,D2
-            MOVE.B      D1,D3
-            AND         #$07,D3
-            JSR         printEA         	; Determines the "left" operand register
+            CLR         D2					; Clear D2 again
+            CLR         D3					; Clear D3 again
+            MOVE.B      D1,D2				; Move the byte value in D1 to D2 for EA use
+            ASR         #three,D2			; Shift by 3 to find EA info
+			AND         #seven,D2			; AND by 7 to remove extra bits
+            MOVE.B      D1,D3				; Move byte value from D1 into D3
+            AND         #$07,D3				; AND by 7 for EA subroutine
+            JSR         printEA         	; Determines remained operand EA info to print
             
-            LEA         newLine,A1
-            MOVE.B      #14,D0
-            TRAP        #15
+            LEA         newLine,A1			; Print new line for next instruction
+            MOVE.B      #14,D0				; Use trap 14 to output to console
+            TRAP        #15					; Halt for IO
             
             BRA         LOOP				; Return to the control loop
 
@@ -1707,137 +1723,141 @@ opCMPL      								; Known we have CMP.L, find and output operands
 *
 *               	SUB OPCODE
 *
+*		This section is dedicated to disassembling the SUB opcode. We assume that the first nibble being 9
+*		leads us to the SUB opcode.
+*		SUB is differed by a operand direction, that being Dn - EA or EA - Dn.
+*		These directions are deteremined as an opmode, and doubles up for each byte, long, and word mode.
+*
 ***********************************************************************************************************
 
-opSUB       
-			LEA         SUBmatch, A1        ; we know that the opcode will be SUB, so load A1 to print message
+opSUB       								; We assume we found SUB, begin SUB disassemble
+			LEA         SUBmatch, A1        ; Load A1 to print SUB found message
             MOVE.B      #14, D0             ; command for trap call to display message
-            TRAP        #15                 ; trap call
+            TRAP        #15                 ; trap call to halt
         
         
-            ASL         #eight,D1
-            MOVE.B      (A0)+,D1
-            CLR         D2
+            ASL         #eight,D1			; Shift D1 to by 8 to find opmode
+            MOVE.B      (A0)+,D1			; Reload instruction
+            CLR         D2					; Ensure D2 is clear
             
-            MOVE.W      D1,D2
+            MOVE.W      D1,D2				; Load our word into D2 to manipulate
             ASR         #six,D2         	; Move bits 7 places over to find opmode
-            AND         #seven,D2
+            AND         #seven,D2			; AND by 7 to remove extra bits
             
-            ; These are for DN - EA
-            CMP.B       #zero,D2
+            ; These are for Dn - EA
+            CMP.B       #zero,D2			; Check for byte
             BEQ         opSUBB              ; Byte in opmode
-            CMP.B       #one,D2
+            CMP.B       #one,D2				; Check for word
             BEQ         opSUBW              ; Word in opmode
-            CMP.B       #two,D2
+            CMP.B       #two,D2				; Check for long
             BEQ         opSUBL              ; Long in opmode
             
-            ; These are for EA - DN
-            CMP.B       #four,D2
+            ; These are for EA - Dn
+            CMP.B       #four,D2			; Check for byte
             BEQ         opSUBB              ; Byte in opmode
-            CMP.B       #five,D2
+            CMP.B       #five,D2			; Check for word
             BEQ         opSUBW              ; Word in opmode
-            CMP.B       #six,D2
+            CMP.B       #six,D2				; Check for long
             BEQ         opSUBL              ; Long in opmode
             
-opSUBB      
-			LEA         dispByte,A1
-            MOVE.B      #14,D0
-            TRAP        #15
+opSUBB      								; Byte has been found, find operands
+			LEA         dispByte,A1			; Output the byte info to the console
+            MOVE.B      #14,D0				; Use trap task 14 for IO
+            TRAP        #15					; Halt for IO
             
             LEA         space, A1           ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call         
             
-            MOVE.B      D1,D2
-            ASR         #3,D2
-            AND         #$07,D2
-            MOVE.W      D1,D3
-            AND         #$07,D3
-            JSR         printEA         	; Determines the "left" operand register
+            MOVE.B      D1,D2				; Load D2 with our D1 byte
+            ASR         #3,D2				; Shift by 3 to find an operand
+            AND         #$07,D2				; AND by 7 to remove extra bits
+            MOVE.W      D1,D3				; Load D3 with our word in D1
+            AND         #$07,D3				; AND by 7 to remove extra bits
+            JSR         printEA         	; Use EA subroutine to find an operand
             
             LEA         comma, A1           ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            CLR         D2
-            MOVE.W      D1,D3
-            ASR         #eight,D3
-            ASR         #one,D3
-            AND         #$07,D3
-            JSR         printEA
+            CLR         D2					; Empty D2 for use again
+            MOVE.W      D1,D3				; Load the word again into D3
+            ASR         #eight,D3			; Shift by 8 to find other operand
+            ASR         #one,D3				; Requires an additional shift
+            AND         #$07,D3				; AND by 7 to remove extra bits
+            JSR         printEA				; EA subroutine finds our remaining operand
             
-            LEA         newLine,A1
-            MOVE.B      #14,D0
-            TRAP        #15
+            LEA         newLine,A1			; Ready console with newline
+            MOVE.B      #14,D0				; Trap 14 for output
+            TRAP        #15					; Halt for IO
             
-            BRA         LOOP
+            BRA         LOOP				; Return to control loop
             
-            
-opSUBW      
-			LEA         dispWord,A1
-            MOVE.B      #14,D0
-            TRAP        #15
+opSUBW      								; Word has been found, find operands
+			LEA         dispWord,A1			; Output the word info to the console
+            MOVE.B      #14,D0				; Use trap task 14 for IO
+            TRAP        #15					; Halt for IO
             
             LEA         space, A1           ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call         
             
-            MOVE.B      D1,D2
-            ASR         #3,D2
-            AND         #$07,D2
-            MOVE.W      D1,D3
-            AND         #$07,D3
-            JSR         printEA         ; Determines the "left" operand register
+            MOVE.B      D1,D2				; Load D2 with our D1 byte
+            ASR         #3,D2				; Shift by 3 to find an operand
+            AND         #$07,D2				; AND by 7 to remove extra bits
+            MOVE.W      D1,D3				; Load D3 with our word in D1
+            AND         #$07,D3				; AND by 7 to remove extra bits
+            JSR         printEA         	; Use EA subroutine to find an operand
             
             LEA         comma, A1           ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            CLR         D2
-            MOVE.W      D1,D3
-            ASR         #eight,D3
-            ASR         #one,D3
-            AND         #$07,D3
-            JSR         printEA
+            CLR         D2					; Empty D2 for use again
+            MOVE.W      D1,D3				; Load the word again into D3
+            ASR         #eight,D3			; Shift by 8 to find other operand
+            ASR         #one,D3				; Requires an additional shift
+            AND         #$07,D3				; AND by 7 to remove extra bits
+            JSR         printEA				; EA subroutine finds our remaining operand
             
-            LEA         newLine,A1
-            MOVE.B      #14,D0
-            TRAP        #15
+            LEA         newLine,A1			; Ready console with newline
+            MOVE.B      #14,D0				; Trap 14 for output
+            TRAP        #15					; Halt for IO
             
-            BRA         LOOP
+            BRA         LOOP				; Return to control loop
             
-opSUBL      
-			LEA         dispLong,A1
-            MOVE.B      #14,D0
-            TRAP        #15
+opSUBL      								; Long has been found, find operands
+			LEA         dispLong,A1			; Output the long info to the console
+            MOVE.B      #14,D0				; Use trap task 14 for IO
+            TRAP        #15					; Halt for IO
             
             LEA         space, A1           ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call         
             
-            MOVE.B      D1,D2
-            ASR         #3,D2
-            AND         #$07,D2
-            MOVE.W      D1,D3
-            AND         #$07,D3
-            JSR         printEA         ; Determines the "left" operand register
+            MOVE.B      D1,D2				; Load D2 with our D1 byte
+            ASR         #3,D2				; Shift by 3 to find an operand
+            AND         #$07,D2				; AND by 7 to remove extra bits
+            MOVE.W      D1,D3				; Load D3 with our word in D1
+            AND         #$07,D3				; AND by 7 to remove extra bits
+            JSR         printEA         	; Use EA subroutine to find an operand
             
             LEA         comma, A1           ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            CLR         D2
-            MOVE.W      D1,D3
-            ASR         #eight,D3
-            ASR         #one,D3
-            AND         #$07,D3
-            JSR         printEA
+            CLR         D2					; Empty D2 for use again
+            MOVE.W      D1,D3				; Load the word again into D3
+            ASR         #eight,D3			; Shift by 8 to find other operand
+            ASR         #one,D3				; Requires an additional shift
+            AND         #$07,D3				; AND by 7 to remove extra bits
+            JSR         printEA				; EA subroutine finds our remaining operand
             
-            LEA         newLine,A1
-            MOVE.B      #14,D0
-            TRAP        #15
+            LEA         newLine,A1			; Ready console with newline
+            MOVE.B      #14,D0				; Trap 14 for output
+            TRAP        #15					; Halt for IO
             
-            BRA         LOOP 
+            BRA         LOOP				; Return to control loop
             
 ***********************************************************************************************************
 *
@@ -1988,67 +2008,64 @@ opBLT
 *
 *               SUBQ OPCODE
 *
-*
+*		This section is for disassembling the SUBQ instruction, which is determined by a 5 in the first
+*		nibble.
+*		We assume there is only 1 opcode with 5 in the first nibble.
+*		SUBQ utilizes immediate data, so we use an alternate subroutine for operand output.
+*		The size field is used to branch to the subvariants of SUBQ, which we determine before hitting the
+*		final subroutines.
 *
 ***********************************************************************************************************
 
-opSUBQ      
-            LEA         SUBQmatch, A1       ; we know that the opcode will be SUBQ, so load A1 to print message
+opSUBQ      								; Assumed that we found SUBQ, begin disassemble
+            LEA         SUBQmatch, A1       ; Send out SUBQ message
             MOVE.B      #14, D0             ; command for trap call to display message
-            TRAP        #15                 ; trap call
+            TRAP        #15                 ; trap call to halt
             
-			ASL			#eight,D1
-			MOVE.B		(A0)+,D1
-            MOVE.B      D1,D2
+			ASL			#eight,D1			; Shift by 8 to find size bits
+			MOVE.B		(A0)+,D1			; Reload D1
+            MOVE.B      D1,D2				; Move data in D2 to alter later
             ASR         #seven,D2           ; Move bits 7 places over to find size
-            AND         #$07,D2
+            AND         #$07,D2				; AND by 7 to remove uneeded bits
             
             ; Find size bits
-            CMP.B       #zero,D2
+            CMP.B       #zero,D2			; Check for a byte
             BEQ         opSUBQB             ; Byte in size
-            CMP.B       #one,D2
+            CMP.B       #one,D2				; Check for a word
             BEQ         opSUBQW             ; Word in size
-            CMP.B       #two,D2
+            CMP.B       #two,D2				; Check for a long
             BEQ         opSUBQL             ; Long in size
             
+opSUBQB     								; Found a byte in size, prepare for JSR
+			LEA         dispByte,A1			; Display the byte in the console
+            MOVE.B      #14,D0				; Trap task 14 for IO
+            TRAP        #15 				; Halt for IO
+          
+            JSR         PrntImm				; Call immediate data subroutine to handle SUBQ operands
             
-opSUBQB     
-			LEA         dispByte,A1
-            MOVE.B      #14,D0
-            TRAP        #15 
+            BRA         LOOP				; Return to control loop
             
-            *ASL         #eight,D1
-            *MOVE.B      (A0)+,D1
-            JSR         PrntImm
+opSUBQW     								; Found a word in size, prepare for JSR
+			LEA         dispWord,A1			; Display the word in the console
+            MOVE.B      #14,D0				; Trap task 14 for IO
+            TRAP        #15 				; Halt for IO
+          
+            JSR         PrntImm				; Call immediate data subroutine to handle SUBQ operands
             
-            BRA         LOOP
+            BRA         LOOP				; Return to control loop
             
-opSUBQW     
-			LEA         dispWord,A1
-            MOVE.B      #14,D0
-            TRAP        #15
+opSUBQL     								; Found a long in size, prepare for JSR
+			LEA         dispLong,A1			; Display the long in the console
+            MOVE.B      #14,D0				; Trap task 14 for IO
+            TRAP        #15 				; Halt for IO
+          
+			CLR         D6					; In the long size case, we need to ensure D6 is clear for the JSR call
+            MOVE.B      #1,D6				; Needed to ensure proper immediate data is output to the console
+		  
+            JSR         PrntImm				; Call immediate data subroutine to handle SUBQ operands
             
-            *ASL         #eight,D1
-            *MOVE.B      (A0)+,D1
-            JSR         PrntImm
-            
-            BRA         LOOP
-            
-opSUBQL     
-			LEA         dispLong,A1
-            MOVE.B      #14,D0
-            TRAP        #15
-            
-            *ASL         #eight,D1
-            *MOVE.B      (A0)+,D1
-            
-            CLR         D6
-            MOVE.B      #1,D6
-            
-            JSR         PrntImm         
-            
-            BRA         LOOP            ; trap call
-			
+            BRA         LOOP				; Return to control loop
+     	
 ***********************************************************************************************************
 *
 *					MULS OPCODE
@@ -4721,6 +4738,8 @@ dispD6      	DC.B    'D6', 0
 dispD7      	DC.B    'D7', 0 
  
            END    START                ; last line of source
+
+
 
 
 
