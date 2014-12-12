@@ -24,7 +24,15 @@ START:                  ; first instruction of program
     LSL.L       D6,D4
     ROL.W       #$7,D0
     ADD.L       $0400A314,D1
-    
+    MOVEM.L (SP)+,D2-D5/A1-A3
+    MOVEM.L D5/A2,-(SP)
+    MOVEM.W D0-D7/A0-A7,$5435
+    MOVEM.L D0-D7/A0-A7,-(A2)
+    MOVEM.L (SP)+,D2-D5/A1-A3
+    MOVEM.L D5/A2,-(SP)
+
+    MOVEM.W D0-D7/A0-A7,$5435
+    MOVEM.L D0-D7/A0-A7,-(A2)
     DIVS		D2,D1
     SUB.L		D3,D6
 	CMP.B		#0,D1
@@ -49,6 +57,7 @@ banana
 * Put variables and constants here
 
     END    START        ; last line of source
+
 
 
 

@@ -306,6 +306,8 @@ regShifts
 ***********************************************************************************************************
 *
 *               	ORI OPCODE
+*       ORI starts out with size branching. Will compare sizes and branch to appropriate size.
+*       Once size is found, code will print out ORI and continue to find mode and register and print it out
 *
 ***********************************************************************************************************
 
@@ -317,14 +319,14 @@ opORI
 			MOVE.B      (A0)+, D1
 			MOVE.B      D1,D2               ; copy data over
 			ASR         #6,D2               ; shifts 6 bits over to read just the size        
-			CMP.B       #zero,D2
-			BEQ         opORIB
-			CMP.B       #one,D2
-			BEQ         opORIW
-			CMP.B       #two,D2
-			BEQ         opORIL
+			CMP.B       #zero,D2            ; Size is 0, must be byte
+			BEQ         opORIB              ; Branch to ORIB to print and deal with the byte
+			CMP.B       #one,D2             ; Compare size to one
+			BEQ         opORIW              ; If size is one, then ORI is dealing with a word.
+			CMP.B       #two,D2             ; Compare size to two
+			BEQ         opORIL              ; If size is two then move onto deal with long in opORIL
         
-			BRA         printInvalid
+			BRA         printInvalid        ; None matches, invalid code. Branch off.
         
 opORIB  	
 			LEA         dispByte, A1        ; Display byte
@@ -335,37 +337,37 @@ opORIB
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			CLR         D4
-			MOVE.B      D1,D4
-			ASR         #three,D4
-			AND         #seven,D4
-			CLR         D5        
-			MOVE.B      D1,D5
-			AND         #seven,D5
+			CLR         D4                  ; Clear D4 to use as temporary register for destination mode
+			MOVE.B      D1,D4               ; Move byte over to D4 to use
+			ASR         #three,D4           ; Moves out insignifcant bits to find mode
+			AND         #seven,D4           ; Clear other bits besides mode
+			CLR         D5                  ; Use D5 as temporary register for destination regsiter
+			MOVE.B      D1,D5               ; Move data over to isolate mode
+			AND         #seven,D5           ; Isolate the mode
         
-			CLR         D3
-			CLR         D2
-			MOVE.B      #four,D3
-			MOVE.B      #seven,D2
-
-			JSR         printEA
+			CLR         D3                  ; Clear D3 to move register into it
+			CLR         D2                  ; Clear D2 to move mode into it
+			MOVE.B      #four,D3            ; Set values to be used in printEA
+			MOVE.B      #seven,D2           ; Set values to be used in printEA
+    
+            JSR         printEA             ; Jump to sub routine printEA to print out the effective address
         
 			LEA         comma, A1           ; Display space
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			CLR         D2
-			CLR         D3
-			MOVE.B      D4,D2
-			MOVE.B      D5,D3
+			CLR         D2                  ; Clear out D2 to move destination mode in
+			CLR         D3                  ; Clear out D3 to move destintion register in
+			MOVE.B      D4,D2               ; Move destination mode into D2 to be used in print EA
+			MOVE.B      D5,D3               ; Move destination register into D3 to be used in printEA
         
-			JSR         printEA
+            JSR         printEA             ; Jump to sub routine printEA to print out the effective address
         
 			LEA         newLine, A1           ; Display space
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			BRA         LOOP
+            BRA         LOOP                ; Branch back to outer most loop that finds the first four bits
         
 opORIW  	
 			LEA         dispWord, A1        ; Display byte
@@ -376,37 +378,37 @@ opORIW
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			CLR         D4
-			MOVE.B      D1,D4
-			ASR         #three,D4
-			AND         #seven,D4
-			CLR         D5        
-			MOVE.B      D1,D5
-			AND         #seven,D5
+			CLR         D4                  ; Clear D4 to use as temporary register for destination mode
+			MOVE.B      D1,D4               ; Move byte over to D4 to use
+			ASR         #three,D4           ; Moves out insignifcant bits to find mode
+			AND         #seven,D4           ; Clear other bits besides mode
+			CLR         D5                  ; Use D5 as temporary register for destination regsiter
+			MOVE.B      D1,D5               ; Move data over to isolate mode
+			AND         #seven,D5           ; Isolate the mode
         
-			CLR         D3
-			CLR         D2
-			MOVE.B      #four,D3
-			MOVE.B      #seven,D2
+			CLR         D3                  ; Clear D3 to move register into it
+			CLR         D2                  ; Clear D2 to move mode into it
+			MOVE.B      #four,D3            ; Set values to be used in printEA
+			MOVE.B      #seven,D2           ; Set values to be used in printEA
         
-			JSR         printEA
+            JSR         printEA             ; Jump to sub routine printEA to print out the effective address
         
 			LEA         comma, A1           ; Display space
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			CLR         D2
-			CLR         D3
-			MOVE.B      D4,D2
-			MOVE.B      D5,D3
+			CLR         D2                  ; Clear out D2 to move destination mode in
+			CLR         D3                  ; Clear out D3 to move destintion register in
+			MOVE.B      D4,D2               ; Move destination mode into D2 to be used in print EA
+			MOVE.B      D5,D3               ; Move destination register into D3 to be used in printEA
                 
-			JSR         printEA
+            JSR         printEA             ; Jump to sub routine printEA to print out the effective address
         
 			LEA         newLine, A1           ; Display space
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			BRA         LOOP
+            BRA         LOOP                ; Branch back to outer most loop that finds the first four bits
      
 opORIL  	
 			LEA         dispLong, A1        ; Display byte
@@ -417,42 +419,47 @@ opORIL
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			CLR         D4
-			MOVE.B      D1,D4
-			ASR         #three,D4
-			AND         #seven,D4
-			CLR         D5        
-			MOVE.B      D1,D5
-			AND         #seven,D5
-			MOVE.B      #one,D6
+			CLR         D4                  ; Clear D4 to use as temporary register for destination mode
+			MOVE.B      D1,D4               ; Move byte over to D4 to use
+			ASR         #three,D4           ; Moves out insignifcant bits to find mode
+			AND         #seven,D4           ; Clear other bits besides mode
+			CLR         D5                  ; Use D5 as temporary register for destination regsiter
+			MOVE.B      D1,D5               ; Move data over to isolate mode
+			AND         #seven,D5           ; Isolate the mode
         
-			CLR         D3
-			CLR         D2
-			MOVE.B      #four,D3
-			MOVE.B      #seven,D2      
+			CLR         D3                  ; Clear D3 to move register into it
+			CLR         D2                  ; Clear D2 to move mode into it
+			MOVE.B      #four,D3            ; Set values to be used in printEA
+			MOVE.B      #seven,D2           ; Set values to be used in printEA
         
-			JSR         printEA        
+            JSR         printEA             ; Jump to sub routine printEA to print out the effective address
         
-			CLR         D3
-			CLR         D2
-			MOVE.B      #four,D3
-			MOVE.B      #seven,D2
+			CLR         D2                  ; Clear out D2 to move destination mode in
+			CLR         D3                  ; Clear out D3 to move destintion register in
+			MOVE.B      D4,D2               ; Move destination mode into D2 to be used in print EA
+			MOVE.B      D5,D3               ; Move destination register into D3 to be used in printEA
         
 			LEA         comma, A1           ; Display space
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			JSR         printEA
+            JSR         printEA             ; Jump to sub routine printEA to print out the effective address
         
 			LEA         newLine, A1           ; Display space
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			BRA         LOOP
+            BRA         LOOP                ; Branch back to outer most loop that finds the first four bits
         
 ***********************************************************************************************************
 *
 *               	CMPI OPCODE
+*		This section is dedicated to the compare (CMPI) instruction. Its determined in the control loop
+*		that the first nibble is 0 for CMPI, and the second nibble is 12.
+*		The type of CMPI, or the opmode, is used to determined what we output to our console next.
+*		From that point, we load the correct size/opmode, and then route to the EA subroutine to output
+*		EA related register information.
+*		The process for finding the operand register info (EA info) is similar for all opmodes.
 *
 ***********************************************************************************************************
 		
@@ -460,13 +467,13 @@ opCMPI
 			MOVE.B      (A0)+, D1
 			MOVE.B      D1,D2               ; copy data over
 			ASR         #6,D2               ; shifts 6 bits over to read just the size        
-			CMP.B       #zero,D2
-			BEQ         opCMPIB
-			CMP.B       #one,D2
-			BEQ         opCMPIW
-			CMP.B       #two,D2
-			BEQ         opCMPIL
-			BRA         invalid
+			CMP.B       #zero,D2            ; Check if size is 0 which is byte
+			BEQ         opCMPIB             ; Moves to CMPIB if it is 0
+			CMP.B       #one,D2             ; Check if size is 0 which is word
+			BEQ         opCMPIW             ; Branch to CMPIW
+			CMP.B       #two,D2             ; Check if size is 2 which is long
+			BEQ         opCMPIL             ; Branch to CMPIL
+			BRA         invalid             ; Size is invalid, therefore code is invalid.
 
 opCMPIB 
 			LEA         CMPImatch, A1       ; we know that the opcode will be CMPI, so load A1 to print message
@@ -481,37 +488,37 @@ opCMPIB
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			CLR         D4
-			MOVE.B      D1,D4
-			ASR         #three,D4
-			AND         #seven,D4
-			CLR         D5        
-			MOVE.B      D1,D5
-			AND         #seven,D5
+			CLR         D4                  ; Clear D4 to use as temporary register for destination mode
+			MOVE.B      D1,D4               ; Move byte over to D4 to use
+			ASR         #three,D4           ; Moves out insignifcant bits to find mode
+			AND         #seven,D4           ; Clear other bits besides mode
+			CLR         D5                  ; Use D5 as temporary register for destination regsiter
+			MOVE.B      D1,D5               ; Move data over to isolate mode
+			AND         #seven,D5           ; Isolate the mode
         
-			CLR         D3
-			CLR         D2
-			MOVE.B      #four,D3
-			MOVE.B      #seven,D2      
+			CLR         D3                  ; Clear D3 to move register into it
+			CLR         D2                  ; Clear D2 to move mode into it
+			MOVE.B      #four,D3            ; Set values to be used in printEA
+			MOVE.B      #seven,D2           ; Set values to be used in printEA  
         
-			JSR         printEA  
+            JSR         printEA             ; Jump to sub routine printEA to print out the effective address
             
 			LEA         comma, A1           ; Display space
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			CLR         D2
-			CLR         D3
-			MOVE.B      D4,D2
-			MOVE.B      D5,D3        
+			CLR         D2                  ; Clear out D2 to move destination mode in
+			CLR         D3                  ; Clear out D3 to move destintion register in
+			MOVE.B      D4,D2               ; Move destination mode into D2 to be used in print EA
+			MOVE.B      D5,D3               ; Move destination register into D3 to be used in printEA    
         
-			JSR         printEA
+            JSR         printEA             ; Jump to sub routine printEA to print out the effective address
         
 			LEA         newLine, A1        	; Display space
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			BRA         LOOP
+            BRA         LOOP                ; Branch back to outer most loop that finds the first four bits
 
 opCMPIW 
 			LEA         CMPImatch, A1       ; we know that the opcode will be CMPI, so load A1 to print message
@@ -526,43 +533,43 @@ opCMPIW
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			CLR         D4
-			MOVE.B      D1,D4
-			ASR         #three,D4
-			AND         #seven,D4
-			CLR         D5        
-			MOVE.B      D1,D5
-			AND         #seven,D5
+			CLR         D4                  ; Clear D4 to use as temporary register for destination mode
+			MOVE.B      D1,D4               ; Move byte over to D4 to use
+			ASR         #three,D4           ; Moves out insignifcant bits to find mode
+			AND         #seven,D4           ; Clear other bits besides mode
+			CLR         D5                  ; Use D5 as temporary register for destination regsiter
+			MOVE.B      D1,D5               ; Move data over to isolate mode
+			AND         #seven,D5           ; Isolate the mode
         
-			CLR         D3
-			CLR         D2
-			MOVE.B      #four,D3
-			MOVE.B      #seven,D2      
+			CLR         D3                  ; Clear D3 to move register into it
+			CLR         D2                  ; Clear D2 to move mode into it
+			MOVE.B      #four,D3            ; Set values to be used in printEA
+			MOVE.B      #seven,D2           ; Set values to be used in printEA      
         
-			JSR         printEA  
+            JSR         printEA             ; Jump to sub routine printEA to print out the effective address
         
 			LEA         hashTag, A1         ; Display space
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			MOVE.B      #3, D0
-			TRAP        #15
+			MOVE.B      #3, D0              ; Move 3 into D0 to output
+			TRAP        #15                 ; Use TRAP #15 to output the immediate data
         
 			LEA         comma, A1           ; Display space
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
 
-			CLR         D2
-			CLR         D3
-			MOVE.B      D4,D2
-			MOVE.B      D5,D3       
+			CLR         D2                  ; Clear out D2 to move destination mode in
+			CLR         D3                  ; Clear out D3 to move destintion register in
+			MOVE.B      D4,D2               ; Move destination mode into D2 to be used in print EA
+			MOVE.B      D5,D3               ; Move destination register into D3 to be used in printEA    
         
-			JSR         printEA
+            JSR         printEA             ; Jump to sub routine printEA to print out the effective address
         
 			LEA         newLine, A1           ; Display space
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
-			BRA         LOOP
+            BRA         LOOP                ; Branch back to outer most loop that finds the first four bits
 
 opCMPIL 
 			LEA         CMPImatch, A1       ; we know that the opcode will be CMPI, so load A1 to print message
@@ -576,44 +583,45 @@ opCMPIL
 			LEA         space, A1           ; Display space
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
+			
+			CLR         D4                  ; Clear D4 to use as temporary register for destination mode
+			MOVE.B      D1,D4               ; Move byte over to D4 to use
+			ASR         #three,D4           ; Moves out insignifcant bits to find mode
+			AND         #seven,D4           ; Clear other bits besides mode
+			CLR         D5                  ; Use D5 as temporary register for destination regsiter
+			MOVE.B      D1,D5               ; Move data over to isolate mode
+			AND         #seven,D5           ; Isolate the mode
         
-			CLR         D4
-			MOVE.B      D1,D4
-			ASR         #three,D4
-			AND         #seven,D4
-			CLR         D5        
-			MOVE.B      D1,D5
-			AND         #seven,D5
+			CLR         D3                  ; Clear D3 to move register into it
+			CLR         D2                  ; Clear D2 to move mode into it
+			MOVE.B      #four,D3            ; Set values to be used in printEA
+			MOVE.B      #seven,D2           ; Set values to be used in printEA  
         
-			CLR         D3
-			CLR         D2
-			MOVE.B      #four,D3
-			MOVE.B      #seven,D2      
-			MOVE.B      #one,D6
-        
-			JSR         printEA  
+            JSR         printEA             ; Jump to sub routine printEA to print out the effective address
         
 			LEA         comma, A1           ; Display space
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			CLR         D2
-			CLR         D3
-			MOVE.B      D4,D2
-			MOVE.B      D5,D3              
+			CLR         D2                  ; Clear out D2 to move destination mode in
+			CLR         D3                  ; Clear out D3 to move destintion register in
+			MOVE.B      D4,D2               ; Move destination mode into D2 to be used in print EA
+			MOVE.B      D5,D3               ; Move destination register into D3 to be used in printEA                
         
-			JSR         printEA
+            JSR         printEA             ; Jump to sub routine printEA to print out the effective address
         
 			LEA         newLine, A1         ; Display space
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			BRA         LOOP
+            BRA         LOOP                ; Branch back to outer most loop that finds the first four bits
 		
 ***********************************************************************************************************
 *
 *               	BCLR OPCODE
-*
+*		This section is dedicated to the compare BCLR instruction. The first nibble is 0 and the second
+*       nibble is 2. Once both checks are passed then code goes to print BCLR and its EA.
+*		
 ***********************************************************************************************************
 
 opBCLR		
@@ -625,8 +633,8 @@ opBCLR
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
                 
-            CLR         D2
-            MOVE.B      (A0)+, D1
+            CLR         D2                  ; Clear data register
+            MOVE.B      (A0)+, D1           ; Move byte over to D1 to be used
             MOVE.B      D1,D2               ; copy data over
             ASR         #three,D2           ; Shift to the right to remove register
             AND         #seven,D2           ; Sets other bits to 0 and leave Mode the same
@@ -635,8 +643,8 @@ opBCLR
             MOVE.B      D1,D3               ; Move othr byte in
             AND         #seven,D3           ; Set everything besides register to 0
                
-            CLR         D1
-            MOVE.W      (A0)+, D1
+            CLR         D1                  ; Clear out data register
+            MOVE.W      (A0)+, D1           ; Take in next nibble that contains data
                
                 
             LEA         hashTag, A1         ; Display space
@@ -650,13 +658,13 @@ opBCLR
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
                 
-            JSR         printEA
+            JSR         printEA             ; Jump to sub routine printEA to print out the effective address
         
             LEA         newLine, A1           ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
                 
-            BRA         LOOP                
+            BRA         LOOP                ; Branch back to outer most loop that finds the first four bits   
         
 opDynBCLR       
             CLR         D1
@@ -679,8 +687,8 @@ opDynBCLR
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
                 
-            MOVE.B      #zero,D2                
-            JSR         printEA
+            MOVE.B      #zero,D2            ; Move 0 into D2 to print out data register in printEA   
+            JSR         printEA             ; Jump to sub routine printEA to print out the effective address
                 
             LEA         comma, A1           ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -695,7 +703,7 @@ opDynBCLR
             MOVE.B      D1,D3               ; Moving byte into D3. Using D3 to store EA register
             AND         #seven,D3           ; Change all bits except for register bits to 0
             
-            JSR         printEA
+            JSR         printEA             ; Jump to sub routine printEA to print out the effective address
         
             LEA         newLine, A1         ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -708,6 +716,9 @@ opDynBCLR
 *
 *               	MOVE OPCODE
 *					MOVEA OPCODE
+*       This section of code is dedication to MOVE and MOVEA opcode instructions. MOVEA is determined by
+*       its static bits at 8, 7, and 6. Once those static bits are confirmed, the code branches off to 
+*       MOVEA, else it continues into MOVE.
 *
 ***********************************************************************************************************
  
@@ -732,34 +743,34 @@ opMOVEB
 			MOVE.B      D1,D4               ; Copy byte over to store destination mode
 			AND         #one,D4             ; Set all the other bits to 0, leave the bit for the destination mode alone.
         
-			CLR          D1
-			CLR          D2
+			CLR          D1                 ; Clear data register
+			CLR          D2                 ; Clear data register
 			MOVE.B      (A0)+,D1            ; Copy byte into D1
 			MOVE.B      D1,D2
 			ASR         #6,D2               ; Shifts source mode and register out to get destination mode
 			ADD         D2,D4               ; Adds the remaining bits to D4
         
-			CLR         D2
+			CLR         D2                  ; Clear data register
 			MOVE.B      D1,D2               ; Copy new byte over to D2
 			ASR         #three,D2           ; Shift source register out
 			AND         #seven,D2           ; Set everything to 0 except for the mode
         
-			CLR         D3
-			MOVE.B      D1,D3
-			AND         #seven,D3
+			CLR         D3                  ; Clear Data register 3
+			MOVE.B      D1,D3               ; Moves byte over to D3 to find the register
+			AND         #seven,D3           ; Sets up everything to 0 except for the register bits
         
-			JSR         printEA
+            JSR         printEA             ; Jump to sub routine printEA to print out the effective address
         
 			LEA         comma, A1           ; Display space
 			MOVE.B      #14, D0             ; command for trap call to display message
 			TRAP        #15                 ; trap call
         
-			CLR         D2
-			CLR         D3
-			MOVE.B      D4,D2
-			MOVE.B      D5,D3
+			CLR         D2                  ; Clear data register
+			CLR         D3                  ; Clear data register
+			MOVE.B      D4,D2               ; Moves EA mode into D2 to use printEA
+			MOVE.B      D5,D3               ; Moves register to D3 to be used in printEA
         
-			JSR         printEA
+            JSR         printEA             ; Jump to sub routine printEA to print out the effective address
         
 			LEA         newLine, A1         ; Display space
 			MOVE.B      #14, D0             ; command for trap call to display message
@@ -777,8 +788,8 @@ opMOVEL
             MOVE.B      D1,D4               ; Copy byte over to store destination mode
             AND         #one,D4             ; Set all the other bits to 0, leave the bit for the destination mode alone.
         
-            CLR          D1
-            CLR          D2
+            CLR          D1                 ; Clear data register
+            CLR          D2                 ; Clear data register
             MOVE.B      (A0)+,D1            ; Copy byte into D1
             MOVE.B      D1,D2
             ASR         #6,D2               ; Shifts source mode and register out to get destination mode
@@ -791,7 +802,7 @@ opMOVEL
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call  
             
-            LEA         dispLong,A1
+            LEA         dispLong,A1         ; Prints out L to display a long
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
@@ -799,30 +810,30 @@ opMOVEL
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
         
-            CLR         D2
+            CLR         D2                  ; Clear data register
             MOVE.B      D1,D2               ; Copy new byte over to D2
             ASR         #three,D2           ; Shift source register out
             AND         #seven,D2           ; Set everything to 0 except for the mode
         
-            CLR         D3
-            MOVE.B      D1,D3
-            AND         #seven,D3
+			CLR         D3                  ; Clear Data register 3
+			MOVE.B      D1,D3               ; Moves byte over to D3 to find the register
+			AND         #seven,D3           ; Sets up everything to 0 except for the register bits      
             
-            CLR         D6
-            MOVE.B      #1,D6
-            JSR         printEA
+            CLR         D6                  ; Clear data register
+            MOVE.B      #1,D6               ; Moves 1 into D6 to be used in printEA to display long
+            JSR         printEA             ; Prints out EA
             CLR         D6
             
             LEA         comma, A1           ; Display comma
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
         
-            CLR         D2
-            CLR         D3
-            MOVE.B      D4,D2
-            MOVE.B      D5,D3
-           
-            JSR         printEA
+			CLR         D2                  ; Clear data register            
+			CLR         D3                  ; Clear data register
+			MOVE.B      D4,D2               ; Moves EA mode into D2 to use printEA
+			MOVE.B      D5,D3               ; Moves register to D3 to be used in printEA
+        
+            JSR         printEA             ; Jump to sub routine printEA to print out the effective address
 
             LEA         newLine, A1         ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -831,11 +842,11 @@ opMOVEL
             BRA         LOOP                ; go back to the loop
             
 opMOVEAL
-            LEA         MOVEAmatch,A1
+            LEA         MOVEAmatch,A1       ; MOVEA has been determined. Print out MOVEA
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            LEA         dispLong,A1
+            LEA         dispLong,A1         ; Prints out L
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
@@ -844,29 +855,29 @@ opMOVEAL
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            CLR         D2
+            CLR         D2                  ; Clear data register
             MOVE.B      D1,D2               ; Copy new byte over to D2
             ASR         #three,D2           ; Shift source register out
             AND         #seven,D2           ; Set everything to 0 except for the mode
         
-            CLR         D3
-            MOVE.B      D1,D3
-            AND         #seven,D3
+			CLR         D3                  ; Clear Data register 3
+			MOVE.B      D1,D3               ; Moves byte over to D3 to find the register
+			AND         #seven,D3           ; Sets up everything to 0 except for the register bits    
             
             CLR         D1                  ; Clear D1
 			
-            JSR         printEA
+            JSR         printEA             ; Jump to sub routine printEA to print out the effective address
             
             LEA         comma, A1           ; Display comma
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
 
-            CLR         D2
-            CLR         D3
-            MOVE.B      D4,D2
-            MOVE.B      D5,D3
+			CLR         D2                  ; Clear data register
+			CLR         D3                  ; Clear data register
+			MOVE.B      D4,D2               ; Moves EA mode into D2 to use printEA
+			MOVE.B      D5,D3               ; Moves register to D3 to be used in printEA
         
-            JSR         printEA
+            JSR         printEA             ; Jump to sub routine printEA to print out the effective address
         
             LEA         newLine, A1         ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -884,8 +895,8 @@ opMOVEW
             MOVE.B      D1,D4               ; Copy byte over to store destination mode
             AND         #one,D4             ; Set all the other bits to 0, leave the bit for the destination mode alone.
         
-            CLR          D1
-            CLR          D2
+            CLR          D1                 ; Clear data register
+            CLR          D2                 ; Clear data register
             MOVE.B      (A0)+,D1            ; Copy byte into D1
             MOVE.B      D1,D2
             ASR         #6,D2               ; Shifts source mode and register out to get destination mode
@@ -898,7 +909,7 @@ opMOVEW
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call  
             
-            LEA         dispWord,A1
+            LEA         dispWord,A1         ; Prints out a W after the opcode
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
@@ -911,23 +922,22 @@ opMOVEW
             ASR         #three,D2           ; Shift source register out
             AND         #seven,D2           ; Set everything to 0 except for the mode
         
-            CLR         D3
-            MOVE.B      D1,D3
-            AND         #seven,D3
+			CLR         D3                  ; Clear Data register 3
+			MOVE.B      D1,D3               ; Moves byte over to D3 to find the register
+			AND         #seven,D3           ; Sets up everything to 0 except for the register bits  
             
             CLR         D1                  ; Clear D1
             
-            JSR         printEA
+            JSR         printEA             ; Jump to sub routine printEA to print out the effective address
             
             LEA         comma, A1           ; Display comma
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
         
-            CLR         D2
-            CLR         D3
-            MOVE.B      D4,D2
-            MOVE.B      D5,D3
-            
+			CLR         D2                  ; Clear data register 
+			CLR         D3                  ; Clear data register
+			MOVE.B      D4,D2               ; Moves EA mode into D2 to use printEA
+			MOVE.B      D5,D3               ; Moves register to D3 to be used in printEA
             JSR         printEA
         
             LEA         newLine, A1         ; Display space
@@ -937,11 +947,11 @@ opMOVEW
             BRA         LOOP                ; go back to the loop
 			
 opMOVEAW  
-            LEA         MOVEAmatch,A1
+            LEA         MOVEAmatch,A1       ; Prints out MOVEA
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
-            
-            LEA         dispWord,A1
+                
+            LEA         dispWord,A1         ; Prints out W
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
@@ -949,29 +959,29 @@ opMOVEAW
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            CLR         D2
+            CLR         D2                  ; Clear data register
             MOVE.B      D1,D2               ; Copy new byte over to D2
             ASR         #three,D2           ; Shift source register out
             AND         #seven,D2           ; Set everything to 0 except for the mode
         
-            CLR         D3
-            MOVE.B      D1,D3
-            AND         #seven,D3
+			CLR         D3                  ; Clear Data register 3
+			MOVE.B      D1,D3               ; Moves byte over to D3 to find the register
+			AND         #seven,D3           ; Sets up everything to 0 except for the register bits  
             
             CLR         D1                  ; Clear D1      
             
-            JSR         printEA
+            JSR         printEA             ; Jump to sub routine printEA to print out the effective address
             
             LEA         comma, A1           ; Display comma
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
 
-            CLR         D2
-            CLR         D3
-            MOVE.B      D4,D2
-            MOVE.B      D5,D3
+			CLR         D2                  ; Clear data register
+			CLR         D3                  ; Clear data register
+			MOVE.B      D4,D2               ; Moves EA mode into D2 to use printEA
+			MOVE.B      D5,D3               ; Moves register to D3 to be used in printEA
         
-            JSR         printEA
+            JSR         printEA             ; Jump to sub routine printEA to print out the effective address
         
             LEA         newLine, A1         ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -982,7 +992,9 @@ opMOVEAW
 ***********************************************************************************************************
 *
 *               	NEG OPCODE
-*
+*       This section is dedicated to the NEG opmode instruction. NEG is determined by the first and
+*       the second nibble. The first nibble is 4 and the second nibble is equal to 0. Once that has been
+*       determined. NEG is printed out.
 ***********************************************************************************************************
 
 opNEG   
@@ -991,17 +1003,17 @@ opNEG
             TRAP        #15                 ; trap call
         
         
-            MOVE.B      (A0)+, D1
+            MOVE.B      (A0)+, D1           ; Move data into D1 for use 
             MOVE.B      D1,D2               ; copy data over
-            ASR         #six,D2
+            ASR         #six,D2             ; Moves six bits over to read the size
             
-            CMP         #zero,D2
-            BEQ         opNEGB
-            CMP         #one,D2
-            BEQ         opNEGW
-            CMP         #two,D2
-            BEQ         opNEGL
-            BRA         invalid
+            CMP         #zero,D2            ; Compare size
+            BEQ         opNEGB              ; Branch to NEG if size is byte
+            CMP         #one,D2             ; Compare size with one, 
+            BEQ         opNEGW              ; If equal, size is a word. Branch to NEGW
+            CMP         #two,D2             ; Compare size with two
+            BEQ         opNEGL              ; If size is two, NEG size is long. Branch to NEGL
+            BRA         invalid             ; If size is neither, code is invalid. Branch to deal with invalid code.
 			
 opNEGB
             LEA         dispByte, A1        ; we know that the opcode will be NEG, so load A1 to print message
@@ -1017,17 +1029,17 @@ opNEGB
             ASR         #three,D2           ; Shift mode into place and moves mode into place
             AND         #seven,D2           ; Stores mode
             
-            CLR         D3
-            MOVE        D1,D3
-            AND         #seven,D3
-        
+			CLR         D3                  ; Clear Data register 3
+			MOVE.B      D1,D3               ; Moves byte over to D3 to find the register
+			AND         #seven,D3           ; Sets up everything to 0 except for the register bits  
+			
             JSR         printEA
                 
             LEA         newLine, A1         ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call  
         
-            BRA         LOOP
+            BRA         LOOP                ; Branch back to outer most loop that finds the first four bits
 
 opNEGL
             LEA         dispLong, A1        ; we know that the opcode will be NEG, so load A1 to print message
@@ -1043,17 +1055,17 @@ opNEGL
             ASR         #three,D2           ; Shift mode into place and moves mode into place
             AND         #seven,D2           ; Stores mode
         
-            CLR         D3
-            MOVE        D1,D3
-            AND         #seven,D3
+			CLR         D3                  ; Clear Data register 3
+			MOVE.B      D1,D3               ; Moves byte over to D3 to find the register
+			AND         #seven,D3           ; Sets up everything to 0 except for the register bits  
         
-            JSR         printEA
+            JSR         printEA             ; Jump to sub routine printEA to print out the effective address
                     
             LEA         newLine, A1         ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call  
         
-            BRA         LOOP
+            BRA         LOOP                ; Branch back to outer most loop that finds the first four bits
 
 opNEGW
             LEA         dispWord, A1        ; we know that the opcode will be NEG, so load A1 to print message
@@ -1069,9 +1081,9 @@ opNEGW
             ASR         #three,D2           ; Shift mode into place and moves mode into place
             AND         #seven,D2           ; Stores mode
         
-            CLR         D3
-            MOVE        D1,D3
-            AND         #seven,D3
+			CLR         D3                  ; Clear Data register 3
+			MOVE.B      D1,D3               ; Moves byte over to D3 to find the register
+			AND         #seven,D3           ; Sets up everything to 0 except for the register bits  
         
             JSR         printEA
             
@@ -1079,30 +1091,35 @@ opNEGW
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call  
         
-            BRA         LOOP
+            BRA         LOOP                ; Branch back to outer most loop that finds the first four bits
 			
 ***********************************************************************************************************
 *
 *               	RTS_JSR Helper Function
+*       Compare byte with static bits from JSR and RTS. If data is not equal to either, then data is
+*       considered an invalid opcode and branches off to invalid.
 *
 ***********************************************************************************************************
 
 opRTSJSR
-            MOVE.B      (A0)+, D1
+            MOVE.B      (A0)+, D1           ; Move byte into D1 and increment.
             
             MOVE.B      D1,D2               ; copy data over
-            CMP         #117,D2
-            BEQ         opRTS
+            CMP         #117,D2             ; 117 is the decimal value of RTS.
+            BEQ         opRTS               ; If equal, branch to RTS to print out.
             
             ASR         #six,D2             ; Moving bits over to check if it matches the two static bits in JSR
             CMP         #two,D2             ; Checking if it is JSR
             BEQ         opJSR               ; It is equal, so branch off to opJSR
 
-            BRA         invalid
+            BRA         invalid             ; Branch to invalid to deal with invalid data.
 			
 ***********************************************************************************************************
 *
 *               	JSR OPCODE
+*       This section is dedicated to the JSR opmode instruction. JSR is determined by the 9 static bits.
+*       Once the bits have matched the disassembled code, the code passes through and prints out JSR along
+*       with its EA.               
 *
 ***********************************************************************************************************
 
@@ -1115,27 +1132,30 @@ opJSR
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            CLR         D2
+            CLR         D2                  ; Clearing data register 
+            CLR         D3                  ; Clearing data register 
+            
+            MOVE.B      D1,D2               ; Move D1 data to D2 to find the EA mode
+            ASR         #three,D2           ; Move mode over to the end in order to read
+            AND         #seven,D2           ; Set every bit to 0 except for mode bits
+            
             CLR         D3
+            MOVE.B      D1,D3               ; Move bits over to D3 to find register
+            AND         #seven,D3           ; Sets every bit to 0 except for register bits
             
-            MOVE.B      D1,D2
-            ASR         #three,D2
-            AND         #seven,D2
-            
-            MOVE.B      D1,D3
-            AND         #seven,D3
-            
-            JSR         printEA
+            JSR         printEA             ; Jump to sub routine printEA to print out the effective address
             
             LEA         newLine, A1         ; Display space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call  
             
-            BRA         loop   
+            BRA         LOOP                ; Branch back to outer most loop that finds the first four bits
 
 ***********************************************************************************************************
 *
 *               	RTS OPCODE
+*       Function prints out RTS. Does not need to check in here as it is done beforehand. Branches back
+*       into loop afterwards.
 *
 ***********************************************************************************************************
 
@@ -1148,11 +1168,12 @@ opRTS
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call 
             
-            BRA         loop
+            BRA         LOOP                ; Branch back to outer most loop that finds the first four bits
 			
 ***********************************************************************************************************
 *
 *               	MOVEM_LEA OPCODE
+*       This part of the code is used to branch to either MOVEM or LEA depending on the second nibble.
 *
 ***********************************************************************************************************
 
@@ -1169,6 +1190,10 @@ opMOVEMLEA
 ***********************************************************************************************************
 *
 *               	MOVEM OPCODE
+*       MOVEM has 7 static bits. Before anything is done, static bits are checked and the dr field is stored
+*       into D6 to be used later on for specific branching. After the static bits have confirmed this is
+*       indeed MOVEM that is being disassembled, the code will print out MOVEM and goes into the subroutine
+*       to print out the data and address registers.
 *
 ***********************************************************************************************************
 
@@ -1189,7 +1214,7 @@ opMOVEM
             BNE         invalid             ; If this is not 1 then this is not moveM
             CLR         D5
             
-            LEA         MOVEMMatch, A1        ; we know that the opcode will be MOVEM, so load A1 to print message
+            LEA         MOVEMMatch, A1       ; we know that the opcode will be MOVEM, so load A1 to print message
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
@@ -1198,16 +1223,16 @@ opMOVEM
             ASR         #six,D5            	; Moving size bit to the very right to read
             AND         #one,D5             ; Isolating the one bit for size
             
-            CLR         D2                  ; Storing EA mode in D2
-            MOVE.B      D1,D2               
-            ASR         #three,D2
-            AND         #seven,D2
+            CLR         D2                  ; Clear Data register 2
+            MOVE        D1,D2               ; Move byte into D2
+            ASR         #three,D2           ; Shift mode into place and moves mode into place
+            AND         #seven,D2           ; Stores mode
             
             CLR         D3                  ; Storing EA register into D3
-            MOVE.B      D1,D3
-            AND         #seven,D3
+            MOVE.B      D1,D3               ; Move bits over to D3 to find register
+            AND         #seven,D3           ; Sets every bit to 0 except for register bits
             
-            JSR         MOVEMBRA
+            JSR         MOVEMBRA            ; Jumps to subroutine that prints out the data and address registers
             
             CMP         #three,D2           ; Checks if this is post increment
             BEQ         skipPrintEA         ; If it is, skipping printing EA again, because it is printed already in JSR
@@ -1216,24 +1241,28 @@ opMOVEM
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            JSR         printEA
+            JSR         printEA             ; Jump to sub routine printEA to print out the effective address
             
             LEA         newline, A1        	; we know that the opcode will be MOVEM, so load A1 to print message
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call            
 
-            BRA         loop            
+            BRA         loop                ; Branch back to outer most loop that finds the first four bits
 
 skipPrintEA 
-            LEA         newline, A1        
+            LEA         newline, A1         ; Prints out new line or carraige return
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call            
 
-            BRA         loop 
+            BRA         LOOP                ; Branch back to outer most loop that finds the first four bits
 			
 ***********************************************************************************************************
 *
 *               LEA OPCODE
+*
+*		This section is dedicated to the LEA opcode. This is determined that the first nibble is 4 nibbles as
+*       well as the three static nibbles on 8,7, and 6. Once both have been checked, the code prints out
+*       LEA and goes on to print its effective address.
 *
 ***********************************************************************************************************
 
@@ -1244,19 +1273,19 @@ opLEA
             AND         #seven,D4           ; Isolated register
 
             CLR         D5                  ; Clearing D5 to check if bits match LEA static bits
-            MOVE.B      D1,D5
-            AND         #one,D5
-            ASL         #two,D5
+            MOVE.B      D1,D5               ; Stores destination register in temporary data register for later use
+            AND         #one,D5             ; Setting all other bits to one except for mode register
+            ASL         #two,D5             ; Shifts the two register bits over to correct spot
             
             MOVE.B      (A0)+, D1           ; Taking in next byte
             
-            MOVE.B      D1,D6
-            ASR         #six,D6
-            ADD         D6,D5
-            CLR         D6
+            MOVE.B      D1,D6               
+            ASR         #six,D6             ; Shifts 6 bits over to move register
+            ADD         D6,D5               ; Add the remaining bits to the register
+            CLR         D6                  ; Clear out the temporary register
 
-            CMP         #seven,D5
-            BNE         invalid   
+            CMP         #seven,D5           ; Checks the seven static bits to see if it is LEA
+            BNE         invalid             ; If it is not equal then this is not LEA
             
             LEA         LEAmatch, A1        ; we know that the opcode will be LEA, so load A1 to print message
             MOVE.B      #14, D0             ; command for trap call to display message
@@ -1266,25 +1295,25 @@ opLEA
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call            
             
-            CLR         D2
-            MOVE.B      D1,D2
-            ASR         #three,D2
-            AND         #seven,D2
+            CLR         D2                  ; Clear Data register 2
+            MOVE        D1,D2               ; Move byte into D2
+            ASR         #three,D2           ; Shift mode into place and moves mode into place
+            AND         #seven,D2           ; Stores mode
             
             CLR         D3
-            MOVE.B      D1,D3
-            AND         #seven,D3
+            MOVE.B      D1,D3               ; Move bits over to D3 to find register
+            AND         #seven,D3           ; Sets every bit to 0 except for register bits
             
-            JSR         printEA
+            JSR         printEA             ; Jump to sub routine printEA to print out the effective address
             
             LEA         comma, A1        	; we know that the opcode will be MOVEM, so load A1 to print message
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call            
             
             
-            CLR         D3
-            MOVE.B      D4,D3
-            MOVE.B      #one,D2
+            CLR         D3                  ; Clears D3 to move effective address into it
+            MOVE.B      D4,D3               ; Moves data with EA register
+            MOVE.B      #one,D2             ; Puts 1 into D2 to print an An within printEA
             
             JSR         printEA             ; Prints out source address
             
@@ -1292,7 +1321,7 @@ opLEA
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
 
-            BRA         loop                        
+            BRA         LOOP                ; Branch back to outer most loop that finds the first four bits                 
 
 ***********************************************************************************************************
 *
@@ -3952,51 +3981,57 @@ endSUB
 ***********************************************************************************************************
 *
 *						MOVEM Helper Function
+*       This function is dedicated to printing out the address and data register for MOVEM. The 
+*       function starts by identifying the size and then identifying the dr field. If the dr field
+*       is 1, then the program goes to print before print out the address and data register for MOVEM. If dr
+*       field is zero, program goes to print out the address and data register before printing out the
+*       post increment or immediate data.
 *
 ***********************************************************************************************************
 
 MOVEMBRA    
-			MOVEM.L 	D0-D7/A1-A6, -(SP)     ; Branches off depending on size bit
-            CMP     	#zero,D5
-            BEQ      	MOVEMW
-            CMP      	#one, D5
-            BEQ      	MOVEML
+			MOVEM.L 	D0-D7/A1-A6, -(SP)  ; Branches off depending on size bit
+            CMP     	#zero,D5            ; Checks the size to see if it word
+            BEQ      	MOVEMW              ; Branches if it is equal to word
+            CMP      	#one, D5            ; Compares bits to long.
+            BEQ      	MOVEML              ; Branches if it is equal to long size.
+            BRA         printInvalid        ; Is invalid if it is not equal to either
             
 MOVEMW     
-            LEA         dispWord, A1        ; we know that the opcode will be ROR, so load A1 to print message
+            LEA         dispWord, A1        ; Prints a W to symbolize word
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
 
-            LEA         space, A1           ; we know that the opcode will be ROR, so load A1 to print message
+            LEA         space, A1           ; Print a space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
             BRA         CheckDR
 
 MOVEML   
-            LEA         dispLong, A1        ; we know that the opcode will be ROR, so load A1 to print message
+            LEA         dispLong, A1        ; we know that the opcode will be MOVEML, so load A1 to print message
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
 
-            LEA         space, A1        ; we know that the opcode will be ROR, so load A1 to print message
+            LEA         space, A1           ; Print a space
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
          
 
-            BRA         CheckDR
+            BRA         CheckDR             ; Branch to CheckDR
 
 CheckDR     
             MOVE.W      (A0)+, D1           ; Taking in next word
-            CMP         #zero,D6
-            BEQ         printRegMem
-            CMP         #one,D6
-            BEQ         printStack
-            BRA         invalid
+            CMP         #zero,D6            ; Check if dr is 0, then print out data/address first
+            BEQ         printRegMem         ; branch to printRegMem
+            CMP         #one,D6             ; dr field is one, must print stack pointer first
+            BEQ         printStack          ; Go to print stack pointer
+            BRA         invalid             ; Go to invalid if equal to neither
             
 printStack 
-            JSR         printEA
+            JSR         printEA             ; Prints out the stack pointer
             
-            LEA         comma,A1
+            LEA         comma,A1            ; Prints out comma
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
@@ -4007,369 +4042,371 @@ printRegMem
             CLR         D4                  ; Using D4 to store predecrement mode addresses
             MOVE.B      D1,D4               ; Stores bits for D0-D7
             
-            CLR         D5
-            MOVE.B      D1,D5
-            AND         #mask1,D5
-            CMP         #mask1,D5
-            BEQ         DataReg0
+            CLR         D5                  ; Clear data register
+            MOVE.B      D1,D5               ; Move bits containing information on filled data to D5
+            AND         #mask1,D5           ; Use a bit mask to mask every bit except for the first bit
+            CMP         #mask1,D5           ; Check if certain bit is 1 or 0
+            BEQ         DataReg0            ; If comparison matches, then data register that is being put on stack starts her
             
-            CLR         D5
-            MOVE.B      D1,D5
-            AND         #mask2,D5
-            CMP         #mask2,D5
-            BEQ         DataReg1
+            CLR         D5                  ; Clear data register
+            MOVE.B      D1,D5               ; Move bits containing information on filled data to D5
+            AND         #mask2,D5           ; Use a bit mask to mask every bit except for the second bit
+            CMP         #mask2,D5           ; Check if certain bit is 1 or 0
+            BEQ         DataReg1            ; If comparison matches, then data register that is being put on stack starts here
 
-            CLR         D5
-            MOVE.B      D1,D5
-            AND         #mask3,D5
-            CMP         #mask3,D5
-            BEQ         DataReg2            
+            CLR         D5                  ; Clear data register
+            MOVE.B      D1,D5               ; Move bits containing information on filled data to D5
+            AND         #mask3,D5           ; Use a bit mask to mask every bit except for the third bit
+            CMP         #mask3,D5           ; Check if certain bit is 1 or 0
+            BEQ         DataReg2            ; If comparison matches, then data register that is being put on stack starts her
             
-            CLR         D5
-            MOVE.B      D1,D5
-            AND         #mask4,D5
-            CMP         #mask4,D5
-            BEQ         DataReg3            
+            CLR         D5                  ; Clear data register
+            MOVE.B      D1,D5               ; Move bits containing information on filled data to D5
+            AND         #mask4,D5           ; Use a bit mask to mask every bit except for the fourth
+            CMP         #mask4,D5           ; Check if certain bit is 1 or 0
+            BEQ         DataReg3            ; If comparison matches, then data register that is being put on stack starts her
             
-            CLR         D5
-            MOVE.B      D1,D5
-            AND         #mask5,D5
-            CMP         #mask5,D5
-            BEQ         DataReg4
+            CLR         D5                  ; Clear data register
+            MOVE.B      D1,D5               ; Move bits containing information on filled address/data to D5
+            AND         #mask5,D5           ; Use a bit mask to mask every bit except for the fifth bit
+            CMP         #mask5,D5           ; Check if certain bit is 1 or 0
+            BEQ         DataReg4            ; If comparison matches, then data register that is being put on stack starts her
 
-            CLR         D5
-            MOVE.B      D1,D5
-            AND         #mask6,D5
-            CMP         #mask6,D5
-            BEQ         DataReg5
+            CLR         D5                  ; Clear data register
+            MOVE.B      D1,D5               ; Move bits containing information on filled address/data to D5
+            AND         #mask6,D5           ; Use a bit mask to mask every bit except for the sixth bit
+            CMP         #mask6,D5           ; Check if certain bit is 1 or 0
+            BEQ         DataReg5            ; If comparison matches, then data register that is being put on stack starts her
 
-            CLR         D5
-            MOVE.B      D1,D5
-            AND         #mask7,D5
-            CMP         #mask7,D5
-            BEQ         DataReg6
+            CLR         D5                  ; Clear data register
+            MOVE.B      D1,D5               ; Move bits containing information on filled address/data to D5
+            AND         #mask7,D5           ; Use a bit mask to mask every bit except for the seventh
+            CMP         #mask7,D5           ; Check if certain bit is 1 or 0
+            BEQ         DataReg6            ; If comparison matches, then data register that is being put on stack starts her
 
-            CLR         D5
-            MOVE.B      D1,D5
-            AND         #mask8,D5
-            CMP         #mask8,D5
-            BEQ         DataReg7
+            CLR         D5                  ; Clear data register
+            MOVE.B      D1,D5               ; Move bits containing information on filled address/data to D5
+            AND         #mask8,D5           ; Use a bit mask to mask every bit except for the seventh
+            CMP         #mask8,D5           ; Check if certain bit is 1 or 0
+            BEQ         DataReg7            ; If comparison matches, then only D7 is being used
             
-            BRA         invalid
-            BRA         invalid        
+            BRA         invalid             ; If comaparisons fail then this is not MOVEM. Branch out.
             
 DataReg0
             LEA         dispD0, A1          ; Output string D0
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            CLR         D5
-            MOVE.B      D1,D5
-            AND         #mask2,D5
-            CMP         #mask2,D5
-            BEQ         Reg0Cont
-            BRA         printMem
+            CLR         D5                  ; Clear data register
+            MOVE.B      D1,D5               ; Move byte to D5 for comparisons
+            AND         #mask2,D5           ; Uses mask to check for valid after current bit
+            CMP         #mask2,D5           ; Check if there are anymore data registers used
+            BEQ         Reg0Cont            ; Continues to check for last register used if so
+            BRA         printMem            ; Else it will continue on to print the address/memory
 			
 Reg0Cont        
             LEA         dec, A1             ; Output -
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call        
-            BRA         DataReg1
+            BRA         DataReg1            ; Found starting register move on to find ending register
 
 DataReg1
-            CLR         D5
-            MOVE.B      D1,D5
-            AND         #maskA,D5
-            CMP         #maskA,D5
-            BEQ         DataReg2
+            CLR         D5                  ; Clear data register
+            MOVE.B      D1,D5               ; Move byte to D5 for comparisons
+            AND         #maskA,D5           ; Uses mask to check for valid bits before and after current bit
+            CMP         #maskA,D5           ; Check if there are bits before and after current masked bit
+            BEQ         DataReg2            ; Branch to skip printing until the end register is found
             
             LEA         dispD1, A1          ; Output string D0
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            CLR         D5
-            MOVE.B      D1,D5
-            AND         #mask3,D5
-            CMP         #mask3,D5
-            BEQ         Reg1Cont
-            BRA         printMem
+            CLR         D5                  ; Clear data register
+            MOVE.B      D1,D5               ; Move byte to D5 for comparisons
+            AND         #mask3,D5           ; Bitmasking to check if next bit is used or not
+            CMP         #mask3,D5           ; Checking if next bit is use
+            BEQ         Reg1Cont            ; Continues to check for last register used if so
+            BRA         printMem            ; Else it will continue on to print the address/memory
 			
 Reg1Cont        
             LEA         dec, A1             ; Output -
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call        
-            BRA         DataReg2
+            BRA         DataReg2            ; Found starting register move on to find ending registe
 
 DataReg2
-            CLR         D5
-            MOVE.B      D1,D5
-            AND         #maskB,D5
-            CMP         #maskB,D5
-            BEQ         DataReg3
+            CLR         D5                  ; Clear data register
+            MOVE.B      D1,D5               ; Move byte to D5 for comparisons
+            AND         #maskB,D5           ; Uses mask to check for valid bits before and after current bit
+            CMP         #maskB,D5           ; Check if there are bits before and after current masked bit
+            BEQ         DataReg3            ; If there are bits before and after, skip to next register to find ending
             
             
-            LEA         dispD2, A1          ; Output string D0
+            LEA         dispD2, A1          ; Output D2
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            CLR         D5
-            MOVE.B      D1,D5
-            AND         #mask4,D5
-            CMP         #mask4,D5
-            BEQ         Reg2Cont
-            BRA         printMem
+            CLR         D5                  ; Clear data register
+            MOVE.B      D1,D5               ; Move byte to D5 for comparisons
+            AND         #mask4,D5           ; Bitmasking to check if next bit is used or not
+            CMP         #mask4,D5           ; Checking if next bit is used
+            BEQ         Reg2Cont            ; Continues to check for last register used if so
+            BRA         printMem            ; Else it will continue on to print the address/memory
 			
 Reg2Cont        
             LEA         dec, A1             ; Output -
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call        
-            BRA         DataReg3
+            BRA         DataReg3            ; Found starting register move on to find ending registe
 
 DataReg3
-            CLR         D5
-            MOVE.B      D1,D5
-            AND         #maskC,D5
-            CMP         #maskC,D5
-            BEQ         DataReg4
+            CLR         D5                  ; Clear data register
+            MOVE.B      D1,D5               ; Move byte to D5 for comparisons
+            AND         #maskC,D5           ; Uses mask to check for valid bits before and after current bit
+            CMP         #maskC,D5           ; Check if there are bits before and after current masked bit
+            BEQ         DataReg4            ; If there are bits before and after, skip to next register to find ending
+    
             
             LEA         dispD3, A1          ; Output string D0
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            CLR         D5
-            MOVE.B      D1,D5
-            AND         #mask5,D5
+            CLR         D5                  ; Clear data register
+            MOVE.B      D1,D5               ; Move byte to D5 for comparisons
+            AND         #mask5,D5           ; Bitmasking to check if next bit is used or not
             CMP         #mask5,D5
-            BEQ         Reg3Cont
-            BRA         printMem
+            BEQ         Reg3Cont            ; Continues to check for last register used if so
+            BRA         printMem            ; Else it will continue on to print the address/memory
 			
 Reg3Cont        
             LEA         dec, A1             ; Output -
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call        
-            BRA         DataReg4
+            BRA         DataReg4            ; Found starting register move on to find ending registe
 
 DataReg4
-            CLR         D5
-            MOVE.B      D1,D5
-            AND         #maskD,D5
-            CMP         #maskD,D5
-            BEQ         DataReg5
+            CLR         D5                  ; Clear data register
+            MOVE.B      D1,D5               ; Move byte to D5 for comparisons
+            AND         #maskD,D5           ; Uses mask to check for valid bits before and after current bit
+            CMP         #maskD,D5           ; Check if there are bits before and after current masked bit
+            BEQ         DataReg5            ; If there are bits before and after, skip to next register to find ending
             
             LEA         dispD4, A1          ; Output string D0
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            CLR         D5
-            MOVE.B      D1,D5
-            AND         #mask6,D5
-            CMP         #mask6,D5
-            BEQ         Reg4Cont
-            BRA         printMem
+            CLR         D5                  ; Clear data register
+            MOVE.B      D1,D5               ; Move byte to D5 for comparisons
+            AND         #mask6,D5           ; Bitmasking to check if next bit is used or not
+            CMP         #mask6,D5           ; Checking if next bit is use
+            BEQ         Reg4Cont            ; Continues to check for last register used if so
+            BRA         printMem            ; Else it will continue on to print the address/memory
 			
 Reg4Cont        
             LEA         dec, A1             ; Output -
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call        
-            BRA         DataReg5
+            BRA         DataReg5            ; Found starting register move on to find ending registe
 
 DataReg5
-            CLR         D5
-            MOVE.B      D1,D5
-            AND         #maskE,D5
-            CMP         #maskE,D5
-            BEQ         DataReg6
+            CLR         D5                  ; Clear data register
+            MOVE.B      D1,D5               ; Move byte to D5 for comparisons
+            AND         #maskE,D5           ; Uses mask to check for valid bits before and after current bit
+            CMP         #maskE,D5           ; Check if there are bits before and after current masked bit
+            BEQ         DataReg6            ; If there are bits before and after, skip to next register to find ending
             
             LEA         dispD5, A1          ; Output string D0
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            CLR         D5
-            MOVE.B      D1,D5
-            AND         #mask7,D5
-            CMP         #mask7,D5
-            BEQ         Reg5Cont
-            BRA         printMem
+            CLR         D5                  ; Clear data register
+            MOVE.B      D1,D5               ; Move byte to D5 for comparisons
+            AND         #mask7,D5           ; Bitmasking to check if next bit is used or not
+            CMP         #mask7,D5           ; Checking if next bit is use
+            BEQ         Reg5Cont            ; Continues to check for last register used if so
+            BRA         printMem            ; Else it will continue on to print the address/memory
 			
 Reg5Cont        
             LEA         dec, A1             ; Output -
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call        
-            BRA         DataReg7
+            BRA         DataReg7            ; Found starting register move on to find ending registe
 
 DataReg6
-            CLR         D5
-            MOVE.B      D1,D5
-            AND         #maskF,D5
-            CMP         #maskF,D5
-            BEQ         DataReg7
+            CLR         D5                  ; Clear data register
+            MOVE.B      D1,D5               ; Move byte to D5 for comparisons
+            AND         #maskF,D5           ; Uses mask to check for valid bits before and after current bit
+            CMP         #maskF,D5           ; Check if there are bits before and after current masked bit
+            BEQ         DataReg7            ; If there are bits before and after, skip to next register to find ending
 
             LEA         dispD6, A1          ; Output string D0
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            CLR         D5
-            MOVE.B      D1,D5
-            AND         #mask8,D5
-            CMP         #mask8,D5
-            BEQ         Reg6Cont
-            BRA         printMem
+            CLR         D5                  ; Clear data register
+            MOVE.B      D1,D5               ; Move byte to D5 for comparisons
+            AND         #mask8,D5           ; Bitmasking to check if next bit is used or not
+            CMP         #mask8,D5           ; Checking if next bit is use
+            BEQ         Reg6Cont            ; Continues to check for last register used if so
+            BRA         printMem            ; Else it will continue on to print the address/memory
 			
 Reg6Cont        
             LEA         dec, A1             ; Output -
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call        
-            BRA         DataReg7
+            BRA         DataReg7            ; Found starting register move on to find ending registe
 
 DataReg7    
-            LEA         dispD7, A1             ; Output -
+            LEA         dispD7, A1          ; Output -
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call        
-            BRA         printMem            
+            BRA         printMem            ; Last check, branch to print out the address register     
 			
 printMem                                    ; Made this function in order to reuse if DR is 1
-            BRA         printMemNow
+            BRA         printMemNow         ; Branch out to printMemNow
 			
-printMemNow               
+printMemNow                           
             LEA         slash, A1           ; Display slash
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
          
             CLR         D4                  ; Using D4 to store predecrement mode addresses
             MOVE.W      D1,D4               ; Stores bits for D0-D7
-            ASR         #eight,D4
+            ASR         #eight,D4           ; Rotate to the right, to create space for next byte
             
-            CLR         D5
-            MOVE.B      D4,D5
-            AND         #mask1,D5
-            CMP         #mask1,D5
-            BEQ         AddrReg0
+            CLR         D5                  ; Clear space
+            MOVE.B      D4,D5               ; Move bits containing information on used data register to D5
+            AND         #mask1,D5           ; Use a bit mask to mask every bit except for the first bit
+            CMP         #mask1,D5           ; Check if certain bit is 1 or 0
+            BEQ         AddrReg0            ; If comparison matches, then address register that is being put on stack starts here
             
-            CLR         D5
-            MOVE.B      D4,D5
-            AND         #mask2,D5
-            CMP         #mask2,D5
-            BEQ         AddrReg1
+            CLR         D5                  ; Clear data register 
+            MOVE.B      D4,D5               ; Move bits containing information on used data register to D5
+            AND         #mask2,D5           ; Use a bit mask to mask every bit except for the second bit
+            CMP         #mask2,D5           ; Check if certain bit is 1 or 0
+            BEQ         AddrReg1            ; If comparison matches, then address register that is being put on stack starts here
 
-            CLR         D5
-            MOVE.B      D4,D5
-            AND         #mask3,D5
-            CMP         #mask3,D5
-            BEQ         AddrReg2            
+            CLR         D5                  ; Clear data register
+            MOVE.B      D4,D5               ; Move bits containing information on used data register to D5
+            AND         #mask3,D5           ; Use a bit mask to mask every bit except for the third
+            CMP         #mask3,D5           ; Check if certain bit is 1 or 0
+            BEQ         AddrReg2            ; If comparison matches, then address register that is being put on stack starts here         
             
-            CLR         D5
-            MOVE.B      D4,D5
-            AND         #mask4,D5
-            CMP         #mask4,D5
-            BEQ         AddrReg3            
-            
-            CLR         D5
-            MOVE.B      D4,D5
-            AND         #mask5,D5
-            CMP         #mask5,D5
-            BEQ         AddrReg4
+            CLR         D5                  ; Clear data register
+            MOVE.B      D4,D5               ; Move bits containing information on used data register to D5
+            AND         #mask4,D5           ; Use a bit mask to mask every bit except for the fourth bit
+            CMP         #mask4,D5           ; Check if certain bit is 1 or 0
+            BEQ         AddrReg3            ; If comparison matches, then address register that is being put on stack starts here     
+                
+            CLR         D5                  ; Clear data register
+            MOVE.B      D4,D5               ; Move bits containing information on used data register to D5
+            AND         #mask5,D5           ; Use a bit mask to mask every bit except for the fifth bit
+            CMP         #mask5,D5           ; Check if certain bit is 1 or 0
+            BEQ         AddrReg4            ; If comparison matches, then address register that is being put on stack starts here
 
-            CLR         D5
-            MOVE.B      D4,D5
-            AND         #mask6,D5
-            CMP         #mask6,D5
-            BEQ         AddrReg5
+            CLR         D5                  ; Clear data register
+            MOVE.B      D4,D5               ; Move bits containing information on used data register to D5
+            AND         #mask6,D5           ; Use a bit mask to mask every bit except for the sixth bit
+            CMP         #mask6,D5           ; Check if certain bit is 1 or 0
+            BEQ         AddrReg5            ; If comparison matches, then address register that is being put on stack starts here
 
-            CLR         D5
-            MOVE.B      D4,D5
-            AND         #mask7,D5
-            CMP         #mask7,D5
-            BEQ         AddrReg6
+            CLR         D5                  ; Clear data register
+            MOVE.B      D4,D5               ; Move bits containing information on used data register to D5
+            AND         #mask7,D5           ; Use a bit mask to mask every bit except for the seventh bit
+            CMP         #mask7,D5           ; Check if certain bit is 1 or 0
+            BEQ         AddrReg6            ; If comparison matches, then address register that is being put on stack starts here
 
-            CLR         D5
-            MOVE.B      D4,D5
-            AND         #mask8,D5
-            CMP         #mask8,D5
-            BEQ         AddrReg7
+            CLR         D5                  ; Clear data register
+            MOVE.B      D4,D5               ; Move bits containing information on used data register to D5
+            AND         #mask8,D5           ; Use a bit mask to mask every bit except for the last bit
+            CMP         #mask8,D5           ; Check if certain bit is 1 or 0
+            BEQ         AddrReg7            ; If comparison matches, then address register that is being put on stack starts here
 			
 AddrReg0
+
             LEA         dispA0, A1          ; Output string D0
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            CLR         D5
-            MOVE.B      D1,D5
-            AND         #mask2,D5
-            CMP         #mask2,D5
-            BEQ         Addr0Cont
-            BRA         endMOVE
+            CLR         D5                  ; Clear data register
+            MOVE.B      D1,D5               ; Move byte to D5 for comparisons
+            AND         #mask2,D5           ; Bitmasking to check if next bit is used or not
+            CMP         #mask2,D5           ; Checking if next bit is use
+            BEQ         Addr0Cont           ; Continues to check for last register used if so
+            BRA         endMOVE             ; Last register has been found. Branch to subroutine to RTS
 			
 Addr0Cont        
             LEA         dec, A1             ; Output -
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call        
-            BRA         AddrReg1
+            BRA         AddrReg1            ; Branch to second address
 
 AddrReg1
-            CLR         D5
-            MOVE.B      D4,D5
-            AND         #maskA,D5
-            CMP         #maskA,D5
-            BEQ         AddrReg2
+            CLR         D5                  ; Clear data register
+            MOVE.B      D4,D5               ; Move byte to D5 for comparisons
+            AND         #maskA,D5           ; Uses mask to check for valid bits before and after current bit
+            CMP         #maskA,D5           ; Check if there are bits before and after current masked bit
+            BEQ         AddrReg2            ; Skip print and move to next address to check if it the last address used
             
             LEA         dispA1, A1          ; Output string D0
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            CLR         D5
-            MOVE.B      D4,D5
-            AND         #mask3,D5
-            CMP         #mask3,D5
-            BEQ         Addr1Cont
-            BRA         endMOVE
+            CLR         D5                  ; Clear data register
+            MOVE.B      D4,D5               ; Move byte to D5 for comparisons
+            AND         #mask3,D5           ; Bitmasking to check if next bit is used or not
+            CMP         #mask3,D5           ; Checking if next bit is use
+            BEQ         Addr1Cont           ; Continues to check for last register used if so
+            BRA         endMOVE             ; Last register has been found. Branch to subroutine to RTS
 			
 Addr1Cont        
             LEA         dec, A1             ; Output -
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call        
-            BRA         AddrReg2
+            BRA         AddrReg2            ; Skip print and move to next address to check if it the last address used    
 
 AddrReg2
-            CLR         D5
-            MOVE.B      D4,D5
-            AND         #maskB,D5
-            CMP         #maskB,D5
-            BEQ         AddrReg3
+            CLR         D5                  ; Clear data register
+            MOVE.B      D4,D5               ; Move byte to D5 for comparisons
+            AND         #maskB,D5           ; Uses mask to check for valid bits before and after current bit
+            CMP         #maskB,D5           ; Check if there are bits before and after current masked bit
+            BEQ         AddrReg3            ; If there are bits before and after, skip to next register to find ending
+
             
             LEA         dispA2, A1          ; Output string D0
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            CLR         D5
-            MOVE.B      D4,D5
-            AND         #mask4,D5
-            CMP         #mask4,D5
-            BEQ         Addr2Cont
-            BRA         endMOVE
+            CLR         D5                  ; Clear data register
+            MOVE.B      D4,D5               ; Move byte to D5 for comparisons
+            AND         #mask4,D5           ; Bitmasking to check if next bit is used or not
+            CMP         #mask4,D5           ; Checking if next bit is use
+            BEQ         Addr2Cont           ; Continues to check for last register used if so
+            BRA         endMOVE             ; Last register has been found. Branch to subroutine to RTS
 			
 Addr2Cont        
             LEA         dec, A1             ; Output -
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call        
-            BRA         AddrReg3
+            BRA         AddrReg3            ; Skip print and move to next address to check if it the last address used
 
 AddrReg3
-            CLR         D5
-            MOVE.B      D4,D5
-            AND         #maskC,D5
-            CMP         #maskC,D5
-            BEQ         AddrReg4
+            CLR         D5                  ; Clear data register
+            MOVE.B      D4,D5               ; Move byte to D5 for comparisons
+            AND         #maskC,D5           ; Uses mask to check for valid bits before and after current bit
+            CMP         #maskC,D5           ; Check if there are bits before and after current masked bit
+            BEQ         AddrReg4            ; If there are bits before and after, skip to next register to find ending
             
             LEA         dispA3, A1          ; Output string D0
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            CLR         D5
-            MOVE.B      D4,D5
-            AND         #mask5,D5
-            CMP         #mask5,D5
-            BEQ         Addr3Cont
-            BRA         endMOVE
+            CLR         D5                  ; Clear data register
+            MOVE.B      D4,D5               ; Move byte to D5 for comparisons
+            AND         #mask5,D5           ; Bitmasking to check if next bit is used or not  
+            CMP         #mask5,D5           ; Checking if next bit is use
+            BEQ         Addr3Cont           ; Continues to check for last register used if so
+            BRA         endMOVE             ; Last register has been found. Branch to subroutine to RTS
 			
 Addr3Cont        
             LEA         dec, A1             ; Output -
@@ -4378,22 +4415,22 @@ Addr3Cont
             BRA         AddrReg4
 
 AddrReg4
-            CLR         D5
-            MOVE.B      D4,D5
-            AND         #maskD,D5
-            CMP         #maskD,D5
-            BEQ         AddrReg5
+            CLR         D5                  ; Clear data register
+            MOVE.B      D4,D5               ; Move byte to D5 for comparisons
+            AND         #maskD,D5           ; Uses mask to check for valid bits before and after current bit
+            CMP         #maskD,D5           ; Check if there are bits before and after current masked bit
+            BEQ         AddrReg5            ; If there are bits before and after, skip to next register to find ending
             
             LEA         dispA4, A1          ; Output string D0
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            CLR         D5
-            MOVE.B      D4,D5
-            AND         #mask6,D5
-            CMP         #mask6,D5
-            BEQ         Addr4Cont
-            BRA         endMOVE
+            CLR         D5                  ; Clear data register
+            MOVE.B      D4,D5               ; Move byte to D5 for comparisons
+            AND         #mask6,D5           ; Bitmasking to check if next bit is used or not 
+            CMP         #mask6,D5           ; Checking if next bit is use
+            BEQ         Addr4Cont           ; Continues to check for last register used if so
+            BRA         endMOVE             ; Last register has been found. Branch to subroutine to RTS
 			
 Addr4Cont        
             LEA         dec, A1             ; Output -
@@ -4401,22 +4438,22 @@ Addr4Cont
             TRAP        #15                 ; trap call        
             BRA         AddrReg5
 AddrReg5
-            CLR         D5
-            MOVE.B      D4,D5
-            AND         #maskE,D5
-            CMP         #maskE,D5
-            BEQ         AddrReg6
+            CLR         D5                  ; Clear data register
+            MOVE.B      D4,D5               ; Move byte to D5 for comparisons
+            AND         #maskE,D5           ; Uses mask to check for valid bits before and after current bit
+            CMP         #maskE,D5           ; Check if there are bits before and after current masked bit
+            BEQ         AddrReg6            ; If there are bits before and after, skip to next register to find ending
             
             LEA         dispA5, A1          ; Output string D0
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            CLR         D5
-            MOVE.B      D4,D5
-            AND         #mask7,D5
-            CMP         #mask7,D5
-            BEQ         Addr5Cont
-            BRA         endMOVE
+            CLR         D5                  ; Clear data register
+            MOVE.B      D4,D5               ; Move byte to D5 for comparisons
+            AND         #mask7,D5           ; Bitmasking to check if next bit is used or not
+            CMP         #mask7,D5           ; Checking if next bit is use
+            BEQ         Addr5Cont           ; Continues to check for last register used if so
+            BRA         endMOVE             ; Last register has been found. Branch to subroutine to RTS
 			
 Addr5Cont        
             LEA         dec, A1             ; Output -
@@ -4425,37 +4462,37 @@ Addr5Cont
             BRA         AddrReg7
 
 AddrReg6
-            CLR         D5
-            MOVE.B      D4,D5
-            AND         #maskF,D5
-            CMP         #maskF,D5
-            BEQ         AddrReg7
+            CLR         D5                  ; Clear data register
+            MOVE.B      D4,D5               ; Move byte to D5 for comparisons
+            AND         #maskF,D5           ; Uses mask to check for valid bits before and after current bit
+            CMP         #maskF,D5           ; Check if there are bits before and after current masked bit
+            BEQ         AddrReg7            ; If there are bits before and after, skip to next register to find ending
 
             LEA         dispA6, A1          ; Output string D0
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call
             
-            CLR         D5
-            MOVE.B      D4,D5
-            AND         #mask8,D5
-            CMP         #mask8,D5
-            BEQ         Addr6Cont
-            BRA         endMOVE
+            CLR         D5                  ; Clear data register
+            MOVE.B      D4,D5               ; Move byte to D5 for comparisons
+            AND         #mask8,D5           ; Bitmasking to check if next bit is used or not
+            CMP         #mask8,D5           ; Checking if next bit is use
+            BEQ         Addr6Cont           ; Continues to check for last register used if so
+            BRA         endMOVE             ; Last register has been found. Branch to subroutine to RTS
 			
 Addr6Cont        
             LEA         dec, A1             ; Output -
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call        
-            BRA         AddrReg7
+            BRA         AddrReg7            ; Skip print and move to next address to check if it the last address used
 
 AddrReg7    
             LEA         dispA7, A1          ; Output -
             MOVE.B      #14, D0             ; command for trap call to display message
             TRAP        #15                 ; trap call        
-            BRA         endMOVE
-
+            BRA         endMOVE             ; Skip print and move to next address to check if it the last address used
+        
 endMOVE
-            MOVEM.L  (SP)+, D0-D7/A1-A6
+            MOVEM.L  (SP)+, D0-D7/A1-A6     ; Pops all data and address register off the stack
             RTS
 endMove1                                    ; Used if MOVEM has DR is 1
             MOVEM.L  (SP)+, D0-D7/A1-A6
@@ -4769,6 +4806,7 @@ dispD6      	DC.B    'D6', 0
 dispD7      	DC.B    'D7', 0 
  
            END    START                ; last line of source
+
 
 
 

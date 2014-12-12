@@ -1,6 +1,6 @@
 00004000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.02
-Created On: 12/11/2014 8:42:27 PM
+Created On: 12/12/2014 2:54:59 AM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -28,31 +28,39 @@ Created On: 12/11/2014 8:42:27 PM
 0000402E  EDAC                      24      LSL.L       D6,D4
 00004030  EF58                      25      ROL.W       #$7,D0
 00004032  D2B9 0400A314             26      ADD.L       $0400A314,D1
-00004038                            27      
-00004038  83C2                      28      DIVS        D2,D1
-0000403A  9C83                      29      SUB.L       D3,D6
-0000403C  B23C 0000                 30      CMP.B       #0,D1
-00004040  8404                      31      OR.B        D4,D2
-00004042  B546                      32      EOR.W       D2,D6
-00004044  6000 000E                 33      BRA         foo
-00004048                            34      
-00004048  5342                      35      SUBQ.W      #1,D2
-0000404A  B443                      36      CMP.W       D3,D2
-0000404C  6D00 0006                 37      BLT         baconLT
-00004050  6C00 0002                 38      BGE         banana
-00004054                            39  
-00004054                            40  foo 
-00004054                            41      
-00004054                            42  baconLT     
-00004054                            43  
-00004054                            44  banana      
-00004054                            45      
-00004054                            46  
-00004054  FFFF FFFF                 47      SIMHALT             ; halt simulator
-00004058                            48  
-00004058                            49  * Put variables and constants here
-00004058                            50  
-00004058                            51      END    START        ; last line of source
+00004038  4CDF 0E3C                 27      MOVEM.L (SP)+,D2-D5/A1-A3
+0000403C  48E7 0420                 28      MOVEM.L D5/A2,-(SP)
+00004040  48B8 FFFF 5435            29      MOVEM.W D0-D7/A0-A7,$5435
+00004046  48E2 FFFF                 30      MOVEM.L D0-D7/A0-A7,-(A2)
+0000404A  4CDF 0E3C                 31      MOVEM.L (SP)+,D2-D5/A1-A3
+0000404E  48E7 0420                 32      MOVEM.L D5/A2,-(SP)
+00004052                            33  
+00004052  48B8 FFFF 5435            34      MOVEM.W D0-D7/A0-A7,$5435
+00004058  48E2 FFFF                 35      MOVEM.L D0-D7/A0-A7,-(A2)
+0000405C  83C2                      36      DIVS        D2,D1
+0000405E  9C83                      37      SUB.L       D3,D6
+00004060  B23C 0000                 38      CMP.B       #0,D1
+00004064  8404                      39      OR.B        D4,D2
+00004066  B546                      40      EOR.W       D2,D6
+00004068  6000 000E                 41      BRA         foo
+0000406C                            42      
+0000406C  5342                      43      SUBQ.W      #1,D2
+0000406E  B443                      44      CMP.W       D3,D2
+00004070  6D00 0006                 45      BLT         baconLT
+00004074  6C00 0002                 46      BGE         banana
+00004078                            47  
+00004078                            48  foo 
+00004078                            49      
+00004078                            50  baconLT     
+00004078                            51  
+00004078                            52  banana      
+00004078                            53      
+00004078                            54  
+00004078  FFFF FFFF                 55      SIMHALT             ; halt simulator
+0000407C                            56  
+0000407C                            57  * Put variables and constants here
+0000407C                            58  
+0000407C                            59      END    START        ; last line of source
 
 No errors detected
 No warnings generated
@@ -61,7 +69,7 @@ No warnings generated
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
-BACONLT             4054
-BANANA              4054
-FOO                 4054
+BACONLT             4078
+BANANA              4078
+FOO                 4078
 START               4000
